@@ -1,0 +1,138 @@
+{
+ "source": "api",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_3",
+ "created": "2026-10-28T16:31:19+00:00",
+ "usage": {
+  "input_tokens": 27368,
+  "output_tokens": 2067
+ },
+ "data": {
+  "paper_title": "Profitability of Momentum Strategies: An Evaluation of Alternative Explanations",
+  "authors": [
+   "Narasimhan Jegadeesh",
+   "Sheridan Titman"
+  ],
+  "year": 1999,
+  "selected_experiment": "Table 1, decile momentum portfolios (P1-P10) formed on past six-month returns and held six months, NYSE/AMEX stocks priced above $5, 1965-1989 / 1990-1997 / 1965-1997",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Momentum profits are attributed to investors underreacting or delayed-overreacting to information (behavioral models), rather than to cross-sectional dispersion in expected returns as Conrad and Kaul argue.",
+   "evidence": {
+    "page": 4,
+    "quote": "The behavioral models specify that the holding period returns arise because of a delayed overreaction to information that push the prices of winners (losers) above (below) their long-term values."
+   }
+  },
+  "universe_and_filters": {
+   "value": "All NYSE/AMEX stocks, excluding NASDAQ stocks and excluding stocks priced below $5 at the beginning of the holding period.",
+   "evidence": {
+    "page": 6,
+    "quote": "We follow JT and include all NYSE/AMEX stocks and exclude NASDAQ stocks."
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "monthly stock returns",
+    "stock prices (for the $5 price screen)",
+    "exchange listing (NYSE/AMEX)"
+   ],
+   "evidence": {
+    "page": 6,
+    "quote": "At the end of each month we rank the stocks in the sample based on their past six-month returns (month —5 to month 0) and then group the stocks into ten equally weighted portfolios based on these ranks."
+   }
+  },
+  "signal_formula_words": {
+   "value": "Past six-month cumulative return over months -5 to 0 relative to the ranking date; stocks are ranked on this return.",
+   "evidence": {
+    "page": 6,
+    "quote": "At the end of each month we rank the stocks in the sample based on their past six-month returns (month —5 to month 0) and then group the stocks into ten equally weighted portfolios based on these ranks."
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "not stated",
+   "evidence": {
+    "page": 6,
+    "quote": "At the end of each month we rank the stocks in the sample based on their past six-month returns (month —5 to month 0) and then group the stocks into ten equally weighted portfolios based on these ranks."
+   }
+  },
+  "formation_window": {
+   "value": "6 months of past returns (month -5 to month 0)",
+   "evidence": {
+    "page": 6,
+    "quote": "At the end of each month we rank the stocks in the sample based on their past six-month returns (month —5 to month 0) and then group the stocks into ten equally weighted portfolios based on these ranks."
+   }
+  },
+  "skip_window": {
+   "value": "none (holding period begins in month 1 immediately after the ranking month)",
+   "evidence": {
+    "page": 6,
+    "quote": "Each portfolio is held for six months (month 1 to month 6) following the ranking month."
+   }
+  },
+  "holding_period": {
+   "value": "6 months",
+   "evidence": {
+    "page": 6,
+    "quote": "Each portfolio is held for six months (month 1 to month 6) following the ranking month."
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly, with overlapping portfolios (each month's portfolio holds stocks ranked in the decile in any of the previous six ranking months, each cohort equally weighted)",
+   "evidence": {
+    "page": 7,
+    "quote": "To increase the power of our tests we construct overlapping portfolios."
+   }
+  },
+  "sort_rule": "deciles",
+  "sort_rule_evidence": {
+   "page": 6,
+   "quote": "At the end of each month we rank the stocks in the sample based on their past six-month returns (month —5 to month 0) and then group the stocks into ten equally weighted portfolios based on these ranks."
+  },
+  "breakpoints": {
+   "value": "Ten groups by rank of past six-month returns (P1 is the ten percent of stocks with highest returns, P10 the ten percent with lowest); whether NYSE-only breakpoints are used is not stated.",
+   "evidence": {
+    "page": 25,
+    "quote": "P1 is the equal-weighted portfolio of ten percent of the stocks with the highest six-month lagged returns, P2 is the equal-weighted portfolio of the ten percent of the stocks with the next highest returns and so on."
+   }
+  },
+  "favored_group": {
+   "value": "P1 (past winners: highest past six-month return decile)",
+   "evidence": {
+    "page": 7,
+    "quote": "Portfolio P1 is comprised of stocks with the best ranking period returns and PlO is comprised of stocks with the worst ranking period returns."
+   }
+  },
+  "disfavored_group": {
+   "value": "P10 (past losers: lowest past six-month return decile)",
+   "evidence": {
+    "page": 7,
+    "quote": "Portfolio P1 is comprised of stocks with the best ranking period returns and PlO is comprised of stocks with the worst ranking period returns."
+   }
+  },
+  "weighting": "equal",
+  "weighting_evidence": {
+   "page": 25,
+   "quote": "P1 is the equal-weighted portfolio of ten percent of the stocks with the highest six-month lagged returns, P2 is the equal-weighted portfolio of the ten percent of the stocks with the next highest returns and so on."
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 7,
+   "quote": "The table reveals a monotonic relation between returns and momentum ranks over the 1965 to 1989 sample period, confirming the results in JT."
+  },
+  "headline_result": {
+   "value": "P1-P10 difference of 1.11% per month (t=4.61) in 1965-1989, 1.01% per month in 1990-1997, and 1.09% per month (t=5.65) in 1965-1997",
+   "evidence": {
+    "page": 7,
+    "quote": "The difference between the P1 and PlO portfolio returns is 1.11% per month, which is reliably different from zero."
+   }
+  },
+  "unresolved_details": [
+   "Whether breakpoints use NYSE-only or all NYSE/AMEX stocks is not stated",
+   "Return convention (simple vs. log) not stated",
+   "Treatment of delisting returns not stated",
+   "Data source for returns in the main experiment is not explicitly stated (CRSP implied)",
+   "Minimum return history requirements not stated"
+  ]
+ }
+}

@@ -1,0 +1,142 @@
+{
+ "source": "api",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_3",
+ "created": "2026-10-28T16:36:35+00:00",
+ "usage": {
+  "input_tokens": 35454,
+  "output_tokens": 6902
+ },
+ "data": {
+  "paper_title": "Illiquidity and stock returns: cross-section and time-series effects",
+  "authors": [
+   "Yakov Amihud"
+  ],
+  "year": 2002,
+  "selected_experiment": "Table 2, Fama-MacBeth monthly cross-sectional regressions of NYSE stock returns on mean-adjusted illiquidity (ILLIQMA) and other characteristics, 1964-1997, all-months column",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Stock expected return increases in illiquidity (illiquidity premium), as proposed by Amihud and Mendelson (1986); ILLIQ proxies for price impact per dollar of volume.",
+   "evidence": {
+    "page": 1,
+    "quote": "isthatreturnincreasesinilliquidity,asproposedbyAmihudandMendelson"
+   }
+  },
+  "universe_and_filters": {
+   "value": "NYSE-traded stocks (CRSP daily and monthly data), 1963-1997. A stock enters month m of year y if it has a return that month, return and volume data for more than 200 days in year y-1, is listed at the end of year y-1, has a price above $5 at the end of year y-1, has market capitalization data in CRSP, and its ILLIQ in year y-1 is not in the highest or lowest 1% tail. Returns are adjusted for delistings (Shumway, 1997).",
+   "evidence": {
+    "page": 6,
+    "quote": "TestsareconﬁnedtoNYSE-tradedstockstoavoid"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily stock returns",
+    "daily dollar trading volume",
+    "monthly stock returns (dependent variable)",
+    "delisting returns",
+    "end-of-year stock price (price filter)",
+    "end-of-year market capitalization (filter and SIZE control)",
+    "daily returns on size-decile portfolios and equally-weighted market (for BETA control)",
+    "dividends (DIVYLD control in extended model)"
+   ],
+   "evidence": {
+    "page": 4,
+    "quote": "iscalculatedfromdailydataonreturnsandvolumethatare"
+   }
+  },
+  "signal_formula_words": {
+   "value": "For each stock and year, ILLIQ is the average over the year of the daily ratio of absolute return to dollar trading volume; it is divided by the cross-sectional mean ILLIQ of that year (ILLIQMA) and used in the next year's monthly cross-sectional regressions on stock returns.",
+   "evidence": {
+    "page": 4,
+    "quote": "Stock illiquidity is deﬁned here as the average ratio of the daily absolute"
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "ILLIQ_iy = (1/D_iy) * sum_{d=1}^{D_iy} |R_iyd| / VOLD_iyd; AILLIQ_y = (1/N_y) * sum_i ILLIQ_iy; ILLIQMA_iy = ILLIQ_iy / AILLIQ_y; R_imy = k_0my + sum_j k_jmy X_{j,i,y-1} + U_imy",
+   "evidence": {
+    "page": 7,
+    "quote": "ILLIQMAiy ¼ILLIQiy=AILLIQy: ð4Þ"
+   }
+  },
+  "formation_window": {
+   "value": "1 year (year y-1) of daily data",
+   "evidence": {
+    "page": 11,
+    "quote": "stockreturnsareregressedcross-sectionallyonstockcharacteristicsthatarecalculatedfromdatainyear y /C01"
+   }
+  },
+  "skip_window": {
+   "value": "none (characteristics from year y-1 are used for returns in all months of year y)",
+   "evidence": {
+    "page": 6,
+    "quote": "characteristicjofstocki;estimatedfromdatainyear y /C01andknowntoinvestors"
+   }
+  },
+  "holding_period": {
+   "value": "1 month (monthly returns regressed each month of year y on characteristics from year y-1)",
+   "evidence": {
+    "page": 6,
+    "quote": "theusualFamaandMacBeth(1973)method.Across-sectionmodelisestimated"
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly cross-sectional regressions (408 months); characteristics updated annually",
+   "evidence": {
+    "page": 6,
+    "quote": "theusualFamaandMacBeth(1973)method.Across-sectionmodelisestimated"
+   }
+  },
+  "sort_rule": "continuous",
+  "sort_rule_evidence": {
+   "page": 6,
+   "quote": "theusualFamaandMacBeth(1973)method.Across-sectionmodelisestimated"
+  },
+  "breakpoints": {
+   "value": "none; continuous regressor in Fama-MacBeth regressions, with the extreme 1% upper and lower ILLIQ tails excluded",
+   "evidence": {
+    "page": 8,
+    "quote": "Excludedarestockswhose ILLIQiy isattheextreme1%"
+   }
+  },
+  "favored_group": {
+   "value": "stocks with high illiquidity (high ILLIQ / ILLIQMA)",
+   "evidence": {
+    "page": 1,
+    "quote": "isthatreturnincreasesinilliquidity,asproposedbyAmihudandMendelson"
+   }
+  },
+  "disfavored_group": {
+   "value": "stocks with low illiquidity (low ILLIQ / ILLIQMA)",
+   "evidence": {
+    "page": 1,
+    "quote": "isthatreturnincreasesinilliquidity,asproposedbyAmihudandMendelson"
+   }
+  },
+  "weighting": "equal",
+  "weighting_evidence": {
+   "page": 12,
+   "quote": "Thecross-sectionalmodelsarealsoestimatedbytheweightedleastsquares"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 1,
+   "quote": "isthatreturnincreasesinilliquidity,asproposedbyAmihudandMendelson"
+  },
+  "headline_result": {
+   "value": "Mean Fama-MacBeth coefficient on ILLIQMA of 0.162 (t = 6.55) for all months, 0.126 (t = 5.30) excluding January.",
+   "evidence": {
+    "page": 10,
+    "quote": "coeﬃcient ofILLIQMAiy; denoted kILLIQmy; has a mean of 0.162 that is"
+   }
+  },
+  "unresolved_details": [
+   "The paper has no portfolio-sort strategy; the evidence is Fama-MacBeth regression coefficients, so no long-short portfolio, quantile cutoffs or weighting is defined.",
+   "Regressions are OLS, so stocks are implicitly equal-weighted; no value weighting is described.",
+   "Exact units/scaling of dollar volume and whether the return convention includes dividends are not detailed.",
+   "Whether results are used as a trading portfolio rule (long high ILLIQ, short low ILLIQ) is not stated.",
+   "Control variables (BETA, R100, R100YR, SIZE, SDRET, DIVYLD) differ between the two specifications in Table 2."
+  ]
+ }
+}

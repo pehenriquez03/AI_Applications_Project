@@ -1,0 +1,141 @@
+{
+ "source": "api",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_3",
+ "created": "2026-10-28T16:31:27+00:00",
+ "usage": {
+  "input_tokens": 42766,
+  "output_tokens": 2250
+ },
+ "data": {
+  "paper_title": "Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+  "authors": [
+   "Turan G. Bali",
+   "Nusret Cakici",
+   "Robert F. Whitelaw"
+  ],
+  "year": 2009,
+  "selected_experiment": "Table I, univariate value-weighted decile portfolios sorted on MAX (maximum daily return over the past month), July 1962 to December 2005",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Investors with a preference for lottery-like assets and poor diversification overpay for stocks with extreme positive returns, so these stocks earn lower future returns.",
+   "evidence": {
+    "page": 4,
+    "quote": "This evidence suggests that investors may be willing to pay more for stocks that exhibit extreme positive returns, and thus these stocks exhibit lower returns in the future."
+   }
+  },
+  "universe_and_filters": {
+   "value": "All NYSE, AMEX and NASDAQ financial and nonfinancial stocks from CRSP; sample period July 1962 to December 2005 for the portfolio analysis. No filters in the main Table I analysis (a robustness check excludes stocks priced below $5).",
+   "evidence": {
+    "page": 6,
+    "quote": "The first data set includes all New York Stock Exchange (NYSE), American S tock Exchange (AMEX), and NASDAQ financial and nonfinancial firms from the Center for Research in Security Prices (CRSP) for the period from January 1926 through December 2005."
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily stock returns",
+    "market capitalization (price times shares outstanding; value weights)",
+    "monthly stock returns",
+    "Fama-French-Carhart factor returns (for alpha differences only)"
+   ],
+   "evidence": {
+    "page": 6,
+    "quote": "We use daily stock returns to calculate the maximum daily stock returns for each firm in each month as well as such variables as the market beta, idiosyncratic volatility, and various skewness measures"
+   }
+  },
+  "signal_formula_words": {
+   "value": "MAX is the maximum daily return of a stock within the previous month; stocks are sorted into deciles on MAX each month.",
+   "evidence": {
+    "page": 6,
+    "quote": "Table I presents the value-weighted and equal-weighted average monthly returns of decile portfolios that are form ed by sorting the NYSE/AMEX/NASDAQ stocks based on the maximum daily return within the previous month (MAX) ."
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "MAX_{i,t} = max(R_{i,d}), d = 1,...,D_t, where R_{i,d} is the return on stock i on day d and D_t is the number of trading days in month t",
+   "evidence": {
+    "page": 26,
+    "quote": "MAXIMUM: MAX is the maximum daily return within a month:"
+   }
+  },
+  "formation_window": {
+   "value": "1 month of daily returns (the previous month)",
+   "evidence": {
+    "page": 2,
+    "quote": "Portfolio-level analyses and firm-level cross-sectional regressions indicate a negative and significant relation between the maximum daily return over the past one month (MAX) and expected stock returns."
+   }
+  },
+  "skip_window": {
+   "value": "none",
+   "evidence": {
+    "page": 3,
+    "quote": "Specifically, we sort stocks by their maximum daily return during the previous month and examine the monthly returns on the resulting portfolios over the period July 1962 to December 2005."
+   }
+  },
+  "holding_period": {
+   "value": "1 month (the month following portfolio formation)",
+   "evidence": {
+    "page": 3,
+    "quote": "Specifically, we sort stocks by their maximum daily return during the previous month and examine the monthly returns on the resulting portfolios over the period July 1962 to December 2005."
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 32,
+    "quote": "Decile portfolios are formed every month from July 1962 to December 2005 by sorting stocks based on"
+   }
+  },
+  "sort_rule": "deciles",
+  "sort_rule_evidence": {
+   "page": 7,
+   "quote": "Portfolio 1 ( low MAX) is the portfolio of stocks with the lowest maximum daily returns during the past month, and portfolio 10 ( high MAX) is the portfolio of stocks with the highest ma ximum daily returns during the previous month."
+  },
+  "breakpoints": {
+   "value": "not stated (decile portfolios of all NYSE/AMEX/NASDAQ stocks; whether NYSE breakpoints are used is not specified)",
+   "evidence": {
+    "page": 6,
+    "quote": "Table I presents the value-weighted and equal-weighted average monthly returns of decile portfolios that are form ed by sorting the NYSE/AMEX/NASDAQ stocks based on the maximum daily return within the previous month (MAX) ."
+   }
+  },
+  "favored_group": {
+   "value": "Lowest MAX decile (decile 1, low MAX)",
+   "evidence": {
+    "page": 2,
+    "quote": "Average raw and risk-adjusted return differences between stocks in the lowest and highest MAX deciles exceed 1% per month."
+   }
+  },
+  "disfavored_group": {
+   "value": "Highest MAX decile (decile 10, high MAX)",
+   "evidence": {
+    "page": 4,
+    "quote": "This evidence suggests that investors may be willing to pay more for stocks that exhibit extreme positive returns, and thus these stocks exhibit lower returns in the future."
+   }
+  },
+  "weighting": "value",
+  "weighting_evidence": {
+   "page": 3,
+   "quote": "For value -weighted decile portfolios, the difference between returns on the portfolios with the"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 4,
+   "quote": "This evidence suggests that investors may be willing to pay more for stocks that exhibit extreme positive returns, and thus these stocks exhibit lower returns in the future."
+  },
+  "headline_result": {
+   "value": "Value-weighted high-minus-low MAX decile raw return difference of -1.03% per month (Newey-West t = -2.83) and four-factor alpha difference of -1.18% per month (t = -4.71).",
+   "evidence": {
+    "page": 6,
+    "quote": "The value-weighted average raw return difference between decile 10 (high MAX) and decile 1 (low MAX) is –1.03% per month with a corresponding Newey-West (1987) t- statistic of –2.83."
+   }
+  },
+  "unresolved_details": [
+   "Breakpoints for deciles (NYSE-only vs all stocks) not stated",
+   "Minimum price, size or exchange-listing filters in the main Table I analysis not stated (price-below-$5 exclusion only as unreported robustness check)",
+   "Treatment of delisting returns not stated",
+   "Whether market-cap weights use end-of-formation-month value is not explicitly stated",
+   "Minimum number of trading days required to compute MAX in a month not stated",
+   "Treatment of missing daily returns not stated"
+  ]
+ }
+}

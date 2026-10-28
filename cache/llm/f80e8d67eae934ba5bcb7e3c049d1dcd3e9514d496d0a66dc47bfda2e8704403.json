@@ -1,12 +1,11 @@
 {
- "source": "session",
+ "source": "api",
  "model": "claude-sonnet-5-5",
  "tag": "extract_1",
- "created": "2026-10-28T08:47:51+00:00",
+ "created": "2026-10-28T16:30:58+00:00",
  "usage": {
-  "input_tokens": 27329,
-  "output_tokens": 1179,
-  "estimated": true
+  "input_tokens": 42766,
+  "output_tokens": 2171
  },
  "data": {
   "paper_title": "Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
@@ -16,68 +15,68 @@
    "Robert F. Whitelaw"
   ],
   "year": 2009,
-  "selected_experiment": "Table I, univariate value-weighted decile portfolios sorted on MAX (maximum daily return over the past one month), July 1962 to December 2005",
+  "selected_experiment": "Table I, univariate decile portfolios sorted on MAX (maximum daily return over the past month), value-weighted, July 1962 to December 2005",
   "can_implement": true,
   "cannot_implement_reasons": [],
   "economic_rationale": {
-   "value": "Investors have a preference for lottery-like payoffs (and many are poorly diversified), so they are willing to pay more for stocks that exhibit extreme positive daily returns, and these stocks therefore earn lower returns in the future.",
+   "value": "Investors, many of them poorly diversified, prefer lottery-like assets with extreme positive returns and so overpay for them, which lowers their future returns.",
    "evidence": {
     "page": 4,
-    "quote": "This evidence suggests that investors may be willing to pay more for stocks that exhibit extreme"
+    "quote": "This evidence suggests that investors may be willing to pay more for stocks that exhibit extreme positive returns, and thus these stocks exhibit lower returns in the future."
    }
   },
   "universe_and_filters": {
-   "value": "All NYSE, AMEX and NASDAQ financial and nonfinancial firms on CRSP; Table I sample period July 1962 to December 2005. No price, share-code or size filter is applied in the headline table (a $5 price screen is only a robustness check).",
+   "value": "All NYSE, AMEX and NASDAQ financial and nonfinancial firms in CRSP; sample July 1962 to December 2005 for the portfolio analysis. The paper does not apply a price filter in the main Table I (a $5 price screen is only a robustness check).",
    "evidence": {
     "page": 6,
-    "quote": "(AMEX), and NASDAQ financial and nonfinancial firms from the Center for Research in Security Prices"
+    "quote": "The first data set includes all New York Stock Exchange (NYSE), American S tock Exchange (AMEX), and NASDAQ financial and nonfinancial firms from the Center for Research in Security Prices (CRSP) for the period from January 1926 through December 2005."
    }
   },
   "required_inputs": {
    "value": [
-    "daily stock returns (to compute MAX)",
-    "monthly stock returns (portfolio returns in the holding month)",
-    "share prices and shares outstanding (market capitalization, value weights)",
-    "exchange listing NYSE/AMEX/NASDAQ (universe filter)"
+    "daily stock returns",
+    "market capitalization (price times shares outstanding, for value weights)",
+    "monthly stock returns (portfolio returns)",
+    "Fama-French-Carhart factor returns (alpha evaluation only)"
    ],
    "evidence": {
     "page": 6,
-    "quote": "We use daily stock returns to calculate"
+    "quote": "We use daily stock returns to calculate the maximum daily stock returns for each firm in each month as well as such variables as the market beta, idiosyncratic volatility, and various skewness measures"
    }
   },
   "signal_formula_words": {
-   "value": "MAX: the maximum daily return of the stock within the month (the portfolio formation month).",
+   "value": "MAX is the maximum daily return of a stock within the previous month; stocks are ranked on this value each month.",
    "evidence": {
     "page": 26,
     "quote": "MAX is the maximum daily return within a month:"
    }
   },
   "signal_formula_symbols": {
-   "value": "MAX_{i,t} = max(R_{i,d}), d = 1, ..., D_t, where R_{i,d} is the return on stock i on day d and D_t is the number of trading days in month t (equation (2))",
+   "value": "MAX_{i,t} = max(R_{i,d}), d = 1,...,D_t, where R_{i,d} is the return on stock i on day d and D_t is the number of trading days in month t",
    "evidence": {
     "page": 26,
-    "quote": "tditi DdRMAX ,...,1)max( ,, == (2)"
+    "quote": "where diR , is the return on stock i on day d and tD is the number of trading days in month t."
    }
   },
   "formation_window": {
-   "value": "1 month of daily returns (the previous month)",
+   "value": "1 month of daily returns (previous month)",
    "evidence": {
-    "page": 32,
-    "quote": "the maximum daily return (MAX) over the past one month"
+    "page": 7,
+    "quote": "we also rank stocks by the average of the N (N=1, 2, …, 5) highest daily returns within the month"
    }
   },
   "skip_window": {
-   "value": "none",
+   "value": "none stated (portfolio returns measured in the month following the formation month)",
    "evidence": {
-    "page": 7,
-    "quote": "are for the portfolio formation month, not for the subsequent month over which we"
+    "page": 8,
+    "quote": "Specifically, it presents the average probability that a stock in decile i (defined by the rows) in one month will be in decile j (defined by the columns) in the subsequent month."
    }
   },
   "holding_period": {
    "value": "1 month",
    "evidence": {
     "page": 3,
-    "quote": "month and examine the monthly returns on the resulting portfolios over the period July 1962 to December"
+    "quote": "Specifically, we sort stocks by their maximum daily return during the previous month and examine the monthly returns on the resulting portfolios over the period July 1962 to December 2005."
    }
   },
   "rebalance_frequency": {
@@ -89,28 +88,28 @@
   },
   "sort_rule": "deciles",
   "sort_rule_evidence": {
-   "page": 32,
-   "quote": "Decile portfolios are formed every month from July 1962 to December 2005 by sorting stocks based on"
+   "page": 6,
+   "quote": "Table I presents the value-weighted and equal-weighted average monthly returns of decile portfolios that are form ed by sorting the NYSE/AMEX/NASDAQ stocks based on the maximum daily return within the previous month (MAX) ."
   },
   "breakpoints": {
-   "value": "not stated",
+   "value": "not stated explicitly; decile portfolios of all NYSE/AMEX/NASDAQ stocks (no NYSE-only breakpoints mentioned)",
    "evidence": {
     "page": 6,
-    "quote": "portfolios that are form ed by sorting the NYSE/AMEX/NASDAQ stocks based on the maximum daily"
+    "quote": "Portfolio 1 ( low MAX) is the portfolio of stocks with the lowest maximum daily returns during the past month, and portfolio 10 ( high MAX) is the portfolio of stocks with the highest ma ximum daily returns during the previous month."
    }
   },
   "favored_group": {
-   "value": "lowest MAX decile (portfolio 1, low MAX)",
+   "value": "Lowest MAX decile (decile 1); long low MAX",
    "evidence": {
-    "page": 12,
-    "quote": "Thus, market capitalization does not explain the high (low) returns to low (high) MAX stocks."
+    "page": 6,
+    "quote": "Portfolio 1 ( low MAX) is the portfolio of stocks with the lowest maximum daily returns during the past month"
    }
   },
   "disfavored_group": {
-   "value": "highest MAX decile (portfolio 10, high MAX)",
+   "value": "Highest MAX decile (decile 10); short high MAX",
    "evidence": {
-    "page": 4,
-    "quote": "positive returns, and thus these stocks exhibit lower returns in the future."
+    "page": 6,
+    "quote": "portfolio 10 ( high MAX) is the portfolio of stocks with the highest ma ximum daily returns during the previous month."
    }
   },
   "weighting": "value",
@@ -121,22 +120,22 @@
   "expected_sign": "favored_group_higher",
   "expected_sign_evidence": {
    "page": 2,
-   "quote": "regressions indicate a negative and significant relation between the maximum daily return over the"
+   "quote": "Portfolio-level analyses and firm-level cross-sectional regressions indicate a negative and significant relation between the maximum daily return over the past one month (MAX) and expected stock returns."
   },
   "headline_result": {
-   "value": "Value-weighted decile 10 (high MAX) minus decile 1 (low MAX): -1.03% per month (Newey-West t = -2.83); Fama-French-Carhart 4-factor alpha difference -1.18% per month (t = -4.71).",
+   "value": "Value-weighted high-minus-low MAX decile raw return difference of -1.03% per month (Newey-West t = -2.83); four-factor alpha difference -1.18% per month (t = -4.71)",
    "evidence": {
     "page": 6,
-    "quote": "(high MAX) and decile 1 (low MAX) is –1.03% per month with a corresponding Newey-West (1987) t-"
+    "quote": "The value-weighted average raw return difference between decile 10 (high MAX) and decile 1 (low MAX) is –1.03% per month with a corresponding Newey-West (1987) t- statistic of –2.83."
    }
   },
   "unresolved_details": [
-   "Decile breakpoints: the paper does not say whether deciles use NYSE breakpoints or all NYSE/AMEX/NASDAQ stocks.",
-   "Share-code filter: the paper does not say whether only common stocks (e.g. CRSP share codes 10/11) are included.",
-   "Minimum number of valid daily returns in the month required to compute MAX is not stated.",
-   "Treatment of delisting returns is not stated.",
-   "Timing of the market capitalization used for value weights (e.g. end of formation month) is not stated for the portfolio sorts.",
-   "Skip between formation and holding month is not stated explicitly; the text implies returns are measured in the month immediately after the formation month."
+   "Breakpoints (NYSE vs all-stock deciles) are not explicitly stated",
+   "Minimum price, size or share-code filters are not stated for the main Table I",
+   "Whether the value weights use beginning-of-month (end of formation month) market capitalization is not stated",
+   "Handling of delisting returns is not stated",
+   "Minimum number of trading days required to compute MAX in a month is not stated",
+   "Whether the formation month ends the day before portfolio return measurement (any skip) is not explicitly stated"
   ]
  }
 }

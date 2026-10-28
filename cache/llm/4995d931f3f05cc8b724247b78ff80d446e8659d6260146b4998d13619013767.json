@@ -1,0 +1,14 @@
+{
+ "source": "api",
+ "model": "claude-sonnet-5-5",
+ "tag": "check_1",
+ "created": "2026-10-28T16:31:34+00:00",
+ "usage": {
+  "input_tokens": 42790,
+  "output_tokens": 551
+ },
+ "data": {
+  "agrees": true,
+  "items": []
+ }
+}

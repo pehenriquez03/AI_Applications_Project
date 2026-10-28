@@ -1,0 +1,15 @@
+{
+ "source": "api",
+ "model": "claude-sonnet-5-5",
+ "tag": "summary",
+ "created": "2026-10-28T16:37:01+00:00",
+ "usage": {
+  "input_tokens": 2425,
+  "output_tokens": 591
+ },
+ "data": {
+  "summary": "The signal is Amihud's ILLIQ: for each stock and year, the average over trading days of the absolute daily return divided by daily dollar volume, then scaled by its annual cross-sectional mean (ILLIQMA). It is measured over the prior year (y-1) with no skip period and used to explain monthly returns in all months of year y. There is no sorted portfolio; the paper runs Fama-MacBeth monthly cross-sectional OLS regressions of NYSE stock returns (1964-1997) on lagged ILLIQMA and, in a second specification, on controls. The paper favors higher-ILLIQ (less liquid) stocks, expecting higher returns as compensation for price impact, and disfavors more liquid stocks. The headline result is a mean ILLIQMA coefficient of 0.162 (t=6.55) over all months, falling to 0.112 (t=5.39) with controls, with 63.4% of the 408 monthly coefficients positive. No long-short or decile return is reported, so a hedge-portfolio return is not stated.",
+  "data_needs": "Daily stock returns and daily dollar trading volume for NYSE common stocks, plus monthly returns including delisting returns, end-of-year price, and market capitalization. The controls additionally need dividends, size-portfolio returns and the equal-weighted market return.",
+  "implementation_note": "No, the engine cannot run it as specified: it has no daily dollar volume input and no registry operation for the ILLIQ signal. Running it would require adding a volume field and an ILLIQ calculation (average of |return|/dollar volume, scaled by its annual cross-sectional mean); the paper's regression test would also need to be replaced by a monthly sort on ILLIQ, since the paper reports no portfolio sort."
+ }
+}
