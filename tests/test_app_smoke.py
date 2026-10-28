@@ -95,7 +95,9 @@ def test_paper_tile_toggles_queue_and_previews():
     assert at.session_state["queue"] == ["max"]
     assert at.session_state["preview"] == "max"
     assert "Bali" in at.button(key="paper_max").help                     # hover preview is the button tooltip
-    at.button(key="paper_max").click().run()                             # second click deselects
+    at.button(key="paper_momentum").click().run()                        # one paper at a time: replaces the selection
+    assert at.session_state["queue"] == ["momentum"]
+    at.button(key="paper_momentum").click().run()                        # second click deselects
     assert at.session_state["queue"] == []
 
 

@@ -125,6 +125,8 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .st-key-tiles button[kind="secondary"]:has(p em) {{ border-style: dashed; color: #9a9a9a; }}
 /* previous runs: one line each */
 .st-key-lines .stButton {{ margin: 0; }}
+.st-key-lines [data-testid="stVerticalBlock"] {{ gap: 0; }}
+.st-key-lines [data-testid="stElementContainer"] {{ margin: 0; }}
 .st-key-lines button {{ width: 100%; justify-content: flex-start; text-align: left; padding: 1px 4px; min-height: 0;
                         border: 0; border-bottom: 1px solid #222; border-radius: 0; background: transparent; }}
 .st-key-lines button:hover {{ background: #1c1c1c; }}
@@ -132,6 +134,9 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
                           font-variant-numeric: tabular-nums; }}
 .st-key-lines button p code {{ font-family: Menlo, Consolas, monospace; font-size: 10.5px; color: {GREY}; background: transparent; padding: 0; }}
 .legend {{ font-size: 11px; color: {GREY}; margin: -2px 0 4px; }}
+.runstate {{ font-size: 11.5px; color: #d9d9d9; padding-top: 7px; }}
+.foot {{ border-top: 1px solid #2c2c2c; margin-top: 18px; padding-top: 8px; font-size: 11.5px; color: {GREY}; line-height: 1.5; }}
+.foot b {{ color: #bdbdbd; }}
 </style>""", unsafe_allow_html=True)
 
 
@@ -231,10 +236,8 @@ def md_safe(s: str) -> str:
 
 
 def toggle_paper(slug: str) -> None:
-    if slug in ss.queue:
-        ss.queue.remove(slug)
-    else:
-        ss.queue.append(slug)
+    """One paper at a time: clicking a tile selects it (and replaces any other), clicking again clears it."""
+    ss.queue = [] if slug in ss.queue else [slug]
     go(preview=slug)
 
 
@@ -336,7 +339,22 @@ def panel(title: str, right_text: str = "") -> None:
 
 
 with right:
-    panel("Papers", f"{len(ss.queue)} selected" if ss.queue else "click to select · hover to preview")
+    _n_months = window_months(tuple(ss.get("window", DEFAULT_WINDOW)))
+    _uploads_pending = bool(ss.get(f"uploader_{ss.upload_n}"))
+    _sel_label = next((l for l, _, sl in REGISTRY if sl == ss.queue[0]), "") if ss.queue else ""
+    can_run = (ss.queue or _uploads_pending) and _n_months >= MIN_WINDOW_MONTHS and not active
+    rc1, rc2 = st.columns([1, 1.6])
+    run_clicked = rc1.button("Run", type="primary", disabled=not can_run, key="run_btn", width="stretch")
+    if active:
+        rc2.markdown('<div class="runstate amber">running… the button unlocks when the run finishes</div>', unsafe_allow_html=True)
+    elif _sel_label:
+        rc2.markdown(f'<div class="runstate">selected: <b>{esc(_sel_label.split(" — ")[0])}</b></div>', unsafe_allow_html=True)
+    elif _uploads_pending:
+        rc2.markdown('<div class="runstate">dropped PDF ready</div>', unsafe_allow_html=True)
+    else:
+        rc2.markdown('<div class="runstate mute">click one paper below, then Run</div>', unsafe_allow_html=True)
+
+    panel("Papers", "selected: " + CODES.get(ss.queue[0], ss.queue[0]) if ss.queue else "click one, then press Run")
     with st.container(key="tiles"):
         for i in range(0, len(REGISTRY), 3):
             cols = st.columns(3)
@@ -349,8 +367,8 @@ with right:
                     text = f"**{code}**  \n*{first} {year}*"
                 c.button(text, key=f"paper_{slug}", help=tile_help(label, rel),
                          type="primary" if slug in ss.queue else "secondary", on_click=toggle_paper, args=(slug,))
-    st.markdown('<div class="legend">dashed = decoy paper (should come back not implementable)</div>',
-                unsafe_allow_html=True)
+    st.markdown('<div class="legend">Click one paper and press Run; no upload needed. One paper at a time. '
+                'Dashed = decoy (should come back not implementable).</div>', unsafe_allow_html=True)
 
     panel("Drop a PDF")
     uploads = st.file_uploader("PDF files to screen", type=["pdf"], accept_multiple_files=True,
@@ -385,8 +403,7 @@ with right:
 <span class="k">Research cost</span><span class="v">{RESEARCH_COST["dev_review_hours"]} h + {RESEARCH_COST["maintenance_hours_per_year"]} h/y @ ${RESEARCH_COST["hourly_rate"]:.0f} + tokens</span>
 </div>""", unsafe_allow_html=True)
 
-    can_run = (ss.queue or uploads) and n_months >= MIN_WINDOW_MONTHS and not active
-    if st.button("Run", type="primary", disabled=not can_run, key="run_btn", width="stretch"):
+    if run_clicked:
         tasks, problems = [], []
         es, ee = window_dates(tuple(ss.window))
         custom = tuple(ss.window) != DEFAULT_WINDOW
@@ -415,9 +432,6 @@ with right:
             ss.upload_n += 1
             go(run=FOLLOW)
             st.rerun()
-    if active:
-        st.caption("A run is in progress; the Run button unlocks when it finishes.")
-
     panel("Previous runs", f"{len(_runs)}" if _runs else "")
     with st.container(key="lines"):
         if not _runs:
@@ -785,3 +799,11 @@ def main_view() -> None:
 
 with left:
     main_view()
+
+st.markdown(f"""<div class="foot"><b>Papers:</b> click one tile, then press Run; the nine papers are already on disk, nothing
+needs uploading. <b>Dropped PDFs:</b> the paper is read and the strategy extracted for any PDF, but the engine only backtests
+long-only monthly sorts on daily US equity prices ({_manifest.get("n_universe", "?")} S&amp;P 500 names, {WARMUP_START[:4]}–{EVAL_END[:4]}).
+If the extracted strategy needs other data (fundamentals, futures, options, intraday) or another construction, the run stops
+after extraction and validation with the reason, and only the Extraction tab and the blocked dossier are produced.
+<b>Model steps</b> (extraction, check pass, narrative) need an Anthropic key in <code>.env</code> unless a cached answer exists.</div>""",
+            unsafe_allow_html=True)
