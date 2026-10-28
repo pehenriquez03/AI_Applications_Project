@@ -161,6 +161,9 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .gate {{ border: 1px solid #3a2a18; background: #161310; padding: 10px 14px 4px; margin: 4px 0 10px; }}
 .gate p {{ margin: 0 0 8px; }}
 .ok {{ color: {GREEN}; font-size: 12px; }}
+.verdict {{ font-family: {HEAVY}; font-size: 20px; letter-spacing: .03em; margin: 2px 0 6px; }}
+.verdict.up {{ color: {GREEN}; }} .verdict.amber {{ color: {ORANGE}; }} .verdict.dn {{ color: {RED}; }} .verdict.mute {{ color: #bdbdbd; }}
+.verdict.blue {{ color: #cfe3f5; }}
 </style>""", unsafe_allow_html=True)
 
 
@@ -259,6 +262,13 @@ def esc(s: str) -> str:
     return html.escape(str(s)).replace("$", "&#36;")
 
 
+def verdict_text(rec: str) -> str:
+    """'investigate further' -> 'Investigate Further'; 'unable to evaluate' -> 'Unable to Evaluate'."""
+    small = {"to", "of", "and", "or", "the", "a", "in"}
+    words = str(rec or "").split()
+    return " ".join(w if (i and w in small) else w.capitalize() for i, w in enumerate(words))
+
+
 def md_safe(s: str) -> str:
     return str(s).replace("$", "\\$")
 
@@ -347,7 +357,7 @@ last_html = ""
 if _last:
     col = {"green": "up", "orange": "amber", "red": "dn"}.get(LABEL_COLOR.get(_last["label"], "gray"), "mute")
     last_html = (f'<div class="last">Last <b>{esc(_last["title"])}</b> '
-                 f'<span class="{col}">▲ {esc(_last["label"])}</span></div>')
+                 f'<span class="{col}">▲ {esc(verdict_text(_last["label"]))}</span></div>')
 st.markdown(f"""<div class="topbar"><div class="brand">{LOGO_SVG}<div class="words"><div class="name">{APP_NAME}</div>
 <div class="tag">{TAGLINE}</div></div></div>{last_html}</div>
 <div class="chips">
@@ -480,7 +490,7 @@ with right:
         for r in _runs[:40]:
             when = datetime.fromtimestamp(r["mtime"]).strftime("%d-%b %H:%M")
             color = LABEL_COLOR.get(r["label"], "gray")
-            st.button(f"`{when}` {md_safe(r['title'])} · :{color}[{md_safe(r['label'])}]", key=f"run_{r['id']}",
+            st.button(f"`{when}` {md_safe(r['title'])} · :{color}[{md_safe(verdict_text(r['label']))}]", key=f"run_{r['id']}",
                       type="tertiary", on_click=go, kwargs=dict(run=r["id"]))
     with st.expander("Session"):
         st.caption(f"API key: {_key}" + (f" ({_ks['source']})" if _ks["found"] else ""))
@@ -563,7 +573,7 @@ def render_quote(run_dir: Path, s: dict) -> None:
 <span><span class="k">Sharpe</span><span class="v">{H.num(net.get("sharpe"))}</span></span>
 <span><span class="k">Max DD</span><span class="v">{H.pct(net.get("max_drawdown"))}</span></span>
 <span><span class="k">Alpha t</span><span class="v">{H.num(al.get("alpha_t"))}</span></span>
-<span><span class="k">Verdict</span><span class="v {cls}">{esc(rec) or "—"}</span></span>
+<span><span class="k">Verdict</span><span class="v {cls}">{esc(verdict_text(rec)) or "—"}</span></span>
 </div>""", unsafe_allow_html=True)
 
 
@@ -756,18 +766,24 @@ def tab_dossier(run_dir: Path, busy: bool) -> None:
         st.caption(NA)
 
 
-def render_summary(p: dict | None, state: str) -> None:
-    panel("Summary")
+def render_summary(p: dict | None, state: str, title: str = "Summary") -> None:
+    src = (p or {}).get("_narrative_source")
+    panel(title, {"api": "model-written", "session": "model-written (session)", "template": "template"}.get(src, ""))
     if p is None:
         st.write("Select a paper or drop a PDF.")
         return
+    def verdict(rec: str) -> None:
+        cls = {"green": "up", "orange": "amber", "red": "dn", "blue": "blue"}.get(LABEL_COLOR.get(rec, "gray"), "mute")
+        st.markdown(f'<div class="verdict {cls}">{esc(verdict_text(rec))}</div>', unsafe_allow_html=True)
+
     if state == "blocked" or (state == "failed" and not p.get("recommendation")):
-        st.markdown("**Unable to evaluate.**" if state == "blocked" else "**Run failed.**")
+        verdict("unable to evaluate" if state == "blocked" else "run failed")
         reasons = [s["detail"] for s in p["stages"] if s["status"] in ("blocked", "failed") and s["detail"]]
         text = "; ".join(reasons) or p.get("error") or (p.get("summary") or "").removeprefix("Unable to evaluate.").strip()
         st.write(md_safe(text))
     elif state == "finished" and p.get("recommendation") == "extraction only":
-        st.markdown("**Extraction only** (dropped PDF; no backtest)")
+        verdict("extraction only")
+        st.caption("Dropped PDF: extraction and summary only, no backtest.")
         st.write(md_safe(p.get("summary") or ""))
         extra = p.get("_summary_extra") or {}
         if extra.get("data_needs"):
@@ -778,7 +794,7 @@ def render_summary(p: dict | None, state: str) -> None:
             st.caption("Summary assembled from the extracted fields (model unavailable); a model-written summary "
                        "replaces it when a key is set.")
     elif state == "finished":
-        st.markdown(f"**{md_safe(p.get('recommendation') or 'no recommendation')}**")
+        verdict(p.get("recommendation") or "no recommendation")
         st.write(md_safe(p.get("summary") or ""))
     elif state == "running":
         st.write("Running…")
@@ -882,36 +898,60 @@ def main_view() -> None:
                 f'<span class="mute">strategy: {esc(slug) if slug else "not yet determined"}</span>'
                 f'{chip}<span class="mute">{esc(model)}</span></div>', unsafe_allow_html=True)
     sc = H.read_json(run_dir / "scorecard_strategy.json") if run_dir else None
-    if isinstance(sc, dict):
-        safely(render_quote, run_dir, sc)
-    panel("Pipeline")
-    render_steps(p)
-    if job_now and job_now.errors:
-        for e in job_now.errors:
-            st.markdown(f'<div class="err">{esc(e)}</div>', unsafe_allow_html=True)
-
-    if run_dir is not None and xo:
-        (t1,) = st.tabs(["Extraction"])
-        with t1:
-            tab_extraction(run_dir)
-        if p is not None:
-            p["_summary_extra"] = H.read_json(run_dir / "strategy_summary.json") or {}
-    elif run_dir is not None:
-        render_chart(run_dir, ws, we)
-        t1, t2, t3, t4 = st.tabs(["Extraction", "Evaluation", "Economics", "Dossier"])
-        with t1:
-            tab_extraction(run_dir)
-        with t2:
-            tab_evaluation(run_dir)
-        with t3:
-            tab_economics(run_dir)
-        with t4:
-            tab_dossier(run_dir, is_active)
     mine = is_active and run_dir is not None and job_now.current_dir() == run_dir
     state = H.run_state(p, job_active=mine) if p else ("running" if is_active else "missing")
-    if p is None and not is_active:
-        st.caption(NA)
-    render_summary(p if p else ({"stages": []} if is_active else None), state)
+    if p is not None and run_dir is not None:
+        if xo:
+            p["_summary_extra"] = H.read_json(run_dir / "strategy_summary.json") or {}
+            p["_narrative_source"] = p["_summary_extra"].get("source")
+        else:
+            p["_narrative_source"] = (H.read_json(run_dir / "narrative.json") or {}).get("source")
+    finished = state == "finished" and p is not None
+
+    def steps_block() -> None:
+        panel("Pipeline")
+        render_steps(p)
+        if job_now and job_now.errors:
+            for e in job_now.errors:
+                st.markdown(f'<div class="err">{esc(e)}</div>', unsafe_allow_html=True)
+
+    def tabs_block() -> None:
+        if run_dir is None:
+            return
+        if xo:
+            (t1,) = st.tabs(["Extraction"])
+            with t1:
+                tab_extraction(run_dir)
+            return
+        t_doss, t_ext, t_eval, t_econ = st.tabs(["Dossier", "Extraction", "Evaluation", "Economics"])
+        with t_doss:
+            tab_dossier(run_dir, is_active)
+        with t_ext:
+            tab_extraction(run_dir)
+        with t_eval:
+            tab_evaluation(run_dir)
+        with t_econ:
+            tab_economics(run_dir)
+
+    if finished:
+        # a finished run opens on what the model wrote: the verdict, then the dossier tab, then the detail
+        render_summary(p, state, "Summary")
+        if isinstance(sc, dict):
+            safely(render_quote, run_dir, sc)
+        tabs_block()
+        if not xo:
+            render_chart(run_dir, ws, we)
+        steps_block()
+    else:
+        if isinstance(sc, dict):
+            safely(render_quote, run_dir, sc)
+        steps_block()
+        if run_dir is not None and not xo:
+            render_chart(run_dir, ws, we)
+        tabs_block()
+        if p is None and not is_active:
+            st.caption(NA)
+        render_summary(p if p else ({"stages": []} if is_active else None), state)
 
 
 with left:
