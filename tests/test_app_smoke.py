@@ -14,7 +14,24 @@ needs_mock = pytest.mark.skipif(not (MOCK / "progress.json").exists(), reason="r
 
 
 def _app():
-    return AppTest.from_file(APP, default_timeout=60)
+    at = AppTest.from_file(APP, default_timeout=60)
+    at.session_state["key_skipped"] = True          # the key setup gate is tested on its own
+    return at
+
+
+def test_key_gate_shows_first_and_can_be_skipped():
+    at = AppTest.from_file(APP, default_timeout=60)
+    at.session_state["force_gate"] = True
+    at.run()
+    assert not at.exception
+    gate = [m.value for m in at.markdown if 'class="gate"' in m.value]
+    assert len(gate) == 1 and "shared in class" in gate[0]
+    assert at.radio(key="key_which").value == "Class key (default)"
+    assert at.button(key="key_save").disabled                      # nothing pasted yet
+    at.button(key="key_skip").click().run()
+    assert not at.exception
+    assert not [m.value for m in at.markdown if 'class="gate"' in m.value]
+    assert any("Select a paper or drop a PDF." in m.value for m in at.markdown)
 
 
 def test_app_loads_with_title():

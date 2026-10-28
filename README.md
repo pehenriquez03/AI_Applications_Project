@@ -30,6 +30,17 @@ Add `--llm files_only` to run with no model calls (uses cached extractions).
 
 ## Model access
 
+**First run on a new machine: the app asks for a key.** With no key on the
+machine, WARREN opens on a key setup step. The default is the Anthropic key
+shared in class; pick "Personal key" to use your own. The key is checked with
+one tiny call (`max_tokens=5`) before anything is stored, then written to
+`.env` (gitignored, mode 600) with a label (`ANTHROPIC_KEY_LABEL=class|personal`)
+that each run records in its `run_config.json`. "Keep for this session only"
+leaves the disk untouched. You can also continue without a key and open the
+cached runs. The Session panel (bottom of the right column) replaces or removes
+the key later. `.env.example` shows the two lines if you prefer to write the
+file yourself. Never paste the key into a notebook, slide, chat or commit.
+
 Put `ANTHROPIC_API_KEY=...` in `.env` (gitignored). The model is
 `claude-sonnet-5-5` (`research_engine/contracts.py: MODEL`). Every model
 response is cached under `cache/llm/` keyed by paper, prompt, schema and model,

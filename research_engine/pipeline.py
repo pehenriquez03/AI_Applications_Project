@@ -7,7 +7,7 @@ session agent imported (spec_raw_k.json, check_pass_k.json, narrative.json).
 """
 from __future__ import annotations
 
-import json, logging, shutil, time, traceback
+import json, logging, os, shutil, time, traceback
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
@@ -317,7 +317,8 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
     eval_end = eval_end or cfg.get("eval_end") or None
     _write_json(run_dir / RUN_CONFIG, {"model": model or C.MODEL, "eval_start": eval_start or C.EVAL_START,
                                        "eval_end": eval_end or C.EVAL_END, "warmup_start": C.WARMUP_START,
-                                       "custom_window": bool(eval_start or eval_end), "extract_only": bool(extract_only)})
+                                       "custom_window": bool(eval_start or eval_end), "extract_only": bool(extract_only),
+                                       "key_label": os.environ.get("ANTHROPIC_KEY_LABEL", "")})
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s",
                         handlers=[logging.FileHandler(run_dir / RunFiles.run_log), logging.StreamHandler()])
     exp = None; ctx = None; res = None; specs = []

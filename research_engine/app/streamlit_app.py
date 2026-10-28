@@ -25,6 +25,7 @@ import pandas as pd
 import streamlit as st
 
 from research_engine.app import helpers as H
+from research_engine.app import keys as K
 from research_engine.app.papers_registry import REGISTRY, abs_path, known_papers
 from research_engine.contracts import (
     COST_BPS_BASE, COST_BPS_GRID, EVAL_END, EVAL_START, FUND, MATERIAL_FIELDS, MIN_HISTORY_DAYS,
@@ -156,6 +157,9 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .runstate {{ font-size: 11.5px; color: #d9d9d9; padding-top: 7px; }}
 .foot {{ border-top: 1px solid #2c2c2c; margin-top: 18px; padding-top: 8px; font-size: 11.5px; color: {GREY}; line-height: 1.5; }}
 .foot b {{ color: #bdbdbd; }}
+.gate {{ border: 1px solid #3a2a18; background: #161310; padding: 10px 14px 4px; margin: 4px 0 10px; }}
+.gate p {{ margin: 0 0 8px; }}
+.ok {{ color: {GREEN}; font-size: 12px; }}
 </style>""", unsafe_allow_html=True)
 
 
@@ -238,6 +242,9 @@ ss.setdefault("preview", None)
 ss.setdefault("compare", False)
 ss.setdefault("queue", [])          # [slug, ...] from the registry
 ss.setdefault("upload_n", 0)
+ss.setdefault("key_skipped", False)   # user chose to continue without a key (cached runs only)
+ss.setdefault("force_gate", False)    # Session panel: show the key setup again
+ss.setdefault("key_msg", None)
 
 job: Job | None = holder()["job"]
 active = bool(job and job.active)
@@ -332,7 +339,8 @@ _last = _runs[0] if _runs else None
 _sel_window = tuple(ss.get("window", DEFAULT_WINDOW))
 _sel_model = ss.get("model", MODEL)
 _ws, _we = window_dates(_sel_window)
-_key = H.api_key_status(ROOT, os.environ)
+_ks = K.status(ROOT, os.environ)
+_key = (f"{_ks['label']} key …{_ks['last4']}" if _ks["found"] else "no key · cached runs only")
 
 last_html = ""
 if _last:
@@ -375,7 +383,8 @@ with right:
     elif _sel_label:
         rc2.markdown(f'<div class="runstate">selected: <b>{esc(_sel_label.split(" — ")[0])}</b></div>', unsafe_allow_html=True)
     elif _uploads_pending:
-        rc2.markdown('<div class="runstate">dropped PDF ready</div>', unsafe_allow_html=True)
+        rc2.markdown('<div class="runstate">dropped PDF ready' + ('' if _ks["found"] else
+                     ' <span class="dn">· no key: extraction needs one</span>') + '</div>', unsafe_allow_html=True)
     else:
         rc2.markdown('<div class="runstate mute">click one paper below, then Run</div>', unsafe_allow_html=True)
 
@@ -472,10 +481,16 @@ with right:
             st.button(f"`{when}` {md_safe(r['title'])} · :{color}[{md_safe(r['label'])}]", key=f"run_{r['id']}",
                       type="tertiary", on_click=go, kwargs=dict(run=r["id"]))
     with st.expander("Session"):
-        st.caption(f"API key: {_key}")
-        _k = st.text_input("Set API key (this session only)", type="password", key="api_key_input")
-        if _k:
-            os.environ["ANTHROPIC_API_KEY"] = _k      # process environment only; never written to disk
+        st.caption(f"API key: {_key}" + (f" ({_ks['source']})" if _ks["found"] else ""))
+        kc1, kc2 = st.columns(2)
+        if kc1.button("Replace key", key="replace_key", type="tertiary"):
+            ss.force_gate, ss.key_skipped, ss.key_msg = True, False, None
+            st.rerun()
+        if _ks["found"] and kc2.button("Remove key", key="remove_key", type="tertiary",
+                                       help="Deletes the key from .env on this machine and from this process."):
+            K.remove_key(ROOT, os.environ)
+            ss.key_msg = ("ok", "Key removed from this machine.")
+            st.rerun()
         if (RUNS_DIR / "index.html").exists():
             st.button("Compare runs", key="compare_btn", type="tertiary", on_click=go, kwargs=dict(compare=True))
         if (RUNS_DIR / "mock_app" / "progress.json").exists():
@@ -762,11 +777,55 @@ def render_summary(p: dict | None, state: str) -> None:
         st.write("Not finished.")
 
 
+def render_key_gate() -> None:
+    """First step on a machine without a key: class key by default, personal key as the alternative."""
+    panel("Key setup", "step 1 of 1")
+    st.markdown(f"""<div class="gate">
+<p>WARREN calls Claude for the extraction, the check pass and the summaries. <b>By default it uses the API key
+shared in class.</b> Paste it below once; it is tested with one tiny call, then stored only in
+<code>{esc(_ks["env_path"])}</code> (gitignored, readable by you alone). If you would rather use a personal key, choose
+Personal. Nothing else on this page works differently between the two; the label only records whose key produced a run.</p>
+<p class="mute">The key is never shown again beyond its last four characters, never logged, and never leaves this machine
+except in calls to api.anthropic.com. The nine papers on the right already have cached answers, so you can also continue
+without a key and open those runs.</p></div>""", unsafe_allow_html=True)
+    c1, c2 = st.columns([1, 1.4])
+    which = c1.radio("Which key", ["Class key (default)", "Personal key"], key="key_which")
+    label = "class" if which.startswith("Class") else "personal"
+    key = c2.text_input("Paste the key", type="password", key="key_input", placeholder="sk-ant-…",
+                        help="Anthropic keys start with sk-ant-. Paste the whole key.")
+    session_only = st.checkbox("Keep for this session only (do not write .env)", key="key_session_only")
+    b1, b2, _ = st.columns([1.2, 2.2, 3])
+    if b1.button("Test and save", type="primary", key="key_save", disabled=not key):
+        ok, msg = K.test_key(key, ss.get("model", MODEL))
+        if ok:
+            if session_only:
+                K.use_for_session(key, label, os.environ)
+                msg += " Kept for this session only."
+            else:
+                f = K.save_key(ROOT, key, label, os.environ)
+                msg += f" Saved to {f}."
+            ss.key_msg, ss.force_gate, ss.key_skipped = ("ok", msg), False, False
+            st.rerun()
+        ss.key_msg = ("err", msg)
+    if b2.button("Continue without a key (cached runs only)", type="tertiary", key="key_skip"):
+        ss.key_skipped, ss.force_gate = True, False
+        st.rerun()
+    if ss.key_msg:
+        kind, msg = ss.key_msg
+        st.markdown(f'<div class="{"ok" if kind == "ok" else "err"}">{esc(msg)}</div>', unsafe_allow_html=True)
+
+
 # ----------------------------------------------------------------------------
 # main area
 # ----------------------------------------------------------------------------
 @st.fragment(run_every=1 if active else None)
 def main_view() -> None:
+    if ss.force_gate or (not _ks["found"] and not ss.key_skipped):
+        render_key_gate()
+        return
+    if ss.key_msg and ss.key_msg[0] == "ok":
+        st.markdown(f'<div class="ok">{esc(ss.key_msg[1])}</div>', unsafe_allow_html=True)
+        ss.key_msg = None
     job_now: Job | None = holder()["job"]
     is_active = bool(job_now and job_now.active)
     if ss.get("_was_active") and not is_active:     # job just finished: refresh the right column and polling
