@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+data/snapshot_*/
+runs/*/
+!runs/index.html
+.DS_Store
+papers/pdf/
