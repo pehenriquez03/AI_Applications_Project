@@ -67,12 +67,13 @@ def write_summary(run_dir: Path, spec: StrategySpec, verdict: str, llm: str = "a
     """Write RunFiles.strategy_summary and return it ({summary, data_needs, implementation_note, source})."""
     run_dir = Path(run_dir)
     out = None
-    if llm == "api":
+    if llm in ("api", "api-refresh"):
         try:
             from research_engine.extraction.client import call_structured
             meta = json.loads((run_dir / RunFiles.paper_meta).read_text()) if (run_dir / RunFiles.paper_meta).exists() else {}
             obj, usage = call_structured(SYSTEM_SUMMARY, build_summary_user(spec, verdict, meta.get("title") or ""),
-                                         StrategySummary, tag="summary", run_dir=run_dir, model=model)
+                                         StrategySummary, tag="summary", run_dir=run_dir, model=model,
+                                         refresh=(llm == "api-refresh"))
             out = {**obj.model_dump(), "source": usage.get("source", "api")}
         except Exception as e:  # noqa: BLE001  LLMUnavailable, refusal, parse errors -> template
             log.warning("strategy summary model call unavailable: %s", e)

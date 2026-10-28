@@ -21,6 +21,13 @@ from .contracts import (Progress, RunFiles, StageState, read_progress, write_pro
 log = logging.getLogger("engine")
 
 
+LLM_MODES = ("api", "files_only", "api-refresh")   # api-refresh: call the API even when a cache entry exists
+
+
+def _calls_api(llm: str) -> bool:
+    return llm in ("api", "api-refresh")
+
+
 class Blocked(Exception):
     """Raised by a stage to stop the run with a recorded reason (not a failure)."""
 
@@ -107,7 +114,7 @@ def stage_extract(run_dir: Path, n_runs: int, llm: str, model: Optional[str] = N
     from .extraction.evidence_check import consensus
     from .documents.ingest import page_tagged_text
     specs = _load_specs(run_dir)
-    if len(specs) < n_runs and llm != "files_only":
+    if len(specs) < n_runs and _calls_api(llm):
         from .extraction.client import call_structured, LLMUnavailable
         meta = json.loads((run_dir / RunFiles.paper_meta).read_text())
         text = json.loads((run_dir / RunFiles.paper_text).read_text())
@@ -116,7 +123,8 @@ def stage_extract(run_dir: Path, n_runs: int, llm: str, model: Optional[str] = N
             try:
                 # distinct cache entries per k: append a run marker the model ignores
                 obj, usage = call_structured(SYSTEM_EXTRACT, user + f"\n<!-- extraction run {k} -->",
-                                             StrategySpec, tag=f"extract_{k}", run_dir=run_dir, model=model)
+                                             StrategySpec, tag=f"extract_{k}", run_dir=run_dir, model=model,
+                                             refresh=(llm == "api-refresh"))
             except LLMUnavailable as e:
                 if specs:
                     break
@@ -146,13 +154,14 @@ def stage_validate(run_dir: Path, specs: list[StrategySpec], llm: str, model: Op
         f = run_dir / RunFiles.check_pass.format(k=k)
         if f.exists():
             checks.append(CheckPassResult.model_validate_json(f.read_text()))
-        elif llm != "files_only":
+        elif _calls_api(llm):
             try:
                 from .extraction.client import call_structured, LLMUnavailable
                 from .extraction.prompts import SYSTEM_CHECK, build_check_user
                 from .documents.ingest import page_tagged_text
                 obj, _ = call_structured(SYSTEM_CHECK, build_check_user(specs[k - 1], page_tagged_text(text)),
-                                         CheckPassResult, tag=f"check_{k}", run_dir=run_dir, model=model)
+                                         CheckPassResult, tag=f"check_{k}", run_dir=run_dir, model=model,
+                                         refresh=(llm == "api-refresh"))
                 f.write_text(obj.model_dump_json(indent=1))
                 checks.append(obj)
             except Exception as e:  # LLMUnavailable or other: check pass is advisory
@@ -299,7 +308,8 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
                  start_stage: int = 1, model: Optional[str] = None,
                  eval_start: Optional[str] = None, eval_end: Optional[str] = None,
                  extract_only: bool = False) -> Path:
-    """llm: 'api' (call Claude, cache first) | 'files_only' (never call; use spec_raw/check/narrative files).
+    """llm: 'api' (call Claude, cache first) | 'files_only' (never call; use spec_raw/check/narrative files)
+    | 'api-refresh' (call Claude even when a cached answer exists, overwriting it).
     model / eval_start / eval_end: per-run choices; None = contracts defaults. They are written to
     run_config.json and reused on resume when not given again.
     extract_only: stop after extraction (dropped PDFs): stage 3 only reports whether the engine could run the

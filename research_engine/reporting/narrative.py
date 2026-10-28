@@ -295,11 +295,12 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Opti
             source = "session" if nar else None
         except Exception as e:  # noqa: BLE001
             log.warning("could not read narrative_raw.json: %s", e)
-    if nar is None and llm == "api":
+    if nar is None and llm in ("api", "api-refresh"):
         try:
             from research_engine.extraction.client import call_structured
             system, user = _user_message(run_dir, results)
-            obj, _usage = call_structured(system, user, NarrativeOut, tag="narrative", run_dir=run_dir, model=model)
+            obj, _usage = call_structured(system, user, NarrativeOut, tag="narrative", run_dir=run_dir, model=model,
+                                          refresh=(llm == "api-refresh"))
             nar = obj.to_contract_dict() if hasattr(obj, "to_contract_dict") else obj.model_dump()
             source = "api"
         except Exception as e:  # noqa: BLE001  LLMUnavailable, refusal, parse errors -> template

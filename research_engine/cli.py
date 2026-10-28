@@ -10,7 +10,7 @@ from . import contracts as C
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="engine")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    a = sub.add_parser("all", help="run the full pipeline on one PDF"); a.add_argument("pdf"); a.add_argument("--select"); a.add_argument("--run-dir"); a.add_argument("--llm", default="api", choices=["api", "files_only"]); a.add_argument("--n", type=int, default=3); a.add_argument("--reference"); a.add_argument("--from-stage", type=int, default=1); a.add_argument("--model"); a.add_argument("--start", help="backtest start YYYY-MM-DD"); a.add_argument("--end", help="backtest end YYYY-MM-DD")
+    a = sub.add_parser("all", help="run the full pipeline on one PDF"); a.add_argument("pdf"); a.add_argument("--select"); a.add_argument("--run-dir"); a.add_argument("--llm", default="api", choices=["api", "files_only", "api-refresh"]); a.add_argument("--n", type=int, default=3); a.add_argument("--reference"); a.add_argument("--from-stage", type=int, default=1); a.add_argument("--model"); a.add_argument("--start", help="backtest start YYYY-MM-DD"); a.add_argument("--end", help="backtest end YYYY-MM-DD")
     r = sub.add_parser("resume", help="resume a run folder from a stage"); r.add_argument("run_dir"); r.add_argument("--from-stage", type=int, required=True); r.add_argument("--llm", default="api")
     sub.add_parser("index", help="rebuild runs/index.html")
     e = sub.add_parser("export-prompts", help="write session prompts for a run"); e.add_argument("run_dir"); e.add_argument("--k", type=int, default=1)

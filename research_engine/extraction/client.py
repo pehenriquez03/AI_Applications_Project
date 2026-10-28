@@ -93,11 +93,14 @@ def _client():
 
 def call_structured(system: str, user: str, schema: type[BaseModel], tag: str,
                     run_dir: Optional[Path] = None, *, cache_dir: Optional[Path] = None,
-                    max_tokens: int = 16000, model: Optional[str] = None) -> tuple[BaseModel, dict]:
+                    max_tokens: int = 16000, model: Optional[str] = None,
+                    refresh: bool = False) -> tuple[BaseModel, dict]:
     """One structured model call, cached. Returns (validated object, usage dict).
-    model: Claude model id; defaults to contracts.MODEL. The cache is keyed by model."""
+    model: Claude model id; defaults to contracts.MODEL. The cache is keyed by model.
+    refresh: ignore an existing cache entry (e.g. one a session agent wrote) and call the API; the
+    new answer overwrites the entry."""
     model = model or MODEL
-    hit = read_cache(system, user, schema, cache_dir, model)
+    hit = None if refresh else read_cache(system, user, schema, cache_dir, model)
     if hit is not None:
         obj = schema.model_validate(hit["data"])
         u = hit.get("usage") or {}
