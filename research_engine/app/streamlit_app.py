@@ -34,6 +34,10 @@ from research_engine.contracts import (
 
 APP_NAME = "WARREN"
 TAGLINE = "YOUR RESEARCH SCREENING AGENT"
+# Logo: a W drawn as a price line with a last-print dot (option 1 on the WARREN logo canvas).
+LOGO_SVG = ('<svg class="logo" viewBox="0 0 40 40" role="img" aria-label="WARREN">'
+            '<polyline points="4,9 12,31 20,17 28,31 36,9" fill="none" stroke="#f58220" stroke-width="5" '
+            'stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="36" cy="9" r="3.6" fill="#f2f2f2"></circle></svg>')
 ORANGE, GREEN, RED, PURPLE, GREY = "#f58220", "#3cc46a", "#e05252", "#c04bd6", "#8c8c8c"
 MODELS = ["claude-sonnet-5-5", "claude-opus-5-5", "claude-haiku-5-5"]
 MONTHS = [f"{y}-{m:02d}" for y in range(2013, 2026) for m in range(1, 13)]
@@ -61,9 +65,10 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .stApp h4 {{ font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: .06em; color: #cfcfcf; }}
 /* top bar */
 .topbar {{ display: flex; align-items: flex-end; gap: 14px; border-bottom: 1px solid #2c2c2c; padding: 2px 0 6px; }}
-.topbar .brand {{ display: flex; flex-direction: column; line-height: 1.05; }}
+.topbar .brand {{ display: flex; align-items: center; gap: 10px; }}
+.topbar .brand .logo {{ width: 34px; height: 34px; flex: none; }}
+.topbar .words {{ display: flex; flex-direction: column; line-height: 1.05; }}
 .topbar .name {{ font-size: 26px; font-weight: bold; color: {ORANGE}; letter-spacing: .06em; }}
-.topbar .name .caret {{ color: #bdbdbd; font-size: 14px; margin-left: 2px; }}
 .topbar .tag {{ font-size: 10.5px; color: #bdbdbd; letter-spacing: .14em; text-transform: uppercase; margin-top: 3px; }}
 .topbar .last {{ margin-left: auto; font-size: 12px; color: #bdbdbd; white-space: nowrap; }}
 .topbar .last b {{ color: #f2f2f2; }}
@@ -313,11 +318,10 @@ _key = H.api_key_status(ROOT, os.environ)
 last_html = ""
 if _last:
     col = {"green": "up", "orange": "amber", "red": "dn"}.get(LABEL_COLOR.get(_last["label"], "gray"), "mute")
-    when = datetime.fromtimestamp(_last["mtime"]).strftime("%d-%b-%Y %H:%M")
     last_html = (f'<div class="last">Last <b>{esc(_last["title"])}</b> '
-                 f'<span class="{col}">▲ {esc(_last["label"])}</span> <span class="mute">{when}</span></div>')
-st.markdown(f"""<div class="topbar"><div class="brand"><div class="name">{APP_NAME}<span class="caret">▾</span></div>
-<div class="tag">{TAGLINE}</div></div>{last_html}</div>
+                 f'<span class="{col}">▲ {esc(_last["label"])}</span></div>')
+st.markdown(f"""<div class="topbar"><div class="brand">{LOGO_SVG}<div class="words"><div class="name">{APP_NAME}</div>
+<div class="tag">{TAGLINE}</div></div></div>{last_html}</div>
 <div class="chips">
 <div class="c"><span class="k">Model</span>{esc(_sel_model)}</div>
 <div class="c"><span class="k">Universe</span>{_manifest.get("n_universe", "?")} S&amp;P 500 names, equal weight</div>
