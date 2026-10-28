@@ -7,7 +7,7 @@
    "n": 1,
    "name": "Read paper",
    "status": "done",
-   "detail": "50 pages · 8039f722",
+   "detail": "50 pages \u00b7 8039f722",
    "started": null,
    "finished": "2026-10-28T09:16:10+00:00"
   },
@@ -15,7 +15,7 @@
    "n": 2,
    "name": "Extract strategy",
    "status": "done",
-   "detail": "2 run(s) · fields agree 100%",
+   "detail": "2 run(s) \u00b7 fields agree 100%",
    "started": "2026-10-28T08:53:23+00:00",
    "finished": "2026-10-28T09:11:56+00:00"
   },
@@ -23,7 +23,7 @@
    "n": 3,
    "name": "Validate and adapt",
    "status": "done",
-   "detail": "ready · 1 assumed · 5 adapted",
+   "detail": "ready \u00b7 1 assumed \u00b7 5 adapted",
    "started": "2026-10-28T08:53:23+00:00",
    "finished": "2026-10-28T09:11:56+00:00"
   },
@@ -31,7 +31,7 @@
    "n": 4,
    "name": "Check data",
    "status": "done",
-   "detail": "414 eligible names · 3520 trading days",
+   "detail": "414 eligible names \u00b7 3520 trading days",
    "started": "2026-10-28T08:53:23+00:00",
    "finished": "2026-10-28T09:11:56+00:00"
   },
@@ -39,7 +39,7 @@
    "n": 5,
    "name": "Construct portfolios",
    "status": "done",
-   "detail": "132 months · 38 names/month",
+   "detail": "132 months \u00b7 38 names/month",
    "started": "2026-10-28T08:53:24+00:00",
    "finished": "2026-10-28T09:11:56+00:00"
   },
@@ -47,7 +47,7 @@
    "n": 6,
    "name": "Backtest",
    "status": "done",
-   "detail": "2766 days · net CAGR 6.3% · turnover 79%/rebalance · 0.9s",
+   "detail": "2766 days \u00b7 net CAGR 6.3% \u00b7 turnover 79%/rebalance \u00b7 0.9s",
    "started": "2026-10-28T08:53:24+00:00",
    "finished": "2026-10-28T09:11:57+00:00"
   },
@@ -55,7 +55,7 @@
    "n": 7,
    "name": "Evaluate",
    "status": "done",
-   "detail": "net CAGR 6.3% · alpha t -1.60",
+   "detail": "net CAGR 6.3% \u00b7 alpha t -1.60",
    "started": "2026-10-28T08:53:25+00:00",
    "finished": "2026-10-28T09:11:58+00:00"
   },
@@ -63,7 +63,7 @@
    "n": 8,
    "name": "Monte Carlo",
    "status": "done",
-   "detail": "1000 paths · P(NPV>0) 2%",
+   "detail": "1000 paths \u00b7 P(NPV>0) 2%",
    "started": "2026-10-28T08:53:26+00:00",
    "finished": "2026-10-28T09:16:10+00:00"
   },
@@ -77,6 +77,6 @@
   }
  ],
  "recommendation": "deprioritize",
- "summary": "Deprioritize. The paper (Bali, Cakici and Whitelaw) argues that stocks with extreme positive daily returns are overpriced lottery-like assets, so the lowest MAX decile should beat the highest. We tested a long-only, equal-weight version of the lowest MAX decile on a 415-name S&P 500 survivor universe over 2015 to 2025, and it returned a net CAGR of 6.31% against 12.71% for the equal-weight universe, with a Sharpe ratio of 0.35 against 0.65. The edge fails at 10 bps, holds in 0 of 2 sub-periods, and the ranked groups run the wrong way (rho 0.84), so the paper's pattern did not appear in this sample. In the fund simulation, P(NPV > 0) is 2% and the median incremental fee PV is -$5.0M against the equal-weight universe fund. The paper was read reliably, but the negative performance, weak robustness and negative economics together drive the recommendation.",
+ "summary": "Deprioritize. The engine tested an adapted experiment based on Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns: MAX: the maximum daily return of the stock within the month (the portfolio formation month), holding the lowest MAX decile (portfolio 1, low MAX). Historical performance is negative: net CAGR 6.31% vs 12.71% for the EW universe; Sharpe 0.35 vs 0.65. Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho 0.84 not in the expected direction; alpha t -1.60 (reported, not a gate). Economics are negative: P(NPV > 0) 2%, median incremental fee PV -$5.0M vs the EW universe fund. This summary is generated deterministically from the saved results.",
  "error": null
 }

@@ -221,6 +221,9 @@ def _expected_rho_sign(selection: dict, expected_sign: str) -> int | None:
 
 
 def _group_table(rets: pd.DataFrame, selection: dict, expected_sign: str, lags: int) -> dict | None:
+    selection = dict(selection or {})
+    if selection.get("double_sort"):
+        selection["favored"] = selection["double_sort"].get("inner_favored", "lowest")
     cols = sorted([c for c in rets.columns if c.startswith("group_")], key=lambda c: int(c.split("_")[1]))
     if not cols:
         return None
@@ -238,6 +241,7 @@ def _group_table(rets: pd.DataFrame, selection: dict, expected_sign: str, lags: 
     out = dict(rows=rows, rho=rho, rho_p=p, n_groups=len(cols), favored=(selection or {}).get("favored"),
                expected_sign=expected_sign, expected_rho_sign=sign, rho_in_expected_direction=in_dir)
     fav = (selection or {}).get("favored")
+    out["favored_group"] = int((cols[0] if fav == "lowest" else cols[-1]).split("_")[1]) if fav in ("lowest", "highest") else None
     if fav in ("lowest", "highest"):
         a, b = (cols[0], cols[-1]) if fav == "lowest" else (cols[-1], cols[0])
         diff = (monthly[a] - monthly[b]).dropna()

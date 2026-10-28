@@ -24,7 +24,7 @@
   "field": "sort_rule",
   "paper_value": "quintiles",
   "our_value": "quintiles on past return, then terciles on information discreteness",
-  "status": "stated",
+  "status": "adapted",
   "reason": "double sort per rule table; inner sort terciles with a 15-name floor"
  },
  {
@@ -65,7 +65,7 @@
  {
   "field": "skip_window",
   "paper_value": "1 month (one intermediate month between formation and holding periods)",
-  "our_value": "0 months",
+  "our_value": "1 months",
   "status": "stated",
   "reason": "skip embedded in the t-12..t-2 window"
  },
@@ -85,10 +85,10 @@
  },
  {
   "field": "price_floor",
-  "paper_value": null,
+  "paper_value": "CRSP stocks (returns adjusted for delistings), 1927 to 2007 sample; $5 price filter imposed at the beginning of each month. Share-code, exchange, and breakpoint-universe filters not stated; the data section also says negative book values are eliminated from the sample.",
   "our_value": "none",
-  "status": "assumed",
-  "reason": "no price filter unless stated"
+  "status": "adapted",
+  "reason": "paper excludes stocks priced below $5; NOT applied: the snapshot's prices are split-adjusted, not as-traded, so a dollar floor would drop the wrong names (e.g. NVDA 2017-18)"
  },
  {
   "field": "sample_period",

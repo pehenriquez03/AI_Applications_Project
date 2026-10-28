@@ -138,8 +138,8 @@
    "field": "rebalance_frequency",
    "paper_value": "annually, at the end of each June",
    "our_value": "monthly",
-   "status": "stated",
-   "reason": "as stated (cohorts rebalance monthly)"
+   "status": "adapted",
+   "reason": "engine rebalances monthly"
   },
   {
    "field": "universe_and_filters",
@@ -220,5 +220,5 @@
   }
  ],
  "n_assumed": 1,
- "n_adapted": 6
+ "n_adapted": 7
 }

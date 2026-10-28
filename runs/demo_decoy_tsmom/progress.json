@@ -7,7 +7,7 @@
    "n": 1,
    "name": "Read paper",
    "status": "done",
-   "detail": "23 pages · c71533ac",
+   "detail": "23 pages \u00b7 c71533ac",
    "started": null,
    "finished": "2026-10-28T09:04:52+00:00"
   },
@@ -15,7 +15,7 @@
    "n": 2,
    "name": "Extract strategy",
    "status": "done",
-   "detail": "1 run(s) · fields agree 100%",
+   "detail": "1 run(s) \u00b7 fields agree 100%",
    "started": "2026-10-28T08:55:41+00:00",
    "finished": "2026-10-28T08:55:41+00:00"
   },

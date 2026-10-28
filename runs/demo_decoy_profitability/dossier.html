@@ -61,7 +61,7 @@ code { font-size: 12.5px; background: var(--panel); padding: 1px 4px; border-rad
 </head>
 <body>
 <main>
-<div class="sub">Research dossier · run <code>dev_decoy_profitability</code> · strategy <code>unmapped</code></div>
+<div class="sub">Research dossier · run <code>demo_decoy_profitability</code> · strategy <code>unmapped</code></div>
 <h1>The Other Side of Value: Good Growth and the Gross Profitability Premium</h1>
 <div class="sub">Robert Novy-Marx (2010) · experiment: Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets</div>
 
@@ -70,8 +70,10 @@ code { font-size: 12.5px; background: var(--panel); padding: 1px 4px; border-rad
   <div class="sub">Recommendation</div>
   <div class="word">unable to evaluate</div>
 <p><strong>Reason:</strong> paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: &#39;revenues (REVT)&#39;: fundamental data; required input not in snapshot: &#39;cost of goods sold (COGS)&#39;: fundamental data; required input not in snapshot: &#39;total assets (AT)&#39;: fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets</p>  <ul><li>Unable to evaluate: paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: &#39;revenues (REVT)&#39;: fundamental data; required input not in snapshot: &#39;cost of goods sold (COGS)&#39;: fundamental data; required input not in snapshot: &#39;total assets (AT)&#39;: fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets</li></ul>
+  <p class="muted">Extraction checks measure quote presence and declared assumptions, not independent correctness.
+See the interpretation scorecard for reference coverage.</p>
   <details><summary>Limitations (8)</summary>
-  <ul><li>Survivor universe: today&#39;s index constituents only (0 excluded for missing Yahoo data); delisted names are absent, which flatters returns.</li><li>Equal weighting (paper: value).</li><li>Long-only adaptation: the strategy holds the favored group only; no short leg.</li><li>Sample 2015-2025 lies entirely after publication.</li><li>Cash earns zero yield.</li><li>Returns use Yahoo adjusted-close conventions (dividends and splits folded in).</li><li>Effort reduction from the engine is not measured.</li><li>4 fields assumed (paper silent; labeled defaults) and 6 fields adapted.</li></ul>
+  <ul><li>Survivor universe: today&#39;s index constituents only (0 excluded for missing Yahoo data); delisted names are absent, which flatters returns.</li><li>Equal weighting (paper: value).</li><li>Long-only adaptation: the strategy holds the favored group only; no short leg.</li><li>Sample 2015-2025 lies entirely after publication.</li><li>Cash earns zero yield.</li><li>Returns use Yahoo adjusted-close conventions (dividends and splits folded in).</li><li>Effort reduction from the engine is not measured.</li><li>4 fields assumed (paper silent; labeled defaults) and 7 fields adapted.</li></ul>
   </details>
 </section>
 
@@ -230,7 +232,7 @@ evidence valid for 16 of 16 material fields;
 <tr><td><a href="adaptation_log.json">adaptation_log.json</a></td><td class="n">5.1 KB</td></tr><tr><td><a href="dossier.html">dossier.html</a></td><td class="n">18.1 KB</td></tr><tr><td><a href="experiment_spec.json">experiment_spec.json</a></td><td class="n">7.3 KB</td></tr><tr><td><a href="extract_prompt_1.txt">extract_prompt_1.txt</a></td><td class="n">145.8 KB</td></tr><tr><td><a href="llm_usage.json">llm_usage.json</a></td><td class="n">176 B</td></tr><tr><td><a href="paper_meta.json">paper_meta.json</a></td><td class="n">462 B</td></tr><tr><td><a href="paper_text.json">paper_text.json</a></td><td class="n">139.4 KB</td></tr><tr><td><a href="progress.json">progress.json</a></td><td class="n">2.6 KB</td></tr><tr><td><a href="results.json">results.json</a></td><td class="n">17.7 KB</td></tr><tr><td><a href="run.log">run.log</a></td><td class="n">0 B</td></tr><tr><td><a href="session_response_1.json">session_response_1.json</a></td><td class="n">5.1 KB</td></tr><tr><td><a href="spec_consensus.json">spec_consensus.json</a></td><td class="n">5.8 KB</td></tr><tr><td><a href="spec_raw_1.json">spec_raw_1.json</a></td><td class="n">5.1 KB</td></tr><tr><td><a href="validation.json">validation.json</a></td><td class="n">3.4 KB</td></tr></table></div>
 
 <footer>
-Run dev_decoy_profitability · snapshot snapshot_2026-10-28 · code aa7a866445b0 · model claude-sonnet-5-5 · generated 2026-10-28 09:04 UTC
+Run demo_decoy_profitability · snapshot snapshot_2026-10-28 · code 8e66efacc910 · model claude-sonnet-5-5 · generated 2026-10-28 17:41 UTC
 </footer>
 </main>
 </body>

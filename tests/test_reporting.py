@@ -216,7 +216,9 @@ def test_dossier_renders(run_dir, base_results):
     assert "{{" not in html and "{%" not in html
     assert html.count("data:image/png;base64,") >= 6
     assert 'src="http' not in html and "<link" not in html
-    assert "template narrative; model narrative pending" in html
+    assert "deterministic summary from saved results" in html
+    assert "numeric-token check passed" in html
+    assert "does not verify the claim" in html
     assert 'href="returns.parquet"' in html and "preliminary" in html
     order = ["id=\"recommendation\"", "id=\"summary\"", "id=\"paper\"", "id=\"implemented\"", "id=\"data\"",
              "id=\"construction\"", "id=\"performance\"", "id=\"robustness\"", "id=\"economics\"",

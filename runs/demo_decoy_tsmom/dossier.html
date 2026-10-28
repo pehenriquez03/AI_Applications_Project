@@ -61,7 +61,7 @@ code { font-size: 12.5px; background: var(--panel); padding: 1px 4px; border-rad
 </head>
 <body>
 <main>
-<div class="sub">Research dossier · run <code>dev_decoy_tsmom</code> · strategy <code>lowvol</code></div>
+<div class="sub">Research dossier · run <code>demo_decoy_tsmom</code> · strategy <code>lowvol</code></div>
 <h1>Time series momentum</h1>
 <div class="sub">Tobias J. Moskowitz, Yao Hua Ooi, Lasse Heje Pedersen (2012) · experiment: Section 4 / Table 3, the diversified 12-month time series momentum (TSMOM) strategy with a 1-month holding period across 58 futures contracts, January 1985 to December 2009</div>
 
@@ -70,6 +70,8 @@ code { font-size: 12.5px; background: var(--panel); padding: 1px 4px; border-rad
   <div class="sub">Recommendation</div>
   <div class="word">unable to evaluate</div>
 <p><strong>Reason:</strong> paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: &#39;daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)&#39;: non-equity instruments</p>  <ul><li>Unable to evaluate: paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: &#39;daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)&#39;: non-equity instruments</li></ul>
+  <p class="muted">Extraction checks measure quote presence and declared assumptions, not independent correctness.
+See the interpretation scorecard for reference coverage.</p>
   <details><summary>Limitations (8)</summary>
   <ul><li>Survivor universe: today&#39;s index constituents only (0 excluded for missing Yahoo data); delisted names are absent, which flatters returns.</li><li>Equal weighting (paper: other).</li><li>Long-only adaptation: the strategy holds the favored group only; no short leg.</li><li>Sample 2015-2025 lies entirely after publication.</li><li>Cash earns zero yield.</li><li>Returns use Yahoo adjusted-close conventions (dividends and splits folded in).</li><li>Effort reduction from the engine is not measured.</li><li>4 fields assumed (paper silent; labeled defaults) and 5 fields adapted.</li></ul>
   </details>
@@ -230,7 +232,7 @@ evidence valid for 16 of 16 material fields;
 <tr><td><a href="adaptation_log.json">adaptation_log.json</a></td><td class="n">5.6 KB</td></tr><tr><td><a href="dossier.html">dossier.html</a></td><td class="n">18.2 KB</td></tr><tr><td><a href="experiment_spec.json">experiment_spec.json</a></td><td class="n">7.9 KB</td></tr><tr><td><a href="extract_prompt_1.txt">extract_prompt_1.txt</a></td><td class="n">110.6 KB</td></tr><tr><td><a href="llm_usage.json">llm_usage.json</a></td><td class="n">176 B</td></tr><tr><td><a href="paper_meta.json">paper_meta.json</a></td><td class="n">474 B</td></tr><tr><td><a href="paper_text.json">paper_text.json</a></td><td class="n">104.0 KB</td></tr><tr><td><a href="progress.json">progress.json</a></td><td class="n">2.5 KB</td></tr><tr><td><a href="results.json">results.json</a></td><td class="n">18.4 KB</td></tr><tr><td><a href="run.log">run.log</a></td><td class="n">0 B</td></tr><tr><td><a href="session_response_1.json">session_response_1.json</a></td><td class="n">5.8 KB</td></tr><tr><td><a href="spec_consensus.json">spec_consensus.json</a></td><td class="n">6.5 KB</td></tr><tr><td><a href="spec_raw_1.json">spec_raw_1.json</a></td><td class="n">5.8 KB</td></tr><tr><td><a href="validation.json">validation.json</a></td><td class="n">2.9 KB</td></tr></table></div>
 
 <footer>
-Run dev_decoy_tsmom · snapshot snapshot_2026-10-28 · code aa7a866445b0 · model claude-sonnet-5-5 · generated 2026-10-28 09:04 UTC
+Run demo_decoy_tsmom · snapshot snapshot_2026-10-28 · code 8e66efacc910 · model claude-sonnet-5-5 · generated 2026-10-28 17:41 UTC
 </footer>
 </main>
 </body>

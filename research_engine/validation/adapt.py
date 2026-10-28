@@ -148,6 +148,8 @@ def _skip_months(spec: StrategySpec) -> tuple[int, str, str]:
 def _price_floor(spec: StrategySpec) -> tuple[Optional[float], str, str]:
     u = spec.universe_and_filters.value or ""
     m = re.search(r"(exclud|drop|remov|screen|omit|delet|eliminat)\w*[^.]{0,80}\$\s*(\d+(?:\.\d+)?)", u, re.I)
+    if not m:
+        m = re.search(r"(\$)\s*(\d+(?:\.\d+)?)\s+price filter", u, re.I)
     if m:
         return None, "adapted", (f"paper excludes stocks priced below ${m.group(2)}; NOT applied: the snapshot's prices are "
                                  "split-adjusted, not as-traded, so a dollar floor would drop the wrong names (e.g. NVDA 2017-18)")
@@ -215,7 +217,7 @@ def adapt(spec: StrategySpec, run_id: str, paper_sha256: str, selected_experimen
     if sel_override is not None:
         selection = sel_override
         entry("sort_rule", spec.sort_rule, "quintiles on past return, then terciles on information discreteness",
-              "stated" if spec.sort_rule in ("quintiles", "terciles") else "adapted",
+              "adapted",
               "double sort per rule table; inner sort terciles with a 15-name floor")
         min_names = MIN_NAMES_DOUBLE_SORT
     else:
@@ -292,14 +294,14 @@ def adapt(spec: StrategySpec, run_id: str, paper_sha256: str, selected_experimen
     if sel_override is None:
         skip, s_status, s_reason = _skip_months(spec)
     else:
-        skip, s_status, s_reason = ops[0].params.get("skip", 0), "stated", "skip embedded in the t-12..t-2 window"
+        skip, s_status, s_reason = ops[0].params.get("skip_months", 0), "stated", "skip embedded in the t-12..t-2 window"
     entry("skip_window", spec.skip_window.value, f"{skip} months", s_status, s_reason)
 
     rb = spec.rebalance_frequency.value
     rbm = parse_months(rb)
     if is_not_stated(rb) or rbm is None:
         entry("rebalance_frequency", rb, "monthly", "assumed", DEFAULTS["rebalance"]["text"])
-    elif abs(rbm - 1) < 1e-9 or holding > 1:
+    elif abs(rbm - 1) < 1e-9:
         entry("rebalance_frequency", rb, "monthly", "stated", "as stated (cohorts rebalance monthly)")
     else:
         entry("rebalance_frequency", rb, "monthly", "adapted", "engine rebalances monthly")
@@ -321,7 +323,8 @@ def adapt(spec: StrategySpec, run_id: str, paper_sha256: str, selected_experimen
               "dropped: unconditional monthly sort on each stock's trailing oil beta, long the favored group", "adapted",
               "the note's signal is built from realized future oil returns (an oracle); the engine tests the exposure sort only")
         entry("oil_series", "monthly oil price level (paper's input)", "data/oil_prices.csv, ends 2024-03", "adapted",
-              "oil beta is NaN after 2024-03; months with too few names are skipped and logged")
+              "after the oil series ends, regressions use available paired observations until fewer than 24 remain; "
+              "a skipped formation issues no new target, so existing holdings carry forward")
     if any(o.op == "avg_lagged_month_return" for o in ops):
         entry("min_lags", "all listed annual lags", "mean of available lags, at least 2", "assumed",
               "snapshot starts 2012-01, so 2015-16 formations have only lags 24 and 36 of the paper's 24-60")

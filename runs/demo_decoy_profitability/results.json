@@ -291,8 +291,8 @@
     "field": "rebalance_frequency",
     "paper_value": "annually, at the end of each June",
     "our_value": "monthly",
-    "status": "stated",
-    "reason": "as stated (cohorts rebalance monthly)"
+    "status": "adapted",
+    "reason": "engine rebalances monthly"
    },
    {
     "field": "universe_and_filters",
@@ -373,8 +373,8 @@
    }
   ],
   "n_assumed": 4,
-  "n_adapted": 6,
-  "n_stated": 6,
+  "n_adapted": 7,
+  "n_stated": 5,
   "n_unresolved": 6,
   "strategy_slug": "unmapped",
   "status": "blocked",
@@ -458,7 +458,7 @@
   "Cash earns zero yield.",
   "Returns use Yahoo adjusted-close conventions (dividends and splits folded in).",
   "Effort reduction from the engine is not measured.",
-  "4 fields assumed (paper silent; labeled defaults) and 6 fields adapted."
+  "4 fields assumed (paper silent; labeled defaults) and 7 fields adapted."
  ],
  "files": [
   "adaptation_log.json",

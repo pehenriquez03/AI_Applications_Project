@@ -13,8 +13,10 @@ The division of labour is strict. A language model (Claude Sonnet 5.5) does the
 reading: it extracts the strategy with page-cited evidence, checks its own
 extraction against the paper, and writes the prose of the dossier. Python does
 every number: eligibility, signals, portfolios, the backtest, the statistics,
-the Monte Carlo, the fees. Every number the model cites in the dossier is
-checked against the computed results before the dossier is written.
+the Monte Carlo, the fees. A numeric-token check finds numbers that do not occur in the results. It does
+not verify attribution, units, signs, or the meaning of a claim. The committed
+demo summaries were refreshed deterministically from saved results after review,
+without new model calls; extraction provenance remains in each run’s usage log.
 
 ---
 
@@ -44,13 +46,27 @@ What you will see:
   key" to browse the finished runs (see [API key](#api-key)).
 - Then the WARREN page: the nine paper tiles on the right, the Run button
   above them, and the list of previous runs below the parameters. The nine
-  papers already have cached model answers, so they run even without a key.
-  Click a tile and press Run, or click a previous run to open its dossier.
+  papers have committed dossiers. Click a previous run to browse without a key.
+  A new Run also needs the paper PDF, market snapshot, and complete cache coverage
+  or a working API key; these are not all supplied by a fresh clone.
 
 If port 8501 is busy, add `--server.port 8502` to the start command and open
 http://localhost:8502. The app listens on localhost only; it is not reachable
-from other machines. To check the installation first, run the tests:
-`.venv/bin/pytest -q` (210 tests, no network, about half a minute).
+from other machines. To check the installation first, run
+the self-contained reporting and extraction checks:
+
+```bash
+.venv/bin/pytest -q tests/test_reporting.py tests/test_extraction.py tests/test_validation.py tests/test_reference_specs.py tests/test_quick_fixes.py
+```
+
+The full suite (`.venv/bin/pytest -q`) also needs the uncommitted frozen market
+snapshot under `data/snapshot_2026-10-28/`; some integration tests need the original
+PDFs. A clean clone of the reviewed version produced 130 passes, 16 skips,
+2 failures and 62 errors, with failures/errors caused by the missing snapshot.
+To reproduce backtests, obtain the exact snapshot and checksum manifest from the
+group, plus the PDFs listed in `papers/README.md`. Rebuilding the snapshot uses
+network access and may not reproduce the original vendor data. Browsing saved
+dossiers needs neither the snapshot nor PDFs.
 
 Command line, one paper end to end:
 
@@ -151,8 +167,9 @@ value and momentum factors, the cost grid, two sub-periods, the monotonicity of
 the ranked groups (Spearman rho against the paper's expected direction),
 turnover, concentration and capacity.
 `scorecard_interpretation.json`: the extraction compared with a reference
-specification written by the group, so the dossier can say how reliably the
-paper was read, not only how the strategy performed.
+specification. The current references are preliminary derivatives of the grading
+key, not independent group annotations. Their agreement scores and mismatch flags
+are provisional; quote presence is not semantic correctness.
 
 ### 8. Monte Carlo
 
@@ -169,8 +186,8 @@ maintenance at $150).
 
 A fixed rubric turns the scorecards into the verdict and its reasons. The
 model then writes the narrative (summary and six sections) from `results.json`
-only; every number in its text is matched against the results, and any number
-the results do not contain is listed as unverified in the dossier. The HTML dossier
+only; numeric tokens in its text are matched against the results, and unmatched tokens
+are listed in the dossier. This check does not establish that claims are correct. The HTML dossier
 (`dossier.html`) holds the verdict, the narrative, the extraction with its
 evidence, the adaptation log, all tables, the economics, and the limitations.
 `runs/index.html` compares all runs, including the correlation of their excess
@@ -215,7 +232,7 @@ of previous runs.
 title, authors, page count and first-page text), then press Run. One paper is
 selected at a time; clicking the tile again clears it. The nine steps fill in
 live. When the run finishes the page reorders: the Summary with the verdict and
-the model-written paragraph comes first, then the headline numbers (net CAGR
+the narrative paragraph comes first, then the headline numbers (net CAGR
 against both benchmarks, Sharpe, drawdown, alpha t), the cumulative-return
 chart, the tabs (Dossier first, then the Paper itself in a PDF viewer, Extraction, Evaluation, Economics), and the pipeline steps last.
 
@@ -300,7 +317,7 @@ chat message or commit.
 | Fund | $100M, 2/20, 5% hard hurdle, high-water mark, annual crystallization, 5 years, 10% discount | `FUND` |
 | Monte Carlo | 1,000 paths, 126-day mean block, sensitivity at 63 and 252, fixed seed | `MONTE_CARLO` |
 | Research cost | measured tokens + 80 h development and review + 10 h/year maintenance at $150 | `RESEARCH_COST` |
-| Model | `claude-sonnet-5-5`, three extractions and three check passes per paper, one narrative | `MODEL`, `pipeline.py` |
+| Model | `claude-sonnet-5-5`, pipeline default: three extractions and three check passes, one narrative | `MODEL`, `pipeline.py` |
 
 ---
 
@@ -318,7 +335,7 @@ runs/<sha12>_<timestamp>/
   scorecard_strategy.json, scorecard_interpretation.json
   montecarlo.parquet, economics.json
   results.json             everything the dossier may cite
-  narrative.json           the model's text, with its verification record
+  narrative.json           model or deterministic text, with numeric-token check scope
   dossier.html             the report
   strategy_summary.json    extraction-only runs instead of the narrative
   llm_usage.json           every model call: tokens, cached or not, source (api / session)
@@ -328,13 +345,18 @@ runs/<sha12>_<timestamp>/
 The nine demo runs are committed under `runs/demo_*`. Their model answers were
 produced during the build night by Claude sessions executing the exact prompts
 (source "session" in `llm_usage.json`); MAX and momentum have since been rerun
-through the API with identical backtest results.
+through the API with identical backtest results according to the build record.
+The committed demo artifacts still record two session extractions and one check
+for each completed paper, and one extraction for each decoy. API cache entries
+for MAX and momentum exist separately. Final demo summaries are deterministic
+refreshes, not new model outputs.
 
 ---
 
 ## How it was verified
 
-210 tests run without network access: schema and contract tests, engine
+The test suite makes no live model calls; snapshot-dependent integration tests
+require the original local data. It covers schema and contract tests, engine
 invariants (cash accounting, cost arithmetic, drift, forced sales), the
 cohorts, the operations, the fee engine against the original project's totals,
 the app through Streamlit's test harness, and an independent reimplementation
@@ -350,7 +372,7 @@ plan the group agreed is `BUILD_PLAN_FINAL.md`.
 Survivor universe (today's members with history, so delisted names are
 missing); equal weighting; long-only adaptations of long-short papers; every
 test is after publication, so a weaker result than the paper's is expected;
-132 months cannot reach t-statistics above 3 for realistic spreads; zero cash
+132 months limits statistical power; zero cash
 yield; Yahoo adjustment conventions; interpretation scores are preliminary
 until the group writes its own reference specifications; the effort an analyst
 would save is asserted, not measured.

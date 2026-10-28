@@ -6,7 +6,8 @@ Order of sources in `write_narrative`:
   (b) llm == "api" -> one call through extraction.client.call_structured
       (cache first); LLMUnavailable and other model errors fall through;
   (c) a deterministic template built from results.json, labeled
-      "template narrative; model narrative pending".
+      "deterministic summary from saved results".
+  Explicit llm="template" refreshes from current results without reusing model text.
 Every number token in the narrative is checked against results.json
 (`verify_numbers`); the outcome is stored as `verified` / `unverified_numbers`.
 """
@@ -25,7 +26,7 @@ from .results import dig
 
 log = logging.getLogger("engine.reporting")
 
-TEMPLATE_LABEL = "template narrative; model narrative pending"
+TEMPLATE_LABEL = "deterministic summary from saved results"
 PROMPT_FILE = "narrative_prompt.txt"
 
 try:  # Agent B's schema; local equivalent otherwise
@@ -200,10 +201,10 @@ def template_narrative(results: dict) -> dict:
     reasons = results.get("recommendation_reasons") or []
     title = paper.get("title") or "the paper"
 
-    summary = (f"{rec.capitalize()}. The engine tested the strategy from {title}: "
+    summary = (f"{rec.capitalize()}. The engine tested an adapted experiment based on {title}: "
                f"{val('signal_formula_words') or 'the extracted signal'}, holding the {val('favored_group') or 'favored group'}. "
                + (" ".join(reasons[:3]) if reasons else "")
-               + " This is a template narrative; the model narrative is pending.")
+               + " This summary is generated deterministically from the saved results.")
 
     adapted = [e for e in (ad.get("log") or []) if e.get("status") == "adapted"]
     assumed = [e for e in (ad.get("log") or []) if e.get("status") == "assumed"]
@@ -212,6 +213,8 @@ def template_narrative(results: dict) -> dict:
               + ("Assumed: " + "; ".join(f"{e.get('field')} set to {e.get('our_value')}" for e in assumed) + ". " if assumed else "")
               + (f"Portfolios were formed in {con.get('n_months')} months with {_f(con.get('mean_names'), 1)} names on average."
                  if con.get("n_months") is not None else ""))
+    if con.get("coverage_note"):
+        s_impl += " " + con["coverage_note"]
     s_bt = ("Over the sample the strategy returned " + _pct(h.get("strategy_net_cagr"), 2) + " a year net of costs, against "
             + _pct(h.get("ew_universe_cagr"), 2) + " for the equal-weight universe and " + _pct(h.get("spy_cagr"), 2)
             + " for SPY. Its Sharpe ratio was " + _f(h.get("strategy_net_sharpe")) + " against "
@@ -234,6 +237,9 @@ def template_narrative(results: dict) -> dict:
              f"{_pct(ex.get('evidence_valid_rate'), 1)} of material fields with "
              f"{ex.get('n_check_disagreements')} check-pass disagreements."
              + (" Interpretation accuracy is scored against a preliminary reference." if interp.get("preliminary") else ""))
+    if interp.get("critical_errors"):
+        s_int += " Unresolved reference mismatches: " + ", ".join(interp["critical_errors"]) + "."
+    s_int += " Quote matching and extraction agreement do not establish independent correctness."
     s_next = {"pursue": "Move the strategy to a full implementation review.",
               "investigate further": "Investigate the weak flags in the rubric before committing resources.",
               "deprioritize": "Deprioritize the strategy; revisit only if new evidence appears.",
@@ -280,7 +286,9 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Opti
     error = None
     raw = run_dir / "narrative_raw.json"   # written by the session runner (model stand-in) or an import
     previous: Optional[dict] = None          # api-refresh: the old narrative is kept if the model call fails
-    if llm == "api-refresh":
+    if llm == "template":
+        nar, source = template_narrative(results), "template"
+    elif llm == "api-refresh":
         if path.exists():
             try:
                 old = json.loads(path.read_text())
@@ -326,6 +334,7 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Opti
             log.warning("could not export narrative prompt: %s", e)
     ok, bad = verify_numbers(nar, results)
     out = {"summary": nar["summary"], "sections": nar["sections"], "verified": ok, "unverified_numbers": bad,
+           "verification_scope": "numeric tokens only; claims, attribution, units and signs are not verified",
            "source": source, "label": TEMPLATE_LABEL if source == "template" else "model-written"}
     if error:
         out["error"] = error

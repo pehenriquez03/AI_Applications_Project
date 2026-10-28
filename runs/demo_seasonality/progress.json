@@ -1,13 +1,13 @@
 {
  "run_id": "demo_seasonality",
- "paper_title": "Seasonality in the Cross-Section of Stock Returns†",
+ "paper_title": "Seasonality in the Cross-Section of Stock Returns\u2020",
  "strategy_slug": "seasonality",
  "stages": [
   {
    "n": 1,
    "name": "Read paper",
    "status": "done",
-   "detail": "55 pages · a3802e49",
+   "detail": "55 pages \u00b7 a3802e49",
    "started": null,
    "finished": "2026-10-28T09:16:13+00:00"
   },
@@ -15,7 +15,7 @@
    "n": 2,
    "name": "Extract strategy",
    "status": "done",
-   "detail": "2 run(s) · fields agree 97%",
+   "detail": "2 run(s) \u00b7 fields agree 97%",
    "started": "2026-10-28T08:55:32+00:00",
    "finished": "2026-10-28T09:12:04+00:00"
   },
@@ -23,7 +23,7 @@
    "n": 3,
    "name": "Validate and adapt",
    "status": "done",
-   "detail": "ready · 1 assumed · 4 adapted",
+   "detail": "ready \u00b7 1 assumed \u00b7 4 adapted",
    "started": "2026-10-28T08:55:32+00:00",
    "finished": "2026-10-28T09:12:04+00:00"
   },
@@ -31,7 +31,7 @@
    "n": 4,
    "name": "Check data",
    "status": "done",
-   "detail": "414 eligible names · 3520 trading days",
+   "detail": "414 eligible names \u00b7 3520 trading days",
    "started": "2026-10-28T08:55:32+00:00",
    "finished": "2026-10-28T09:12:04+00:00"
   },
@@ -39,7 +39,7 @@
    "n": 5,
    "name": "Construct portfolios",
    "status": "done",
-   "detail": "131 months · 37 names/month",
+   "detail": "131 months \u00b7 37 names/month",
    "started": "2026-10-28T08:55:33+00:00",
    "finished": "2026-10-28T09:12:04+00:00"
   },
@@ -47,7 +47,7 @@
    "n": 6,
    "name": "Backtest",
    "status": "done",
-   "detail": "2766 days · net CAGR 8.0% · turnover 87%/rebalance · 1.0s",
+   "detail": "2766 days \u00b7 net CAGR 8.0% \u00b7 turnover 87%/rebalance \u00b7 1.0s",
    "started": "2026-10-28T08:55:33+00:00",
    "finished": "2026-10-28T09:12:05+00:00"
   },
@@ -55,7 +55,7 @@
    "n": 7,
    "name": "Evaluate",
    "status": "done",
-   "detail": "net CAGR 8.0% · alpha t -1.71",
+   "detail": "net CAGR 8.0% \u00b7 alpha t -1.71",
    "started": "2026-10-28T08:55:34+00:00",
    "finished": "2026-10-28T09:12:06+00:00"
   },
@@ -63,7 +63,7 @@
    "n": 8,
    "name": "Monte Carlo",
    "status": "done",
-   "detail": "1000 paths · P(NPV>0) 12%",
+   "detail": "1000 paths \u00b7 P(NPV>0) 12%",
    "started": "2026-10-28T08:55:34+00:00",
    "finished": "2026-10-28T09:16:13+00:00"
   },
@@ -77,6 +77,6 @@
   }
  ],
  "recommendation": "deprioritize",
- "summary": "Deprioritize. The paper by Heston and Sadka reports that stocks which did well in the same calendar month in earlier years tend to do well in that month again, and the tested version sorts stocks into deciles on average returns at annual lags 24, 36, 48, and 60 months. Our long-only, equal-weighted test on a 415-name survivor universe over 2015 to 2025 returned a net CAGR of 8.03% against 12.71% for the equal-weighted universe, with a Sharpe of 0.38 against 0.65. The Monte Carlo fund economics are also negative: the probability that the net present value is positive is 12%, and the median incremental fee present value is -$3.0M against the equal-weighted universe fund. The main reason for the recommendation is that the strategy trails its benchmark, the edge fails at 10 bps of costs, and the decile ranking runs opposite to the paper's expected direction.",
+ "summary": "Deprioritize. The engine tested an adapted experiment based on Seasonality in the Cross-Section of Stock Returns: For each stock, the average of its monthly returns at the annual lags 24, 36, 48, and 60 months before the holding month (i.e., the same calendar month as the holding month in each of years 2 through 5 prior), holding the highest decile (decile 10, winners) of average returns at annual lags 24, 36, 48, and 60. Historical performance is negative: net CAGR 8.03% vs 12.71% for the EW universe; Sharpe 0.38 vs 0.65. Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho -0.71 not in the expected direction; alpha t -1.71 (reported, not a gate). Economics are negative: P(NPV > 0) 12%, median incremental fee PV -$3.0M vs the EW universe fund. This summary is generated deterministically from the saved results.",
  "error": null
 }

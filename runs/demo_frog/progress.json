@@ -7,7 +7,7 @@
    "n": 1,
    "name": "Read paper",
    "status": "done",
-   "detail": "48 pages · 7202cb81",
+   "detail": "48 pages \u00b7 7202cb81",
    "started": null,
    "finished": "2026-10-28T09:16:17+00:00"
   },
@@ -15,7 +15,7 @@
    "n": 2,
    "name": "Extract strategy",
    "status": "done",
-   "detail": "2 run(s) · fields agree 89%",
+   "detail": "2 run(s) \u00b7 fields agree 89%",
    "started": "2026-10-28T09:01:16+00:00",
    "finished": "2026-10-28T09:12:14+00:00"
   },
@@ -23,7 +23,7 @@
    "n": 3,
    "name": "Validate and adapt",
    "status": "done",
-   "detail": "ready · 1 assumed · 6 adapted",
+   "detail": "ready \u00b7 1 assumed \u00b7 6 adapted",
    "started": "2026-10-28T09:01:16+00:00",
    "finished": "2026-10-28T09:12:14+00:00"
   },
@@ -31,7 +31,7 @@
    "n": 4,
    "name": "Check data",
    "status": "done",
-   "detail": "414 eligible names · 3520 trading days",
+   "detail": "414 eligible names \u00b7 3520 trading days",
    "started": "2026-10-28T09:01:16+00:00",
    "finished": "2026-10-28T09:12:14+00:00"
   },
@@ -39,7 +39,7 @@
    "n": 5,
    "name": "Construct portfolios",
    "status": "done",
-   "detail": "132 months · 25 names/month",
+   "detail": "132 months \u00b7 25 names/month",
    "started": "2026-10-28T09:01:16+00:00",
    "finished": "2026-10-28T09:12:15+00:00"
   },
@@ -47,7 +47,7 @@
    "n": 6,
    "name": "Backtest",
    "status": "done",
-   "detail": "2766 days · net CAGR 11.9% · turnover 14%/rebalance · 0.6s",
+   "detail": "2766 days \u00b7 net CAGR 11.9% \u00b7 turnover 14%/rebalance \u00b7 0.6s",
    "started": "2026-10-28T09:01:17+00:00",
    "finished": "2026-10-28T09:12:15+00:00"
   },
@@ -55,7 +55,7 @@
    "n": 7,
    "name": "Evaluate",
    "status": "done",
-   "detail": "net CAGR 11.9% · alpha t -0.99",
+   "detail": "net CAGR 11.9% \u00b7 alpha t -0.99",
    "started": "2026-10-28T09:01:18+00:00",
    "finished": "2026-10-28T09:12:16+00:00"
   },
@@ -63,7 +63,7 @@
    "n": 8,
    "name": "Monte Carlo",
    "status": "done",
-   "detail": "1000 paths · P(NPV>0) 43%",
+   "detail": "1000 paths \u00b7 P(NPV>0) 43%",
    "started": "2026-10-28T09:01:18+00:00",
    "finished": "2026-10-28T09:16:17+00:00"
   },
@@ -77,6 +77,6 @@
   }
  ],
  "recommendation": "deprioritize",
- "summary": "Deprioritize. The paper (Frog in the Pan, Da, Gurun and Warachka, 2014) argues that momentum is stronger when a stock's past return built up through many small daily moves than through a few large jumps, and we tested a long-only version on a 415-name S&P 500 survivor universe over 2015-2025. The strategy earned a net CAGR of 11.87% against 12.71% for the equal-weight universe, with a Sharpe ratio of 0.58 against 0.65, and the edge over the equal-weight universe fails at 10 bps and holds in 0 of 2 sub-periods. The simulated fund economics are uncertain: P(NPV > 0) is 43% and the median incremental fee PV is -$496k versus the equal-weight universe fund. The recommendation rests mainly on negative historical performance and weak robustness, with an amber implementation reliability because 4 fields were assumed and 6 adapted.",
+ "summary": "Deprioritize. The engine tested an adapted experiment based on Frog in the Pan: Continuous Information and Momentum: Information discreteness (ID): the sign of the formation-period cumulative return (PRET) times the percentage of formation-period days with negative daily returns minus the percentage with positive daily returns. Daily return signs are equally weighted, ignoring magnitude. Small (low) ID = continuous information; large (high) ID = discrete information. Stocks are first sorted on PRET, then on ID, holding the past winners (highest PRET quintile) in the lowest-ID (continuous information) subportfolio. Historical performance is negative: net CAGR 11.87% vs 12.71% for the EW universe; Sharpe 0.58 vs 0.65. Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho 1.00 not in the expected direction; alpha t -0.99 (reported, not a gate). Economics are uncertain: P(NPV > 0) 43%, median incremental fee PV -$496k vs the EW universe fund. This summary is generated deterministically from the saved results.",
  "error": null
 }

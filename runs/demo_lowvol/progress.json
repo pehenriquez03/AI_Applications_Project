@@ -7,7 +7,7 @@
    "n": 1,
    "name": "Read paper",
    "status": "done",
-   "detail": "57 pages · 1edc3dfb",
+   "detail": "57 pages \u00b7 1edc3dfb",
    "started": null,
    "finished": "2026-10-28T09:16:14+00:00"
   },
@@ -15,7 +15,7 @@
    "n": 2,
    "name": "Extract strategy",
    "status": "done",
-   "detail": "2 run(s) · fields agree 92%",
+   "detail": "2 run(s) \u00b7 fields agree 92%",
    "started": "2026-10-28T08:55:36+00:00",
    "finished": "2026-10-28T09:12:07+00:00"
   },
@@ -23,7 +23,7 @@
    "n": 3,
    "name": "Validate and adapt",
    "status": "done",
-   "detail": "ready · 0 assumed · 6 adapted",
+   "detail": "ready \u00b7 0 assumed \u00b7 6 adapted",
    "started": "2026-10-28T08:55:36+00:00",
    "finished": "2026-10-28T09:12:07+00:00"
   },
@@ -31,7 +31,7 @@
    "n": 4,
    "name": "Check data",
    "status": "done",
-   "detail": "414 eligible names · 3520 trading days",
+   "detail": "414 eligible names \u00b7 3520 trading days",
    "started": "2026-10-28T08:55:36+00:00",
    "finished": "2026-10-28T09:12:07+00:00"
   },
@@ -39,7 +39,7 @@
    "n": 5,
    "name": "Construct portfolios",
    "status": "done",
-   "detail": "132 months · 75 names/month",
+   "detail": "132 months \u00b7 75 names/month",
    "started": "2026-10-28T08:55:36+00:00",
    "finished": "2026-10-28T09:12:08+00:00"
   },
@@ -47,7 +47,7 @@
    "n": 6,
    "name": "Backtest",
    "status": "done",
-   "detail": "2766 days · net CAGR 11.9% · turnover 63%/rebalance · 0.7s",
+   "detail": "2766 days \u00b7 net CAGR 11.9% \u00b7 turnover 63%/rebalance \u00b7 0.7s",
    "started": "2026-10-28T08:56:07+00:00",
    "finished": "2026-10-28T09:12:08+00:00"
   },
@@ -55,7 +55,7 @@
    "n": 7,
    "name": "Evaluate",
    "status": "done",
-   "detail": "net CAGR 11.9% · alpha t -0.10",
+   "detail": "net CAGR 11.9% \u00b7 alpha t -0.10",
    "started": "2026-10-28T08:56:08+00:00",
    "finished": "2026-10-28T09:12:09+00:00"
   },
@@ -63,7 +63,7 @@
    "n": 8,
    "name": "Monte Carlo",
    "status": "done",
-   "detail": "1000 paths · P(NPV>0) 34%",
+   "detail": "1000 paths \u00b7 P(NPV>0) 34%",
    "started": "2026-10-28T08:56:09+00:00",
    "finished": "2026-10-28T09:16:14+00:00"
   },
@@ -77,6 +77,6 @@
   }
  ],
  "recommendation": "deprioritize",
- "summary": "Deprioritize. The strategy comes from Ang, Hodrick, Xing and Zhang (2004), who sort stocks each month on idiosyncratic volatility relative to the Fama-French three-factor model and find that the lowest-volatility quintile outperforms the highest. We tested the long-only, equal-weighted lowest-volatility quintile on a 415-name S&P 500 survivor universe over 2015 to 2025 and found net CAGR of 11.92% against 12.71% for the equal-weight universe, with Sharpe 0.63 against 0.65. The Monte Carlo fund simulation put the probability of positive NPV at 34%, with a median incremental fee PV of -$600k against the equal-weight universe fund. The edge fails at 10 bps, holds in neither sub-period, and the group ranking runs the wrong way, so the recommendation is to deprioritize even though implementation reliability is green.",
+ "summary": "Deprioritize. The engine tested an adapted experiment based on The Cross-Section of Volatility and Expected Returns: Idiosyncratic volatility: the standard deviation of the residuals from a regression of each stock's daily returns on the Fama-French three factors (MKT, SMB, HML), estimated over the past one month of daily data, holding the lowest idiosyncratic volatility quintile (quintile 1). Historical performance is negative: net CAGR 11.92% vs 12.71% for the EW universe; Sharpe 0.63 vs 0.65. Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho 0.70 not in the expected direction; alpha t -0.10 (reported, not a gate). Economics are negative: P(NPV > 0) 34%, median incremental fee PV -$600k vs the EW universe fund. This summary is generated deterministically from the saved results.",
  "error": "KeyError: \"None of [Index(['f', 'f', '3'], dtype='str')] are in the [columns]\""
 }

@@ -10,9 +10,9 @@ from .results import dig
 
 RULES = """\
 Flags (each computed from results.json):
-1. implementation_reliability: green if n_assumed <= 3 AND evidence_valid_rate >= 0.8 AND no critical check-pass disagreements (check-pass items on signal_formula_words, signal_formula_symbols, formation_window, skip_window, holding_period, sort_rule, favored_group, expected_sign); amber if not green and n_assumed <= 6; red otherwise.
+1. implementation_reliability (extraction checks only, not independently verified accuracy): green if n_assumed <= 3 AND evidence_valid_rate >= 0.8 AND no critical check-pass disagreements (check-pass items on signal_formula_words, signal_formula_symbols, formation_window, skip_window, holding_period, sort_rule, favored_group, expected_sign); amber if not green and n_assumed <= 6; red otherwise.
 2. historical_performance: positive if strategy net CAGR > EW universe CAGR AND strategy net Sharpe > EW universe Sharpe; mixed if exactly one holds; negative if neither; unknown if either input is missing.
-3. robustness: a test 'holds' when the alpha t-statistic is > 0 (sign only; the t-statistic is reported, not a gate) AND net CAGR exceeds the EW universe CAGR. strong if it holds at 25 bps AND in both sub-periods AND the ranked-group Spearman rho is in the expected direction; moderate if it holds at 10 bps AND in at least one sub-period; weak otherwise (missing inputs count as not holding).
+3. robustness: a test 'holds' when the alpha t-statistic is > 0 (sign only; the t-statistic is reported, not a gate) AND net CAGR exceeds the EW universe CAGR. strong if it holds at 25 bps AND in both sub-periods AND the ranked-group Spearman rho is in the expected direction; moderate if it holds at 10 bps AND in at least one sub-period; unknown when required inputs are missing; weak otherwise.
 4. economics: from the fraction of Monte Carlo paths with incremental-fee NPV (vs the EW universe fund, less research cost) > 0: positive if >= 0.6; uncertain if >= 0.4 and < 0.6; negative if < 0.4; unknown if missing.
 5. limitations: count = n_assumed + n_adapted (reported, not a gate).
 Recommendation (first match wins):
@@ -85,6 +85,9 @@ def _robustness(res: dict) -> tuple[str, dict]:
         return "strong", inputs
     if hb.get("10") is True and any(v is True for v in sub_vals):
         return "moderate", inputs
+    if (hb.get("10") is None or hb.get("25") is None or len(sub_vals) < 2
+            or any(v is None for v in sub_vals) or r.get("rho_in_expected_direction") is None):
+        return "unknown", inputs
     return "weak", inputs
 
 
@@ -113,12 +116,19 @@ def _reasons(res: dict, flags: dict, inputs: dict, rec: str) -> list[str]:
     h = dig(res, "performance.headline") or {}
     t = h.get("alpha_t")
     parts = []
-    parts.append("holds at 25 bps" if rb["holds_at_25bps"] else ("holds at 10 bps but not 25 bps" if rb["holds_at_10bps"] else "fails at 10 bps"))
+    for bps in (10, 25):
+        value = rb[f"holds_at_{bps}bps"]
+        label = "holds" if value is True else "fails" if value is False else "not evaluated (inputs missing)"
+        parts.append(f"{bps} bps: {label}")
     hs = rb["holds_in_subperiod"] or {}
-    parts.append(f"holds in {sum(v is True for v in hs.values())} of {len(hs)} sub-periods")
+    evaluated = [v for v in hs.values() if v is not None]
+    parts.append(f"{sum(v is True for v in evaluated)} of {len(evaluated)} evaluated sub-periods hold; "
+                 f"{len(hs) - len(evaluated)} not evaluated")
     if rb["rho"] is not None:
-        parts.append(f"group rho {rb['rho']:.2f} {'in' if rb['rho_in_expected_direction'] else 'not in'} the expected direction")
-    out.append(f"Robustness is {flags['robustness']}: the edge over the EW universe " + ", ".join(parts)
+        direction = rb["rho_in_expected_direction"]
+        label = "in" if direction is True else "not in" if direction is False else "not evaluated against"
+        parts.append(f"group rho {rb['rho']:.2f} {label} the expected direction")
+    out.append(f"Robustness is {flags['robustness']}: " + ", ".join(parts)
                + (f"; alpha t {t:.2f} (reported, not a gate)." if t is not None else "."))
     e = dig(res, "economics") or {}
     if flags["economics"] != "unknown":
@@ -129,10 +139,10 @@ def _reasons(res: dict, flags: dict, inputs: dict, rec: str) -> list[str]:
         out.append("Economics could not be scored (economics.json missing).")
     ri = inputs["implementation_reliability"]
     evr = ri["evidence_valid_rate"]
-    out.append(f"Implementation reliability is {flags['implementation_reliability']}: {ri['n_assumed']} fields assumed, "
+    out.append(f"Extraction checks are {flags['implementation_reliability']}: {ri['n_assumed']} fields assumed, "
                f"{flags['limitations_count'] - (ri['n_assumed'] or 0)} adapted"
                + (f", evidence valid for {_pct(evr, 0)} of material fields" if evr is not None else "")
-               + f", {ri['n_critical_check_disagreements']} critical check disagreements.")
+               + f", {ri['n_critical_check_disagreements']} critical check disagreements. This flag does not establish independent interpretation accuracy.")
     return out
 
 

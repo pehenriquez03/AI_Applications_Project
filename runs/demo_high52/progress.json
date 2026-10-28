@@ -7,7 +7,7 @@
    "n": 1,
    "name": "Read paper",
    "status": "done",
-   "detail": "32 pages · b6e80dd8",
+   "detail": "32 pages \u00b7 b6e80dd8",
    "started": null,
    "finished": "2026-10-28T09:16:15+00:00"
   },
@@ -15,7 +15,7 @@
    "n": 2,
    "name": "Extract strategy",
    "status": "done",
-   "detail": "2 run(s) · fields agree 94%",
+   "detail": "2 run(s) \u00b7 fields agree 94%",
    "started": "2026-10-28T09:01:12+00:00",
    "finished": "2026-10-28T09:12:10+00:00"
   },
@@ -23,7 +23,7 @@
    "n": 3,
    "name": "Validate and adapt",
    "status": "done",
-   "detail": "ready · 0 assumed · 4 adapted",
+   "detail": "ready \u00b7 0 assumed \u00b7 4 adapted",
    "started": "2026-10-28T09:01:12+00:00",
    "finished": "2026-10-28T09:12:10+00:00"
   },
@@ -31,7 +31,7 @@
    "n": 4,
    "name": "Check data",
    "status": "done",
-   "detail": "414 eligible names · 3520 trading days",
+   "detail": "414 eligible names \u00b7 3520 trading days",
    "started": "2026-10-28T09:01:12+00:00",
    "finished": "2026-10-28T09:12:10+00:00"
   },
@@ -39,7 +39,7 @@
    "n": 5,
    "name": "Construct portfolios",
    "status": "done",
-   "detail": "132 months · 112 names/month",
+   "detail": "132 months \u00b7 112 names/month",
    "started": "2026-10-28T09:01:12+00:00",
    "finished": "2026-10-28T09:12:11+00:00"
   },
@@ -47,7 +47,7 @@
    "n": 6,
    "name": "Backtest",
    "status": "done",
-   "detail": "2766 days · net CAGR 10.6% · turnover 11%/rebalance · 0.8s",
+   "detail": "2766 days \u00b7 net CAGR 10.6% \u00b7 turnover 11%/rebalance \u00b7 0.8s",
    "started": "2026-10-28T09:01:13+00:00",
    "finished": "2026-10-28T09:12:12+00:00"
   },
@@ -55,7 +55,7 @@
    "n": 7,
    "name": "Evaluate",
    "status": "done",
-   "detail": "net CAGR 10.6% · alpha t -1.17",
+   "detail": "net CAGR 10.6% \u00b7 alpha t -1.17",
    "started": "2026-10-28T09:01:14+00:00",
    "finished": "2026-10-28T09:12:13+00:00"
   },
@@ -63,7 +63,7 @@
    "n": 8,
    "name": "Monte Carlo",
    "status": "done",
-   "detail": "1000 paths · P(NPV>0) 15%",
+   "detail": "1000 paths \u00b7 P(NPV>0) 15%",
    "started": "2026-10-28T09:01:15+00:00",
    "finished": "2026-10-28T09:16:16+00:00"
   },
@@ -77,6 +77,6 @@
   }
  ],
  "recommendation": "deprioritize",
- "summary": "Deprioritize. The strategy is the 52-week high momentum rule from George and Hwang (2004): rank stocks by the ratio of current price to the highest price of the past 12 months and hold the top 30% for 6 months. Our long-only test on a 415-name survivor universe over 2015 to 2025 returned a net CAGR of 10.57% against 12.71% for the equal-weight universe, with a Sharpe ratio of 0.57 against 0.65. The economics are also negative: the probability that the fund's incremental fees beat the equal-weight fund after research cost is 15%, with a median incremental fee PV of -$2.1M. The main reason for the recommendation is that the strategy fails to beat a passive equal-weight basket of the same names, and the edge does not hold in either sub-period.",
+ "summary": "Deprioritize. The engine tested an adapted experiment based on The 52-Week High and Momentum Investing: Nearness to the 52-week high: the stock's price at the end of month t-1 divided by its highest price during the 12-month period ending on the last day of month t-1, holding the winner portfolio: top 30% of stocks with the highest ratio of current price to 52-week high (long leg). Historical performance is negative: net CAGR 10.57% vs 12.71% for the EW universe; Sharpe 0.57 vs 0.65. Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho -1.00 not in the expected direction; alpha t -1.17 (reported, not a gate). Economics are negative: P(NPV > 0) 15%, median incremental fee PV -$2.1M vs the EW universe fund. This summary is generated deterministically from the saved results.",
  "error": null
 }

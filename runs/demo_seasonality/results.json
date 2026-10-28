@@ -576,7 +576,8 @@
     "group": 10,
     "weight": 0.0243902
    }
-  ]
+  ],
+  "last_rebalance": "2025-12-01"
  },
  "performance": {
   "headline": {
@@ -588,7 +589,7 @@
    "ew_universe_sharpe": 0.647779,
    "spy_sharpe": 0.686041,
    "strategy_net_max_drawdown": -0.449151,
-   "alpha_ann": null,
+   "alpha_ann": -0.039823,
    "alpha_t": -1.70551,
    "capm_beta": null,
    "spanning_alpha_t": -2.27109,
@@ -860,9 +861,9 @@
    }
   },
   "holds_at_bps": {
-   "0": null,
-   "10": null,
-   "25": null
+   "0": false,
+   "10": false,
+   "25": false
   },
   "holds_in_subperiod": {
    "first": null,
@@ -1258,11 +1259,18 @@
   "trades.parquet",
   "validation.json"
  ],
+ "recommendation": "deprioritize",
+ "recommendation_reasons": [
+  "Historical performance is negative: net CAGR 8.03% vs 12.71% for the EW universe; Sharpe 0.38 vs 0.65.",
+  "Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho -0.71 not in the expected direction; alpha t -1.71 (reported, not a gate).",
+  "Economics are negative: P(NPV > 0) 12%, median incremental fee PV -$3.0M vs the EW universe fund.",
+  "Extraction checks are amber: 5 fields assumed, 4 adapted, evidence valid for 100% of material fields, 0 critical check disagreements. This flag does not establish independent interpretation accuracy."
+ ],
  "rubric": {
   "flags": {
    "implementation_reliability": "amber",
    "historical_performance": "negative",
-   "robustness": "weak",
+   "robustness": "unknown",
    "economics": "negative",
    "limitations_count": 9
   },
@@ -1279,8 +1287,8 @@
     "ew_universe_sharpe": 0.647779
    },
    "robustness": {
-    "holds_at_25bps": null,
-    "holds_at_10bps": null,
+    "holds_at_25bps": false,
+    "holds_at_10bps": false,
     "holds_in_subperiod": {
      "first": null,
      "second": null
@@ -1292,7 +1300,7 @@
     "frac_npv_positive": 0.122
    }
   },
-  "rules": "Flags (each computed from results.json):\n1. implementation_reliability: green if n_assumed <= 3 AND evidence_valid_rate >= 0.8 AND no critical check-pass disagreements (check-pass items on signal_formula_words, signal_formula_symbols, formation_window, skip_window, holding_period, sort_rule, favored_group, expected_sign); amber if not green and n_assumed <= 6; red otherwise.\n2. historical_performance: positive if strategy net CAGR > EW universe CAGR AND strategy net Sharpe > EW universe Sharpe; mixed if exactly one holds; negative if neither; unknown if either input is missing.\n3. robustness: a test 'holds' when the alpha t-statistic is > 0 (sign only; the t-statistic is reported, not a gate) AND net CAGR exceeds the EW universe CAGR. strong if it holds at 25 bps AND in both sub-periods AND the ranked-group Spearman rho is in the expected direction; moderate if it holds at 10 bps AND in at least one sub-period; weak otherwise (missing inputs count as not holding).\n4. economics: from the fraction of Monte Carlo paths with incremental-fee NPV (vs the EW universe fund, less research cost) > 0: positive if >= 0.6; uncertain if >= 0.4 and < 0.6; negative if < 0.4; unknown if missing.\n5. limitations: count = n_assumed + n_adapted (reported, not a gate).\nRecommendation (first match wins):\na. 'unable to evaluate' if results status is blocked or incomplete.\nb. 'pursue' if performance positive AND robustness strong AND economics positive AND reliability green.\nc. 'deprioritize' if performance negative OR (robustness weak AND economics negative).\nd. 'investigate further' otherwise.\n",
+  "rules": "Flags (each computed from results.json):\n1. implementation_reliability (extraction checks only, not independently verified accuracy): green if n_assumed <= 3 AND evidence_valid_rate >= 0.8 AND no critical check-pass disagreements (check-pass items on signal_formula_words, signal_formula_symbols, formation_window, skip_window, holding_period, sort_rule, favored_group, expected_sign); amber if not green and n_assumed <= 6; red otherwise.\n2. historical_performance: positive if strategy net CAGR > EW universe CAGR AND strategy net Sharpe > EW universe Sharpe; mixed if exactly one holds; negative if neither; unknown if either input is missing.\n3. robustness: a test 'holds' when the alpha t-statistic is > 0 (sign only; the t-statistic is reported, not a gate) AND net CAGR exceeds the EW universe CAGR. strong if it holds at 25 bps AND in both sub-periods AND the ranked-group Spearman rho is in the expected direction; moderate if it holds at 10 bps AND in at least one sub-period; unknown when required inputs are missing; weak otherwise.\n4. economics: from the fraction of Monte Carlo paths with incremental-fee NPV (vs the EW universe fund, less research cost) > 0: positive if >= 0.6; uncertain if >= 0.4 and < 0.6; negative if < 0.4; unknown if missing.\n5. limitations: count = n_assumed + n_adapted (reported, not a gate).\nRecommendation (first match wins):\na. 'unable to evaluate' if results status is blocked or incomplete.\nb. 'pursue' if performance positive AND robustness strong AND economics positive AND reliability green.\nc. 'deprioritize' if performance negative OR (robustness weak AND economics negative).\nd. 'investigate further' otherwise.\n",
   "params": {
    "reliability_green_max_assumed": 3,
    "reliability_green_min_evidence_valid_rate": 0.8,
@@ -1303,11 +1311,10 @@
    "robust_moderate_cost_bps": 10
   }
  },
- "recommendation": "deprioritize",
- "recommendation_reasons": [
-  "Historical performance is negative: net CAGR 8.03% vs 12.71% for the EW universe; Sharpe 0.38 vs 0.65.",
-  "Robustness is weak: the edge over the EW universe fails at 10 bps, holds in 0 of 2 sub-periods, group rho -0.71 not in the expected direction; alpha t -1.71 (reported, not a gate).",
-  "Economics are negative: P(NPV > 0) 12%, median incremental fee PV -$3.0M vs the EW universe fund.",
-  "Implementation reliability is amber: 5 fields assumed, 4 adapted, evidence valid for 100% of material fields, 0 critical check disagreements."
- ]
+ "report_refresh": {
+  "date": "2026-10-28",
+  "mode": "offline deterministic summary",
+  "new_model_calls": 0,
+  "backtest_and_economics_unchanged": true
+ }
 }

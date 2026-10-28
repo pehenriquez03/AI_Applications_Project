@@ -51,7 +51,7 @@
   {% if blocked %}<p><strong>Reason:</strong> {{ reason }}</p>{% endif %}
   {% if flags %}
   <div class="flags">
-    <span class="badge {{ flags.implementation_reliability }}">reliability: {{ flags.implementation_reliability }}</span>
+    <span class="badge {{ flags.implementation_reliability }}">extraction checks: {{ flags.implementation_reliability }}</span>
     <span class="badge {{ flags.historical_performance }}">performance: {{ flags.historical_performance }}</span>
     <span class="badge {{ flags.robustness }}">robustness: {{ flags.robustness }}</span>
     <span class="badge {{ flags.economics }}">economics: {{ flags.economics }}</span>
@@ -61,6 +61,9 @@
   {% if r.recommendation_reasons %}
   <ul>{% for x in r.recommendation_reasons %}<li>{{ x }}</li>{% endfor %}</ul>
   {% endif %}
+  <p class="muted">Extraction checks measure quote presence and declared assumptions, not independent correctness.
+  {% if interp.critical_errors %}Unresolved reference mismatches: {{ interp.critical_errors | join(", ") }}{% if interp.preliminary %} (preliminary reference){% endif %}.
+  {% else %}See the interpretation scorecard for reference coverage.{% endif %}</p>
   {% if r.limitations %}
   <details><summary>Limitations ({{ r.limitations | length }})</summary>
   <ul>{% for x in r.limitations %}<li>{{ x }}</li>{% endfor %}</ul>
@@ -76,9 +79,10 @@
 <section id="summary">
   <p>{{ n.summary }}</p>
   <div class="sub">
-    {% if n.source == "template" %}<span class="badge amber">template narrative; model narrative pending</span>{% else %}<span class="badge adapted">model-written</span>{% endif %}
-    {% if n.verified %}<span class="badge good">all numbers found in results.json</span>{% else %}<span class="badge bad">unverified numbers: {{ (n.unverified_numbers or []) | join(", ") }}</span>{% endif %}
+    {% if n.source == "template" %}<span class="badge amber">deterministic summary from saved results</span>{% else %}<span class="badge adapted">model-written</span>{% endif %}
+    {% if n.verified %}<span class="badge good">numeric-token check passed</span>{% else %}<span class="badge bad">unmatched numeric tokens: {{ (n.unverified_numbers or []) | join(", ") }}</span>{% endif %}
   </div>
+  <p class="muted">Numeric-token matching does not verify the claim, metric attribution, units or sign.</p>
 </section>
 {% elif blocked %}
 <section id="summary"><p>The run stopped before evaluation. {{ reason }}</p></section>
@@ -168,6 +172,7 @@ evidence valid for {{ ex.evidence_valid_count if ex.evidence_valid_count is not 
 <tr><td>eligible names per month</td><td>{{ con.mean_eligible | num(1) }} mean</td></tr>
 <tr><td>skipped months</td><td>{{ con.n_skipped_months }}{% if con.skipped_months %}: {{ con.skipped_months | map("truncate", 10, true, "") | join(", ") }}{% endif %}</td></tr>
 </table>
+{% if con.coverage_note %}<p>{{ con.coverage_note }}</p>{% endif %}
 {% if con.sample_top10 %}
 <h3>Sample month {{ con.sample_month }}: first 10 selected names, ranked toward the favored end</h3>
 <table><tr><th>#</th><th>Ticker</th><th class="n">Signal</th><th class="n">Group</th><th class="n">Weight</th></tr>

@@ -225,6 +225,18 @@ def _construction(run_dir: Path, plan: Optional[dict], exp: Optional[dict]) -> O
                                     "group": int(r.group) if "group" in m and r.group == r.group else None,
                                     "weight": float(r.weight) if "weight" in m else None}
                                    for r in m.itertuples()]
+    trades = _read_parquet(run_dir / RunFiles.trades)
+    if trades is not None and len(trades):
+        rebalances = trades[trades["reason"] == "rebalance"] if "reason" in trades else trades
+        if len(rebalances):
+            out["last_rebalance"] = str(rebalances["date"].max())[:10]
+    if exp and exp.get("strategy_slug") == "oil":
+        out["coverage_note"] = (
+            f"The oil input ends in March 2024. The regression uses remaining paired observations; "
+            f"the last selected formation is {out.get('sample_month', 'unavailable')} and the last rebalance "
+            f"is {out.get('last_rebalance', 'unavailable')}. Missing formations issue no new target: "
+            "existing holdings carry forward and their subsequent returns remain in the evaluation."
+        )
     return out
 
 
@@ -251,7 +263,7 @@ def _performance(run_dir: Path, sc: Optional[dict]) -> Optional[dict]:
         "ew_universe_sharpe": get("ew_universe", "sharpe"),
         "spy_sharpe": get("spy", "sharpe"),
         "strategy_net_max_drawdown": get("strategy_net", "max_drawdown"),
-        "alpha_ann": dig(sc, "alpha.ff4_alpha_ann", "alpha.alpha_ann", "alpha_ann"),
+        "alpha_ann": dig(sc, "alpha.ff4_alpha_ann", "alpha.alpha_ann", "alpha.alpha_annual", "alpha_ann"),
         "alpha_t": dig(sc, "alpha.alpha_t", "alpha_t"),
         "capm_beta": dig(sc, "alpha.capm_beta", "capm_beta"),
         "spanning_alpha_t": dig(sc, "spanning.alpha_t"),
@@ -288,19 +300,21 @@ def _robustness(sc: Optional[dict]) -> Optional[dict]:
     subs = rob.get("subperiods") or {}
     groups = rob.get("groups") or {}
 
-    def holds(entry) -> Optional[bool]:
+    def holds(entry, benchmark_cagr=None) -> Optional[bool]:
         if not isinstance(entry, dict):
             return None
         t = dig(entry, "alpha_t")
         x = dig(entry, "excess_cagr_vs_ew")
         if x is None and dig(entry, "cagr") is not None and dig(entry, "ew_cagr") is not None:
             x = entry["cagr"] - entry["ew_cagr"]
+        if x is None and entry.get("cagr") is not None and benchmark_cagr is not None:
+            x = entry["cagr"] - benchmark_cagr
         if t is None or x is None:
             return None
         return bool(t > 0 and x > 0)
 
     return {"cost_grid": grid, "subperiods": subs, "groups": groups,
-            "holds_at_bps": {str(b): holds(_cost_key(grid, b)) for b in C.COST_BPS_GRID},
+            "holds_at_bps": {str(b): holds(_cost_key(grid, b), dig(sc, "performance.ew_universe.cagr")) for b in C.COST_BPS_GRID},
             "holds_in_subperiod": {k: holds(v) for k, v in subs.items()},
             "rho": groups.get("rho"), "rho_in_expected_direction": groups.get("rho_in_expected_direction"),
             "holds_definition": "alpha t-statistic > 0 and net CAGR above the EW universe"}
@@ -373,6 +387,9 @@ def _limitations(res: dict, exp: Optional[dict]) -> list[str]:
     if econ:
         lim.append("The 2/20 fee schedule with a hard hurdle is an assumption for a long-only fund; "
                    "incremental fees are measured against the EW universe fund.")
+    coverage = (res.get("construction") or {}).get("coverage_note")
+    if coverage:
+        lim.append(coverage)
     interp = res.get("interpretation") or {}
     if interp.get("preliminary"):
         lim.append("Interpretation accuracy is scored against a preliminary reference.")

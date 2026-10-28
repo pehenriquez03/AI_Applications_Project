@@ -182,7 +182,7 @@
    "paper_value": "monthly oil price level (paper's input)",
    "our_value": "data/oil_prices.csv, ends 2024-03",
    "status": "adapted",
-   "reason": "oil beta is NaN after 2024-03; months with too few names are skipped and logged"
+   "reason": "after the oil series ends, regressions use available paired observations until fewer than 24 remain; a skipped formation issues no new target, so existing holdings carry forward"
   },
   {
    "field": "min_history_days",

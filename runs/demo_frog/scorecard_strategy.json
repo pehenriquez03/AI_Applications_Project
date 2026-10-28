@@ -214,19 +214,19 @@
    "rows": [
     {
      "group": 1,
-     "mean_monthly": 0.010285,
+     "mean_monthly": 0.0102845,
      "cagr_daily": 0.118713,
      "annualized_mean_x12": 0.123414
     },
     {
      "group": 2,
-     "mean_monthly": 0.011237,
+     "mean_monthly": 0.0112369,
      "cagr_daily": 0.130135,
      "annualized_mean_x12": 0.134842
     },
     {
      "group": 3,
-     "mean_monthly": 0.012466,
+     "mean_monthly": 0.0124657,
      "cagr_daily": 0.144037,
      "annualized_mean_x12": 0.149588
     }
@@ -234,15 +234,16 @@
    "rho": 1.0,
    "rho_p": 0.0,
    "n_groups": 3,
-   "favored": "highest",
+   "favored": "lowest",
    "expected_sign": "favored_group_higher",
-   "expected_rho_sign": 1,
-   "rho_in_expected_direction": true,
+   "expected_rho_sign": -1,
+   "rho_in_expected_direction": false,
+   "favored_group": 1,
    "favored_minus_disfavored": {
-    "favored_group": 3,
-    "disfavored_group": 1,
-    "mean_monthly_diff": 0.002181,
-    "nw_t": 1.181489,
+    "favored_group": 1,
+    "disfavored_group": 3,
+    "mean_monthly_diff": -0.00218113,
+    "nw_t": -1.18149,
     "nw_lags": 6
    }
   },

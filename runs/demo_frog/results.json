@@ -206,7 +206,7 @@
     "field": "sort_rule",
     "paper_value": "quintiles",
     "our_value": "quintiles on past return, then terciles on information discreteness",
-    "status": "stated",
+    "status": "adapted",
     "reason": "double sort per rule table; inner sort terciles with a 15-name floor"
    },
    {
@@ -247,7 +247,7 @@
    {
     "field": "skip_window",
     "paper_value": "1 month (one intermediate month between formation and holding periods)",
-    "our_value": "0 months",
+    "our_value": "1 months",
     "status": "stated",
     "reason": "skip embedded in the t-12..t-2 window"
    },
@@ -267,10 +267,10 @@
    },
    {
     "field": "price_floor",
-    "paper_value": null,
+    "paper_value": "CRSP stocks (returns adjusted for delistings), 1927 to 2007 sample; $5 price filter imposed at the beginning of each month. Share-code, exchange, and breakpoint-universe filters not stated; the data section also says negative book values are eliminated from the sample.",
     "our_value": "none",
-    "status": "assumed",
-    "reason": "no price filter unless stated"
+    "status": "adapted",
+    "reason": "paper excludes stocks priced below $5; NOT applied: the snapshot's prices are split-adjusted, not as-traded, so a dollar floor would drop the wrong names (e.g. NVDA 2017-18)"
    },
    {
     "field": "sample_period",
@@ -427,9 +427,9 @@
     "reason": "left open by the paper; see defaults"
    }
   ],
-  "n_assumed": 4,
-  "n_adapted": 6,
-  "n_stated": 7,
+  "n_assumed": 3,
+  "n_adapted": 8,
+  "n_stated": 6,
   "n_unresolved": 18,
   "strategy_slug": "frog",
   "status": "ready",
@@ -453,7 +453,7 @@
   },
   "weighting": "equal",
   "holding_months": 6,
-  "skip_months": 0,
+  "skip_months": 1,
   "min_names": 15,
   "price_floor": null,
   "min_history_days": 252,
@@ -600,7 +600,8 @@
     "group": 1,
     "weight": 0.0357143
    }
-  ]
+  ],
+  "last_rebalance": "2025-12-01"
  },
  "performance": {
   "headline": {
@@ -612,7 +613,7 @@
    "ew_universe_sharpe": 0.647779,
    "spy_sharpe": 0.686041,
    "strategy_net_max_drawdown": -0.350831,
-   "alpha_ann": null,
+   "alpha_ann": -0.016871,
    "alpha_t": -0.98586,
    "capm_beta": null,
    "spanning_alpha_t": -1.72308,
@@ -809,19 +810,19 @@
    "rows": [
     {
      "group": 1,
-     "mean_monthly": 0.010285,
+     "mean_monthly": 0.0102845,
      "cagr_daily": 0.118713,
      "annualized_mean_x12": 0.123414
     },
     {
      "group": 2,
-     "mean_monthly": 0.011237,
+     "mean_monthly": 0.0112369,
      "cagr_daily": 0.130135,
      "annualized_mean_x12": 0.134842
     },
     {
      "group": 3,
-     "mean_monthly": 0.012466,
+     "mean_monthly": 0.0124657,
      "cagr_daily": 0.144037,
      "annualized_mean_x12": 0.149588
     }
@@ -829,29 +830,30 @@
    "rho": 1.0,
    "rho_p": 0.0,
    "n_groups": 3,
-   "favored": "highest",
+   "favored": "lowest",
    "expected_sign": "favored_group_higher",
-   "expected_rho_sign": 1,
-   "rho_in_expected_direction": true,
+   "expected_rho_sign": -1,
+   "rho_in_expected_direction": false,
+   "favored_group": 1,
    "favored_minus_disfavored": {
-    "favored_group": 3,
-    "disfavored_group": 1,
-    "mean_monthly_diff": 0.002181,
-    "nw_t": 1.18149,
+    "favored_group": 1,
+    "disfavored_group": 3,
+    "mean_monthly_diff": -0.00218113,
+    "nw_t": -1.18149,
     "nw_lags": 6
    }
   },
   "holds_at_bps": {
-   "0": null,
-   "10": null,
-   "25": null
+   "0": false,
+   "10": false,
+   "25": false
   },
   "holds_in_subperiod": {
    "first": null,
    "second": null
   },
   "rho": 1.0,
-  "rho_in_expected_direction": true,
+  "rho_in_expected_direction": false,
   "holds_definition": "alpha t-statistic > 0 and net CAGR above the EW universe"
  },
  "economics": {
@@ -1039,8 +1041,8 @@
   "n_check_disagreements": 0,
   "unresolved_count": 18,
   "unresolved_details_count": 18,
-  "assumed_count": 4,
-  "adapted_count": 6,
+  "assumed_count": 3,
+  "adapted_count": 8,
   "decoy_refused": false,
   "reference_label": "frog.preliminary.json",
   "preliminary": true,
@@ -1200,7 +1202,7 @@
   "Cash earns zero yield.",
   "Returns use Yahoo adjusted-close conventions (dividends and splits folded in).",
   "Effort reduction from the engine is not measured.",
-  "4 fields assumed (paper silent; labeled defaults) and 6 fields adapted.",
+  "3 fields assumed (paper silent; labeled defaults) and 8 fields adapted.",
   "The 2/20 fee schedule with a hard hurdle is an assumption for a long-only fund; incremental fees are measured against the EW universe fund.",
   "Interpretation accuracy is scored against a preliminary reference."
  ],
@@ -1245,17 +1247,24 @@
   "trades.parquet",
   "validation.json"
  ],
+ "recommendation": "deprioritize",
+ "recommendation_reasons": [
+  "Historical performance is negative: net CAGR 11.87% vs 12.71% for the EW universe; Sharpe 0.58 vs 0.65.",
+  "Robustness is unknown: 10 bps: fails, 25 bps: fails, 0 of 0 evaluated sub-periods hold; 2 not evaluated, group rho 1.00 not in the expected direction; alpha t -0.99 (reported, not a gate).",
+  "Economics are uncertain: P(NPV > 0) 43%, median incremental fee PV -$496k vs the EW universe fund.",
+  "Extraction checks are green: 3 fields assumed, 8 adapted, evidence valid for 100% of material fields, 0 critical check disagreements. This flag does not establish independent interpretation accuracy."
+ ],
  "rubric": {
   "flags": {
-   "implementation_reliability": "amber",
+   "implementation_reliability": "green",
    "historical_performance": "negative",
-   "robustness": "weak",
+   "robustness": "unknown",
    "economics": "uncertain",
-   "limitations_count": 10
+   "limitations_count": 11
   },
   "inputs": {
    "implementation_reliability": {
-    "n_assumed": 4,
+    "n_assumed": 3,
     "evidence_valid_rate": 1.0,
     "n_critical_check_disagreements": 0
    },
@@ -1266,20 +1275,20 @@
     "ew_universe_sharpe": 0.647779
    },
    "robustness": {
-    "holds_at_25bps": null,
-    "holds_at_10bps": null,
+    "holds_at_25bps": false,
+    "holds_at_10bps": false,
     "holds_in_subperiod": {
      "first": null,
      "second": null
     },
     "rho": 1.0,
-    "rho_in_expected_direction": true
+    "rho_in_expected_direction": false
    },
    "economics": {
     "frac_npv_positive": 0.428
    }
   },
-  "rules": "Flags (each computed from results.json):\n1. implementation_reliability: green if n_assumed <= 3 AND evidence_valid_rate >= 0.8 AND no critical check-pass disagreements (check-pass items on signal_formula_words, signal_formula_symbols, formation_window, skip_window, holding_period, sort_rule, favored_group, expected_sign); amber if not green and n_assumed <= 6; red otherwise.\n2. historical_performance: positive if strategy net CAGR > EW universe CAGR AND strategy net Sharpe > EW universe Sharpe; mixed if exactly one holds; negative if neither; unknown if either input is missing.\n3. robustness: a test 'holds' when the alpha t-statistic is > 0 (sign only; the t-statistic is reported, not a gate) AND net CAGR exceeds the EW universe CAGR. strong if it holds at 25 bps AND in both sub-periods AND the ranked-group Spearman rho is in the expected direction; moderate if it holds at 10 bps AND in at least one sub-period; weak otherwise (missing inputs count as not holding).\n4. economics: from the fraction of Monte Carlo paths with incremental-fee NPV (vs the EW universe fund, less research cost) > 0: positive if >= 0.6; uncertain if >= 0.4 and < 0.6; negative if < 0.4; unknown if missing.\n5. limitations: count = n_assumed + n_adapted (reported, not a gate).\nRecommendation (first match wins):\na. 'unable to evaluate' if results status is blocked or incomplete.\nb. 'pursue' if performance positive AND robustness strong AND economics positive AND reliability green.\nc. 'deprioritize' if performance negative OR (robustness weak AND economics negative).\nd. 'investigate further' otherwise.\n",
+  "rules": "Flags (each computed from results.json):\n1. implementation_reliability (extraction checks only, not independently verified accuracy): green if n_assumed <= 3 AND evidence_valid_rate >= 0.8 AND no critical check-pass disagreements (check-pass items on signal_formula_words, signal_formula_symbols, formation_window, skip_window, holding_period, sort_rule, favored_group, expected_sign); amber if not green and n_assumed <= 6; red otherwise.\n2. historical_performance: positive if strategy net CAGR > EW universe CAGR AND strategy net Sharpe > EW universe Sharpe; mixed if exactly one holds; negative if neither; unknown if either input is missing.\n3. robustness: a test 'holds' when the alpha t-statistic is > 0 (sign only; the t-statistic is reported, not a gate) AND net CAGR exceeds the EW universe CAGR. strong if it holds at 25 bps AND in both sub-periods AND the ranked-group Spearman rho is in the expected direction; moderate if it holds at 10 bps AND in at least one sub-period; unknown when required inputs are missing; weak otherwise.\n4. economics: from the fraction of Monte Carlo paths with incremental-fee NPV (vs the EW universe fund, less research cost) > 0: positive if >= 0.6; uncertain if >= 0.4 and < 0.6; negative if < 0.4; unknown if missing.\n5. limitations: count = n_assumed + n_adapted (reported, not a gate).\nRecommendation (first match wins):\na. 'unable to evaluate' if results status is blocked or incomplete.\nb. 'pursue' if performance positive AND robustness strong AND economics positive AND reliability green.\nc. 'deprioritize' if performance negative OR (robustness weak AND economics negative).\nd. 'investigate further' otherwise.\n",
   "params": {
    "reliability_green_max_assumed": 3,
    "reliability_green_min_evidence_valid_rate": 0.8,
@@ -1290,11 +1299,10 @@
    "robust_moderate_cost_bps": 10
   }
  },
- "recommendation": "deprioritize",
- "recommendation_reasons": [
-  "Historical performance is negative: net CAGR 11.87% vs 12.71% for the EW universe; Sharpe 0.58 vs 0.65.",
-  "Robustness is weak: the edge over the EW universe fails at 10 bps, holds in 0 of 2 sub-periods, group rho 1.00 in the expected direction; alpha t -0.99 (reported, not a gate).",
-  "Economics are uncertain: P(NPV > 0) 43%, median incremental fee PV -$496k vs the EW universe fund.",
-  "Implementation reliability is amber: 4 fields assumed, 6 adapted, evidence valid for 100% of material fields, 0 critical check disagreements."
- ]
+ "report_refresh": {
+  "date": "2026-10-28",
+  "mode": "offline deterministic summary",
+  "new_model_calls": 0,
+  "backtest_and_economics_unchanged": true
+ }
 }
