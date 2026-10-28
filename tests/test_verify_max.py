@@ -1,4 +1,4 @@
-"""Independent verification of the MAX dev run (runs/dev_max).
+"""Independent verification of the MAX dev run (runs/demo_max).
 
 Written by an independent verifier. Checks 1-3 and 5 rebuild signals, eligibility, deciles
 and returns straight from the snapshot Parquet files with plain pandas (no engine code).
@@ -20,11 +20,15 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SNAP = ROOT / "data" / "snapshot_2026-10-28"
 UNIV = ROOT / "data" / "universe" / "constituents.csv"
-RUN = ROOT / "runs" / "dev_max"
+RUN = ROOT / "runs" / "demo_max"
 EVAL_START, EVAL_END = pd.Timestamp("2015-01-01"), pd.Timestamp("2025-12-31")
 COST = 10 / 1e4
 MIN_HIST, MIN_DAYS, N_GROUPS = 252, 15, 10
-PRICE_FLOOR = 5.0  # stated convention; the run's spec has price_floor = null (see check 2b)
+SPEC = json.loads((RUN / "experiment_spec.json").read_text())
+PRICE_FLOOR = SPEC["price_floor"]  # stated convention: $5 on Yahoo's (split-adjusted) close
+# Data-quality settings are read as plain constants (not engine logic) so the independent
+# rebuild uses the same universe: excluded tickers and single-day adjusted-close patches.
+from research_engine.contracts import ADJ_CLOSE_PATCHES, EXCLUDE_TICKERS  # noqa: E402
 
 
 def say(*a):
@@ -35,11 +39,17 @@ def say(*a):
 @pytest.fixture(scope="module")
 def raw():
     man = json.loads((SNAP / "manifest.json").read_text())
-    uni = man["universe_tickers"]
+    uni = [t for t in man["universe_tickers"] if t not in EXCLUDE_TICKERS]
     adj_all = pd.read_parquet(SNAP / "adj_close.parquet")
     adj_all.index = pd.DatetimeIndex(adj_all.index).as_unit("ns")
     close = pd.read_parquet(SNAP / "close.parquet")
     close.index = pd.DatetimeIndex(close.index).as_unit("ns")
+    for (tk, day) in ADJ_CLOSE_PATCHES:   # make that day's adjusted return equal the close return
+        t = pd.Timestamp(day)
+        i = adj_all.index.get_loc(t)
+        ratio_adj = adj_all[tk].iloc[i] / adj_all[tk].iloc[i - 1]
+        ratio_close = close[tk].iloc[i] / close[tk].iloc[i - 1]
+        adj_all.loc[adj_all.index[:i], tk] *= ratio_adj / ratio_close
     splits = pd.read_parquet(SNAP / "splits.parquet").fillna(0.0)
     splits.index = pd.DatetimeIndex(splits.index).as_unit("ns")
     adj = adj_all[uni]
@@ -110,27 +120,32 @@ def test_1_signal_by_hand(raw, sig, d):
 @pytest.mark.parametrize("d", ["2015-06-30", "2020-03-31", "2025-06-30"])
 def test_2_construction(raw, sig, d):
     d = pd.Timestamp(d)
-    mine, n = my_decile1(raw, d)
+    mine, n = my_decile1(raw, d, PRICE_FLOOR)
     s = sig[sig["date"] == d]
     eng = set(s.loc[s["selected"], "ticker"])
-    elig_mine = set(my_eligible(raw, d))
+    elig_mine = set(my_eligible(raw, d, PRICE_FLOOR))
     elig_eng = set(s["ticker"])  # signals rows = eligible names with a signal
     say(f"2 {d.date()} n_ranked mine={n} engine={len(s)} decile1 mine={len(mine)} engine={len(eng)} "
         f"only_mine={sorted(mine - eng)} only_engine={sorted(eng - mine)}")
     assert elig_eng <= elig_mine
+    assert all(pd.isna(my_max(raw, d).get(t)) for t in elig_mine - elig_eng)  # only no-signal names missing
+    assert n == len(s)
     assert mine == eng
 
 
 def test_2_all_months_and_groups(raw, sig):
-    """All 132 formation months: decile-1 set equality, plus full group labels."""
-    bad = []
+    """All 132 formation months: decile-1 set equality and the ranked (eligible, signal) set."""
+    bad, bad_rank = [], []
     for d in raw["forms"]:
-        mine, _ = my_decile1(raw, d)
+        mine, n = my_decile1(raw, d, PRICE_FLOOR)
         s = sig[sig["date"] == d]
         if mine != set(s.loc[s["selected"], "ticker"]):
-            bad.append(d.date())
-    say(f"2 all-months: {len(raw['forms'])} formation months, mismatching decile-1 sets: {bad}")
-    assert not bad
+            bad.append(str(d.date()))
+        if n != len(s):
+            bad_rank.append(str(d.date()))
+    say(f"2 all-months: {len(raw['forms'])} formation months, decile-1 mismatches {bad}, "
+        f"ranked-count mismatches {bad_rank}")
+    assert not bad and not bad_rank
 
 
 def test_2b_price_floor_effect(raw):
@@ -160,7 +175,17 @@ def test_2b_price_floor_effect(raw):
         b, _ = my_decile1(raw, d, PRICE_FLOOR)
         if a != b:
             d1.append(str(d.date()))
-    say(f"2b decile-1 sets that change with a $5 floor on Yahoo close: {len(d1)} months {d1[:5]}")
+    say(f"2b decile-1 sets that differ, $5 floor on Yahoo close vs no floor: {len(d1)} months {d1[:5]}")
+    d2 = []
+    for d in raw["forms"]:
+        v = my_max(raw, d)
+        def dec1(idx):
+            x = v.reindex(idx).dropna()
+            df = pd.DataFrame({"t": x.index.astype(str), "v": x.to_numpy()}).sort_values(["v", "t"])
+            return set(df["t"].iloc[:math.ceil(len(df) / N_GROUPS)])
+        if dec1(my_eligible(raw, d, PRICE_FLOOR)) != dec1(my_eligible(raw, d, PRICE_FLOOR, raw_close)):
+            d2.append(str(d.date()))
+    say(f"2b decile-1 sets that differ, floor on Yahoo close vs floor on raw close: {len(d2)} months {d2}")
 
 
 # ----------------------------------------------------------------------------- 3 returns
@@ -189,7 +214,7 @@ def compound(daily: pd.Series, raw):
 
 
 def test_3_independent_returns(raw):
-    mine = my_period_returns(raw, lambda d: my_decile1(raw, d)[0])
+    mine = my_period_returns(raw, lambda d: my_decile1(raw, d, PRICE_FLOOR)[0])
     eng = compound(pd.read_parquet(RUN / "returns_cost_0.parquet")["strategy_gross"], raw)
     diff = (mine - eng).abs()
     say(f"3 decile-1 periods={len(diff)} max|diff|={diff.max():.2e} median|diff|={diff.median():.2e} "
@@ -230,11 +255,11 @@ def test_5_benchmarks(raw):
     from research_engine.backtest.benchmarks import ew_universe_targets, spy_targets
     from research_engine.backtest.engine import run_backtest
     from research_engine.data.loaders import DataContext
-    from research_engine.strategies.dev_run import eval_window, max_spec
-    ctx, spec = DataContext.load(), max_spec()
+    from research_engine.strategies.dev_run import eval_window
+    ctx, spec = DataContext.load(), run_spec()
     start, end = eval_window(ctx, spec)
     ew0 = run_backtest(ctx, ew_universe_targets(ctx, spec), 0, start, end, record=False).returns["net"]
-    mine = my_period_returns(raw, lambda d: my_eligible(raw, d))
+    mine = my_period_returns(raw, lambda d: my_eligible(raw, d, PRICE_FLOOR))
     diff = (mine - compound(ew0, raw)).abs()
     say(f"5 ew_universe @0bp vs mine: max|diff|={diff.max():.2e} median={diff.median():.2e}")
     r = pd.read_parquet(RUN / "returns.parquet")
@@ -253,30 +278,59 @@ def test_5_benchmarks(raw):
     assert d0 < 1e-12 and abs(spy0.iloc[0]) < 1e-12
 
 
+def run_spec():
+    from research_engine.contracts import ExperimentSpec
+    return ExperimentSpec.model_validate_json((RUN / "experiment_spec.json").read_text())
+
+
 # ----------------------------------------------------------------------------- 6 look-ahead
-def test_6_lookahead(tmp_path):
+CUT = pd.Timestamp("2020-06-30")
+
+
+@pytest.fixture(scope="module")
+def reruns(tmp_path_factory):
+    """Clean rerun and a rerun with adj_close AND close after CUT multiplied by U(0.5,1.5) noise."""
     from research_engine.data.loaders import DataContext
-    from research_engine.strategies.dev_run import max_spec, run_dev
-    cut = pd.Timestamp("2020-06-30")
+    from research_engine.strategies.dev_run import run_dev
+    clean_dir, noisy_dir = tmp_path_factory.mktemp("clean"), tmp_path_factory.mktemp("noisy")
     ctx = DataContext.load(fresh=True)
+    run_dev(run_spec(), clean_dir, ctx=ctx)
     rng = np.random.default_rng(7)
-    adj = ctx.adj_close.copy()
-    after = adj.index > cut
+    after = ctx.adj_close.index > CUT
+    adj, close = ctx.adj_close.copy(), ctx.close.copy()
     adj.loc[after] = adj.loc[after].to_numpy() * rng.uniform(0.5, 1.5, size=adj.loc[after].shape)
-    noisy = ctx.replace_prices(adj_close=adj)
-    run_dev(max_spec(), tmp_path, ctx=noisy)
+    close.loc[after] = close.loc[after].to_numpy() * rng.uniform(0.5, 1.5, size=close.loc[after].shape)
+    run_dev(run_spec(), noisy_dir, ctx=ctx.replace_prices(adj_close=adj, close=close))
+    return clean_dir, noisy_dir
+
+
+def test_6_lookahead(reruns):
+    clean_dir, noisy_dir = reruns
     for name in ("signals", "holdings", "trades"):
-        a = pd.read_parquet(RUN / f"{name}.parquet")
-        b = pd.read_parquet(tmp_path / f"{name}.parquet")
-        a, b = a[a["date"] <= cut].reset_index(drop=True), b[b["date"] <= cut].reset_index(drop=True)
-        later_differs = not pd.read_parquet(RUN / f"{name}.parquet").reset_index(drop=True).equals(
-            pd.read_parquet(tmp_path / f"{name}.parquet").reset_index(drop=True))
-        say(f"6 {name}: rows<=cut {len(a)} vs {len(b)}, identical={a.equals(b)}, full file differs={later_differs}")
+        a = pd.read_parquet(clean_dir / f"{name}.parquet")
+        b = pd.read_parquet(noisy_dir / f"{name}.parquet")
+        a, b = a[a["date"] <= CUT].reset_index(drop=True), b[b["date"] <= CUT].reset_index(drop=True)
+        full_differs = not pd.read_parquet(clean_dir / f"{name}.parquet").equals(
+            pd.read_parquet(noisy_dir / f"{name}.parquet"))
+        say(f"6 {name}: rows<=cut {len(a)} vs {len(b)}, identical={a.equals(b)}, after-cut differs={full_differs}")
         pd.testing.assert_frame_equal(a, b, check_exact=True)
-    ra = pd.read_parquet(RUN / "returns.parquet").loc[:cut]
-    rb = pd.read_parquet(tmp_path / "returns.parquet").loc[:cut]
+        assert full_differs  # the noise did reach the run
+    ra = pd.read_parquet(clean_dir / "returns.parquet").loc[:CUT]
+    rb = pd.read_parquet(noisy_dir / "returns.parquet").loc[:CUT]
     say(f"6 returns<=cut identical={ra.equals(rb)}")
     pd.testing.assert_frame_equal(ra, rb, check_exact=True)
+
+
+def test_6b_stored_run_reproduces(reruns):
+    """The stored runs/demo_max artifacts equal a fresh rerun of its own experiment_spec.json."""
+    clean_dir, _ = reruns
+    res = {}
+    for name in ("signals", "holdings", "trades", "returns", "returns_cost_0", "portfolio_value"):
+        a = pd.read_parquet(RUN / f"{name}.parquet")
+        b = pd.read_parquet(clean_dir / f"{name}.parquet")
+        res[name] = a.equals(b)
+    say(f"6b stored == fresh rerun: {res}")
+    assert all(res.values())
 
 
 # ----------------------------------------------------------------------------- 7 sanity
@@ -300,20 +354,27 @@ def test_7_sanity():
 # ----------------------------------------------------------------------------- 8 PARA
 def test_8_para(tmp_path):
     from research_engine.data.loaders import DataContext
-    from research_engine.strategies.dev_run import max_spec, run_dev
+    from research_engine.strategies.dev_run import run_dev
 
     def cagr(x):
         return (1 + x).prod() ** (252 / len(x)) - 1
-    base = pd.read_parquet(RUN / "returns.parquet")
-    ctx = DataContext.load(exclude=("PARA",), fresh=True)
-    assert "PARA" not in ctx.tickers
-    run_dev(max_spec(), tmp_path, ctx=ctx)
-    ex = pd.read_parquet(tmp_path / "returns.parquet")
-    out = {c: (cagr(base[c]), cagr(ex[c])) for c in ("strategy_net", "ew_universe", "group_10")}
-    for c, (a, b) in out.items():
+    runs = {}
+    for label, excl in (("with_PARA", ()), ("without_PARA", ("PARA",))):
+        ctx = DataContext.load(exclude=excl, fresh=True)
+        assert ("PARA" in ctx.tickers) == (label == "with_PARA")
+        run_dev(run_spec(), tmp_path / label, ctx=ctx)
+        runs[label] = (pd.read_parquet(tmp_path / label / "returns.parquet"),
+                       pd.read_parquet(tmp_path / label / "signals.parquet"))
+    stored = cagr(pd.read_parquet(RUN / "returns.parquet")["strategy_net"])
+    say(f"8 stored run strategy_net CAGR {stored:.4%}")
+    for c in ("strategy_net", "ew_universe", "group_10"):
+        a, b = cagr(runs["with_PARA"][0][c]), cagr(runs["without_PARA"][0][c])
         say(f"8 {c}: with PARA {a:.4%} without {b:.4%} delta {100 * (b - a):+.3f} pp")
-    s = pd.read_parquet(RUN / "signals.parquet")
-    p = s[(s["ticker"] == "PARA") & (s["date"] >= "2025-05-01")][["date", "signal", "group", "selected"]]
-    say("8 PARA 2025 signals:\n" + p.to_string(index=False))
-    a, b = out["strategy_net"]
-    assert abs(b - a) * 100 <= 0.1
+    s = runs["with_PARA"][1]
+    p = s[(s["ticker"] == "PARA") & s["selected"]]
+    say(f"8 PARA in decile 1 (with-PARA run): {len(p)} months, last {list(p['date'].dt.date.astype(str))[-4:]}")
+    a, b = (cagr(runs[k][0]["strategy_net"]) for k in ("with_PARA", "without_PARA"))
+    say(f"8 |delta| {abs(b - a) * 100:.3f} pp {'>' if abs(b - a) * 100 > 0.1 else '<='} 0.1 pp threshold")
+    # Excluding PARA is material (> 0.1 pp), so the stored run must be the PARA-excluded one.
+    assert abs(b - a) * 100 > 0.1
+    assert abs(stored - b) < 1e-12 and "PARA" not in set(pd.read_parquet(RUN / "signals.parquet")["ticker"])

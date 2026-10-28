@@ -1,0 +1,146 @@
+{
+ "n_runs": 2,
+ "mean_field_agreement": 0.9444444444444444,
+ "min_field_agreement": 0.5,
+ "field_agreement": {
+  "economic_rationale": 0.5,
+  "universe_and_filters": 1.0,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 0.5,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "evidence_valid_rate": 1.0,
+ "n_evidence_checked": 16,
+ "evidence_invalid_fields": [],
+ "n_consistency_issues": 0,
+ "n_check_disagreements": 0,
+ "unresolved_count": 13,
+ "unresolved_details_count": 13,
+ "assumed_count": 2,
+ "adapted_count": 5,
+ "decoy_refused": false,
+ "reference_label": "momentum.preliminary.json",
+ "preliminary": true,
+ "agreement_rate": 0.35714285714285715,
+ "critical_errors": [
+  "signal_formula_words",
+  "holding_period",
+  "favored_group"
+ ],
+ "minor_errors": [
+  "universe_and_filters",
+  "required_inputs",
+  "rebalance_frequency",
+  "breakpoints",
+  "disfavored_group",
+  "headline_result"
+ ],
+ "n_critical_errors": 3,
+ "n_minor_errors": 6,
+ "n_compared": 14,
+ "fields": {
+  "universe_and_filters": {
+   "match": false,
+   "critical": false,
+   "ours": "All NYSE/AMEX stocks; NASDAQ stocks excluded; stocks priced below $5 at the beginning of the holding period excluded",
+   "reference": "excludes stocks priced below $5 and stocks in the smallest NYSE size decile at formation"
+  },
+  "required_inputs": {
+   "match": false,
+   "critical": false,
+   "ours": [
+    "monthly stock returns",
+    "stock prices (filter: exclude stocks priced below $5)",
+    "exchange listing (filter: NYSE/AMEX only, exclude NASDAQ)"
+   ],
+   "reference": [
+    "monthly (or daily) prices"
+   ]
+  },
+  "signal_formula_words": {
+   "match": false,
+   "critical": true,
+   "ours": "Each stock's past six-month return over the ranking period (month -5 to month 0)",
+   "reference": "cumulative stock return over months t-5 to t (six-month formation period)"
+  },
+  "formation_window": {
+   "match": true,
+   "critical": true,
+   "ours": "6 months (month -5 to month 0)",
+   "reference": "6 months"
+  },
+  "skip_window": {
+   "match": true,
+   "critical": false,
+   "ours": "none",
+   "reference": "none in this paper (formation ends month 0, holding starts month 1). Note: JT 1993 and much later work skip one week or one month; accept either if the LLM states which."
+  },
+  "holding_period": {
+   "match": false,
+   "critical": true,
+   "ours": "6 months (month 1 to month 6), with overlapping monthly cohorts each given equal weight",
+   "reference": "6 months (also 12 months reported)"
+  },
+  "rebalance_frequency": {
+   "match": false,
+   "critical": false,
+   "ours": "monthly (stocks ranked at the end of each month; overlapping portfolios hold the previous six monthly cohorts)",
+   "reference": "monthly, overlapping cohorts (each month holds the six most recent cohorts with equal weight)"
+  },
+  "sort_rule": {
+   "match": true,
+   "critical": true,
+   "ours": "deciles",
+   "reference": "deciles"
+  },
+  "breakpoints": {
+   "match": false,
+   "critical": false,
+   "ours": "equal-count deciles (ten percent of the sample stocks each) of NYSE/AMEX stocks ranked on past six-month returns",
+   "reference": "deciles (P1 = losers ... P10 = winners)"
+  },
+  "favored_group": {
+   "match": false,
+   "critical": true,
+   "ours": "P1 (past winners): decile with the highest past six-month returns",
+   "reference": "top decile of past 6-month return"
+  },
+  "disfavored_group": {
+   "match": false,
+   "critical": false,
+   "ours": "P10 (past losers): decile with the lowest past six-month returns",
+   "reference": "bottom decile of past 6-month return"
+  },
+  "weighting": {
+   "match": true,
+   "critical": false,
+   "ours": "equal",
+   "reference": "equal"
+  },
+  "expected_sign": {
+   "match": true,
+   "critical": true,
+   "ours": "favored_group_higher",
+   "reference": "favored_group_higher"
+  },
+  "headline_result": {
+   "match": false,
+   "critical": false,
+   "ours": "P1-P10 return of 1.11% per month (t-statistic 4.61) over 1965-1989; 1.01% per month (t 4.10) over 1990-1997; 1.09% per month (t 5.65) over 1965-1997",
+   "reference": "winner minus loser average monthly return: 1.11 % per month (1965-1989)"
+  }
+ }
+}

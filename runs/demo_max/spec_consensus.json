@@ -1,0 +1,159 @@
+{
+ "spec": {
+  "paper_title": "Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+  "authors": [
+   "Turan G. Bali",
+   "Nusret Cakici",
+   "Robert F. Whitelaw"
+  ],
+  "year": 2009,
+  "selected_experiment": "Table I, univariate value-weighted decile portfolios sorted on MAX (maximum daily return over the past one month), July 1962 to December 2005",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Investors have a preference for lottery-like payoffs (and many are poorly diversified), so they are willing to pay more for stocks that exhibit extreme positive daily returns, and these stocks therefore earn lower returns in the future.",
+   "evidence": {
+    "page": 4,
+    "quote": "This evidence suggests that investors may be willing to pay more for stocks that exhibit extreme"
+   }
+  },
+  "universe_and_filters": {
+   "value": "All NYSE, AMEX and NASDAQ financial and nonfinancial firms on CRSP; Table I sample period July 1962 to December 2005. No price, share-code or size filter is applied in the headline table (a $5 price screen is only a robustness check).",
+   "evidence": {
+    "page": 6,
+    "quote": "(AMEX), and NASDAQ financial and nonfinancial firms from the Center for Research in Security Prices"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily stock returns (to compute MAX)",
+    "monthly stock returns (portfolio returns in the holding month)",
+    "share prices and shares outstanding (market capitalization, value weights)",
+    "exchange listing NYSE/AMEX/NASDAQ (universe filter)"
+   ],
+   "evidence": {
+    "page": 6,
+    "quote": "We use daily stock returns to calculate"
+   }
+  },
+  "signal_formula_words": {
+   "value": "MAX: the maximum daily return of the stock within the month (the portfolio formation month).",
+   "evidence": {
+    "page": 26,
+    "quote": "MAX is the maximum daily return within a month:"
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "MAX_{i,t} = max(R_{i,d}), d = 1, ..., D_t, where R_{i,d} is the return on stock i on day d and D_t is the number of trading days in month t (equation (2))",
+   "evidence": {
+    "page": 26,
+    "quote": "tditi DdRMAX ,...,1)max( ,, == (2)"
+   }
+  },
+  "formation_window": {
+   "value": "1 month of daily returns (the previous month)",
+   "evidence": {
+    "page": 32,
+    "quote": "the maximum daily return (MAX) over the past one month"
+   }
+  },
+  "skip_window": {
+   "value": "none",
+   "evidence": {
+    "page": 7,
+    "quote": "are for the portfolio formation month, not for the subsequent month over which we"
+   }
+  },
+  "holding_period": {
+   "value": "1 month",
+   "evidence": {
+    "page": 3,
+    "quote": "month and examine the monthly returns on the resulting portfolios over the period July 1962 to December"
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 32,
+    "quote": "Decile portfolios are formed every month from July 1962 to December 2005 by sorting stocks based on"
+   }
+  },
+  "sort_rule": "deciles",
+  "sort_rule_evidence": {
+   "page": 32,
+   "quote": "Decile portfolios are formed every month from July 1962 to December 2005 by sorting stocks based on"
+  },
+  "breakpoints": {
+   "value": "not stated",
+   "evidence": {
+    "page": 6,
+    "quote": "portfolios that are form ed by sorting the NYSE/AMEX/NASDAQ stocks based on the maximum daily"
+   }
+  },
+  "favored_group": {
+   "value": "lowest MAX decile (portfolio 1, low MAX)",
+   "evidence": {
+    "page": 12,
+    "quote": "Thus, market capitalization does not explain the high (low) returns to low (high) MAX stocks."
+   }
+  },
+  "disfavored_group": {
+   "value": "highest MAX decile (portfolio 10, high MAX)",
+   "evidence": {
+    "page": 4,
+    "quote": "positive returns, and thus these stocks exhibit lower returns in the future."
+   }
+  },
+  "weighting": "value",
+  "weighting_evidence": {
+   "page": 3,
+   "quote": "For value -weighted decile portfolios, the difference between returns on the portfolios with the"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 2,
+   "quote": "regressions indicate a negative and significant relation between the maximum daily return over the"
+  },
+  "headline_result": {
+   "value": "Value-weighted decile 10 (high MAX) minus decile 1 (low MAX): -1.03% per month (Newey-West t = -2.83); Fama-French-Carhart 4-factor alpha difference -1.18% per month (t = -4.71).",
+   "evidence": {
+    "page": 6,
+    "quote": "(high MAX) and decile 1 (low MAX) is \u20131.03% per month with a corresponding Newey-West (1987) t-"
+   }
+  },
+  "unresolved_details": [
+   "Decile breakpoints: the paper does not say whether deciles use NYSE breakpoints or all NYSE/AMEX/NASDAQ stocks.",
+   "Share-code filter: the paper does not say whether only common stocks (e.g. CRSP share codes 10/11) are included.",
+   "Minimum number of valid daily returns in the month required to compute MAX is not stated.",
+   "Treatment of delisting returns is not stated.",
+   "Timing of the market capitalization used for value weights (e.g. end of formation month) is not stated for the portfolio sorts.",
+   "Skip between formation and holding month is not stated explicitly; the text implies returns are measured in the month immediately after the formation month.",
+   "Decile breakpoints: the paper does not say whether deciles use NYSE breakpoints or all NYSE/AMEX/NASDAQ stocks",
+   "Universe filters (share codes, minimum price, minimum number of daily observations in the formation month) are not stated for the headline table",
+   "Date of the market capitalization used for value weights is not stated",
+   "Treatment of delisting returns is not stated",
+   "Return convention for the holding month (e.g., month t+1 calendar return) is implied but not stated explicitly"
+  ]
+ },
+ "agreement": {
+  "economic_rationale": 1.0,
+  "universe_and_filters": 1.0,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "n_runs": 2
+}

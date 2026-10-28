@@ -1,0 +1,127 @@
+{
+ "paper_title": "The Cross-Section of Volatility and Expected Returns",
+ "authors": [
+  "Ang, A.",
+  "Hodrick, R. J.",
+  "Xing, Y.",
+  "Zhang, X."
+ ],
+ "year": 2006,
+ "selected_experiment": "Table VI and introduction",
+ "can_implement": true,
+ "cannot_implement_reasons": [],
+ "economic_rationale": {
+  "value": "not in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "universe_and_filters": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "daily prices",
+   "daily market return (SPY)",
+   "optionally daily SMB and HML from Ken French's library"
+  ],
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_words": {
+  "value": "standard deviation of daily residuals from a Fama-French three-factor regression over the previous month (the '1/0/1' strategy: 1-month formation, 0 skip, 1-month hold). A market-model residual is an acceptable single-factor approximation when SMB/HML are unavailable, if stated.",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "formation_window": {
+  "value": "1 month of daily data",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "skip_window": {
+  "value": "none",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "holding_period": {
+  "value": "1 month",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "monthly",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "sort_rule": "quintiles",
+ "sort_rule_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "breakpoints": {
+  "value": "quintiles",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "favored_group": {
+  "value": "lowest idiosyncratic-volatility quintile",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "disfavored_group": {
+  "value": "highest idiosyncratic-volatility quintile",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "weighting": "value",
+ "weighting_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "headline_result": {
+  "value": "quintile 5 minus quintile 1 average monthly return: -1.06 % per month (CRSP 1963-2000)",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "unresolved_details": [
+  "which factor model to use for residuals when SMB/HML are not in the repo",
+  "value weighting requires market capitalization, which is not in the repo"
+ ]
+}

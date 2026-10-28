@@ -1,0 +1,149 @@
+{
+ "source": "session",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_2",
+ "created": "2026-10-28T09:10:06+00:00",
+ "usage": {
+  "input_tokens": 3241,
+  "output_tokens": 1361,
+  "estimated": true
+ },
+ "data": {
+  "paper_title": "Oil-Price Exposure as a Single-Factor Smart-Beta Strategy",
+  "authors": [],
+  "year": 2026,
+  "selected_experiment": "Sections 5-7: optimizer-built positive, neutral and negative OILP long-short equity portfolios, with a factor-timing signal selecting which regime to hold (no empirical table is reported)",
+  "can_implement": false,
+  "cannot_implement_reasons": [
+   "Requires a commodity (oil) price series: the OILP signal is each stock's regression beta to monthly oil-price changes, and the timing signal is defined on oil returns",
+   "Requires non-equity control series (market, credit, consumer and employment proxies) in the exposure regression, i.e. data from several asset classes at once"
+  ],
+  "economic_rationale": {
+   "value": "Oil-price innovations affect firms differently through production costs, revenues, demand conditions and discount rates; conditionally, higher oil returns favor positive oil exposure and lower oil returns favor negative exposure. No unconditional premium is claimed.",
+   "evidence": {
+    "page": 1,
+    "quote": "Oil-price innovations can affect firms differently through production costs, revenues, demand conditions, and discount-rate"
+   }
+  },
+  "universe_and_filters": {
+   "value": "the available equity universe; no filters stated",
+   "evidence": {
+    "page": 3,
+    "quote": "On each chosen construction date, solve a constrained optimization across the available equity universe."
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "monthly oil price level series (Factor Level, OilPrices.csv)",
+    "security (equity) returns",
+    "other risk control series: market, credit, consumer and employment proxies",
+    "historical residual returns from a trailing cross-sectional regression (optimizer objective)",
+    "factor-timing signal s(t) and threshold h",
+    "optimizer constraints: OILP targets, other factor targets, gross long/short allocations, name-level weight bounds"
+   ],
+   "evidence": {
+    "page": 2,
+    "quote": "separate equity returns and control series are required"
+   }
+  },
+  "signal_formula_words": {
+   "value": "Each security's OILP is its estimated coefficient on monthly simple oil-price changes in a regression of its returns on oil changes and other risk controls. An optimizer builds long-short portfolios with positive, zero or negative aggregate OILP; a timing signal s(t) chooses the positive regime when s(t) is at least h, the negative regime when s(t) is at most -h, and neutral otherwise.",
+   "evidence": {
+    "page": 2,
+    "quote": "The coefficient b_i,oil is the security-level OILP exposure."
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "r_i(t) = a_i + b_i,oil r_oil(t) + G_i X(t) + e_i(t); r_oil(t) = P(t) / P(t-1) - 1; B_oil(w) = sum_i w_i b_i,oil; regime positive if s(t) >= h, negative if s(t) <= -h, neutral otherwise",
+   "evidence": {
+    "page": 2,
+    "quote": "r_i(t) = a_i + b_i,oil r_oil(t) + G_i X(t) + e_i(t)"
+   }
+  },
+  "formation_window": {
+   "value": "not stated (a training sample of unspecified length)",
+   "evidence": {
+    "page": 2,
+    "quote": "For each security i, estimate its oil sensitivity on a training sample"
+   }
+  },
+  "skip_window": {
+   "value": "not stated",
+   "evidence": {
+    "page": 3,
+    "quote": "compute realized stock returns only after the relevant decision"
+   }
+  },
+  "holding_period": {
+   "value": "not stated (until the next chosen construction or rebalance date)",
+   "evidence": {
+    "page": 3,
+    "quote": "Use monthly dates or explicitly defined holding intervals"
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly dates or explicitly defined holding intervals",
+   "evidence": {
+    "page": 3,
+    "quote": "At each rebalance date t, a factor-timing signal s(t) is mapped into a regime"
+   }
+  },
+  "sort_rule": "other",
+  "sort_rule_evidence": {
+   "page": 3,
+   "quote": "Define three target portfolios:"
+  },
+  "breakpoints": {
+   "value": "not stated; no ranked sort, the three regimes are set by optimizer OILP exposure targets (+0.25, 0.00, -0.10)",
+   "evidence": {
+    "page": 3,
+    "quote": "They correspond to the existing engine defaults (+0.25, 0.00, -0.10)."
+   }
+  },
+  "favored_group": {
+   "value": "not stated",
+   "evidence": {
+    "page": 1,
+    "quote": "The paper does not claim that high-OILP equities unconditionally earn higher average returns."
+   }
+  },
+  "disfavored_group": {
+   "value": "not stated",
+   "evidence": {
+    "page": 1,
+    "quote": "For an illustrative conditional hypothesis, higher contemporaneous or correctly forecast future oil returns favor positive oil"
+   }
+  },
+  "weighting": "other",
+  "weighting_evidence": {
+   "page": 3,
+   "quote": "The selected equity portfolio must use the optimizer output with Symbol and Weight columns."
+  },
+  "expected_sign": "unclear",
+  "expected_sign_evidence": {
+   "page": 4,
+   "quote": "but makes no unconditional expected-return-premium claim"
+  },
+  "headline_result": {
+   "value": "not stated (no empirical results are reported)",
+   "evidence": {
+    "page": 1,
+    "quote": "This is a synthetic methodology note, not a published academic study."
+   }
+  },
+  "unresolved_details": [
+   "No unconditional favored or disfavored group: the direction is only conditional on oil returns",
+   "Length of the training sample used to estimate OILP",
+   "Exact composition and source of control series X(t) (market, credit, consumer, employment proxies)",
+   "Which oil benchmark, units, currency and roll convention the Factor Level represents",
+   "Investable universe and any stock filters",
+   "Skip between estimation and holding",
+   "Holding period and whether rebalancing is strictly monthly",
+   "Deployable timing signal s(t) and threshold h: the described signal is an oracle simulation from future oil returns",
+   "Optimizer gross long/short allocations, name-level weight bounds and tolerance",
+   "Whether exposures are estimated point-in-time or statically",
+   "Return convention and transaction costs",
+   "No headline empirical result reported"
+  ]
+ }
+}

@@ -1,0 +1,135 @@
+{
+ "paper_title": "The Other Side of Value: Good Growth and the Gross Profitability Premium",
+ "authors": [
+  "Robert Novy-Marx"
+ ],
+ "year": 2010,
+ "selected_experiment": "Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets",
+ "can_implement": false,
+ "cannot_implement_reasons": [
+  "Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements"
+ ],
+ "economic_rationale": {
+  "value": "The paper offers rational (productive firms require higher returns) and behavioral (productive firms are underpriced) motivations and says it does not distinguish between them",
+  "evidence": {
+   "page": 7,
+   "quote": "Distinguishing between competing stories for the observed proﬁtability premium is,"
+  }
+ },
+ "universe_and_filters": {
+  "value": "Non-financial firms (one-digit SIC code 6 excluded), July 1963 to December 2009; exchange coverage for Table 4 not stated beyond NYSE breakpoints",
+  "evidence": {
+   "page": 18,
+   "quote": "ﬁrms (those with one-digit SIC codes of six), and covers July 1963 to December 2009."
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "revenues (REVT)",
+   "cost of goods sold (COGS)",
+   "total assets (AT)",
+   "monthly stock returns",
+   "market capitalization (value weights)",
+   "NYSE listing indicator (breakpoints)",
+   "SIC codes (financial-firm filter)",
+   "Fama-French three factors (alpha regressions only)"
+  ],
+  "evidence": {
+   "page": 19,
+   "quote": "proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series"
+  }
+ },
+ "signal_formula_words": {
+  "value": "Gross profits (revenues minus cost of goods sold) divided by total assets",
+  "evidence": {
+   "page": 19,
+   "quote": "proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "(REVT - COGS) / AT",
+  "evidence": {
+   "page": 19,
+   "quote": "proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series"
+  }
+ },
+ "formation_window": {
+  "value": "annual accounting data, lagged to the end of June of the following year",
+  "evidence": {
+   "page": 13,
+   "quote": "data to the end of June of the following year, asset pricing te sts start with the returns over July 1963."
+  }
+ },
+ "skip_window": {
+  "value": "not stated",
+  "evidence": {
+   "page": 13,
+   "quote": "data to the end of June of the following year, asset pricing te sts start with the returns over July 1963."
+  }
+ },
+ "holding_period": {
+  "value": "until the next end-of-June rebalance (annual)",
+  "evidence": {
+   "page": 17,
+   "quote": "(NYSE) break points, and are rebalanced at the end of each Jun e. The table shows the port-"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "annually, at the end of each June",
+  "evidence": {
+   "page": 17,
+   "quote": "(NYSE) break points, and are rebalanced at the end of each Jun e. The table shows the port-"
+  }
+ },
+ "sort_rule": "quintiles",
+ "sort_rule_evidence": {
+  "page": 17,
+  "quote": "A T). Portfolios are constructed using a quintile sort, base d on New Y ork Stock Exchange"
+ },
+ "breakpoints": {
+  "value": "NYSE breakpoints, quintile sort",
+  "evidence": {
+   "page": 19,
+   "quote": "proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series"
+  }
+ },
+ "favored_group": {
+  "value": "highest gross profits-to-assets quintile (most profitable firms)",
+  "evidence": {
+   "page": 18,
+   "quote": "generally increasing with proﬁtability, with the most proﬁ table ﬁrms earning 0.33 percent"
+  }
+ },
+ "disfavored_group": {
+  "value": "lowest gross profits-to-assets quintile (least profitable firms)",
+  "evidence": {
+   "page": 18,
+   "quote": "per month higher average returns than the least proﬁtable ﬁr ms, with a test-statistic of"
+  }
+ },
+ "weighting": "value",
+ "weighting_evidence": {
+  "page": 19,
+  "quote": "This table shows monthly value-weighted average excess ret urns to portfolios sorted on gross"
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 5,
+  "quote": "itable ﬁrms earn signiﬁcantly higher average returns than u nproﬁtable ﬁrms. They do so"
+ },
+ "headline_result": {
+  "value": "Most profitable minus least profitable quintile earns 0.33 percent per month in value-weighted excess returns (test-statistic 2.63); Fama-French three-factor alpha 0.55 percent per month (test-statistic 4.75)",
+  "evidence": {
+   "page": 18,
+   "quote": "generally increasing with proﬁtability, with the most proﬁ table ﬁrms earning 0.33 percent"
+  }
+ },
+ "unresolved_details": [
+  "Skip/gap between accounting data date and portfolio formation not explicitly stated beyond lagging accounting data to end of June of the following year",
+  "Exact fiscal-year-end alignment of the annual accounting data is ambiguous",
+  "Exchange coverage (NYSE/AMEX/NASDAQ) of the Table 4 universe not stated explicitly",
+  "Minimum price, size or data-availability filters other than the financial-firm exclusion not stated",
+  "Treatment of delisting returns not stated",
+  "Return convention for excess returns (risk-free rate used) not stated for this table"
+ ]
+}

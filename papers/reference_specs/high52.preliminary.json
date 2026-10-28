@@ -1,0 +1,123 @@
+{
+ "paper_title": "The 52-Week High and Momentum Investing",
+ "authors": [
+  "George, T. J.",
+  "Hwang, C.-Y."
+ ],
+ "year": 2004,
+ "selected_experiment": "Table I (all three strategies are 'around 0.45%')",
+ "can_implement": true,
+ "cannot_implement_reasons": [],
+ "economic_rationale": {
+  "value": "not in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "universe_and_filters": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "daily prices (to compute the 12-month high)"
+  ],
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_words": {
+  "value": "P_i,t-1 / high_i,t-1 where P is the month-end price and high is the highest price over the 12 months ending at the end of month t-1",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "formation_window": {
+  "value": "12-month high; ranking at end of month t-1",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "skip_window": {
+  "value": "none",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "holding_period": {
+  "value": "6 months (robustness: (6,12), (12,6), (12,12))",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "monthly, overlapping cohorts (JT method)",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "sort_rule": "top_bottom_percent",
+ "sort_rule_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "breakpoints": {
+  "value": "top 30% winners, bottom 30% losers, middle 40%",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "favored_group": {
+  "value": "30% of stocks closest to their 52-week high",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "disfavored_group": {
+  "value": "30% of stocks farthest from their 52-week high",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "weighting": "equal",
+ "weighting_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "headline_result": {
+  "value": "winner minus loser average monthly return, (6,6) strategy: 0.45 % per month (CRSP 1963-2001, all months)",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "unresolved_details": [
+  "whether to use the intraday high or the closing high (paper uses CRSP daily closing prices)",
+  "January seasonality drives much of the difference between raw and ex-January results"
+ ]
+}

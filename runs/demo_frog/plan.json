@@ -1,0 +1,37 @@
+{
+ "signal_ops": [
+  {
+   "op": "pret_12_2",
+   "params": {
+    "months": 12,
+    "skip_months": 1
+   }
+  },
+  {
+   "op": "info_discreteness",
+   "params": {
+    "months": 12,
+    "skip_months": 1
+   }
+  }
+ ],
+ "selection": {
+  "sort": "quintiles",
+  "n_groups": 5,
+  "percent": null,
+  "favored": "highest",
+  "double_sort": {
+   "outer_op": "pret_12_2",
+   "outer_sort": "quintiles",
+   "outer_n_groups": 5,
+   "outer_favored": "highest",
+   "inner_op": "info_discreteness",
+   "inner_sort": "terciles",
+   "inner_n_groups": 3,
+   "inner_favored": "lowest",
+   "min_names": 15
+  }
+ },
+ "holding_months": 6,
+ "skipped_months": []
+}

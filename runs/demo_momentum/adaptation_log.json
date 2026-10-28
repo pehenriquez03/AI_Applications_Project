@@ -1,0 +1,212 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Table 1, Momentum Portfolio Returns: ten equal-weighted decile portfolios of NYSE/AMEX stocks sorted on past six-month returns and held for six months (overlapping portfolios), P1 (past winners) minus P10 (past losers), 1965-1989, 1990-1997 and 1965-1997",
+  "our_value": "Table 1, Momentum Portfolio Returns: ten equal-weighted decile portfolios of NYSE/AMEX stocks sorted on past six-month returns and held for six months (overlapping portfolios), P1 (past winners) minus P10 (past losers), 1965-1989, 1990-1997 and 1965-1997",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "Each stock's past six-month return over the ranking period (month -5 to month 0)",
+  "our_value": "cum_return(months=6, skip_months=0)",
+  "status": "stated",
+  "reason": "mapped to registry operations by rule table"
+ },
+ {
+  "field": "formation_window",
+  "paper_value": "6 months (month -5 to month 0)",
+  "our_value": "6",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "deciles",
+  "our_value": "deciles",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "P1 (past winners): decile with the highest past six-month returns",
+  "our_value": "highest group",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "equal-count deciles (ten percent of the sample stocks each) of NYSE/AMEX stocks ranked on past six-month returns",
+  "our_value": "equal-count over eligible names",
+  "status": "adapted",
+  "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "equal",
+  "our_value": "equal",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long P1 (past winners): decile with the highest past six-month returns / short P10 (past losers): decile with the lowest past six-month returns",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "favored_group_higher",
+  "our_value": "favored_group_higher",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "6 months (month 1 to month 6), with overlapping monthly cohorts each given equal weight",
+  "our_value": "6 months",
+  "status": "stated",
+  "reason": "as stated; overlapping monthly cohorts"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "none",
+  "our_value": "0 months",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "monthly (stocks ranked at the end of each month; overlapping portfolios hold the previous six monthly cohorts)",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "All NYSE/AMEX stocks; NASDAQ stocks excluded; stocks priced below $5 at the beginning of the holding period excluded",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": "All NYSE/AMEX stocks; NASDAQ stocks excluded; stocks priced below $5 at the beginning of the holding period excluded",
+  "our_value": "none",
+  "status": "adapted",
+  "reason": "paper excludes stocks priced below $5; NOT applied: the snapshot's prices are split-adjusted, not as-traded, so a dollar floor would drop the wrong names (e.g. NVDA 2017-18)"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "P1-P10 return of 1.11% per month (t-statistic 4.61) over 1965-1989; 1.01% per month (t 4.10) over 1990-1997; 1.09% per month (t 5.65) over 1965-1997",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "252",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention for the six-month ranking return (compounded vs. summed monthly returns) is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether decile breakpoints are computed before or after applying the $5 price screen is not stated (screen is applied at the beginning of the holding period)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns and of stocks that leave the sample during the holding period is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Minimum return-history or missing-data requirements for a stock to be ranked are not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Share-type restrictions (e.g., common stocks only, exclusion of ADRs/REITs/closed-end funds) are not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether weights within each overlapping cohort are reset monthly or allowed to drift (buy-and-hold) over the six-month holding period is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return data source for the portfolio sorts is not explicitly stated for Table 1 (CRSP is mentioned only for the sample-mean estimates)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return compounding convention for the six-month ranking return (cumulative compounded vs. summed) is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Breakpoint construction is not stated beyond decile groups of the NYSE/AMEX sample (no mention of NYSE-only breakpoints)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns and missing returns is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Minimum return-history or data-availability requirement for a stock to be ranked is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether the $5 price screen uses the price at the end of the ranking month exactly is only described as 'beginning of the holding period'",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether the long-short P1-P10 spread is self-financing and how overlapping cohorts are rebalanced within the month (equal cohort weights stated, intra-cohort drift not stated)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

@@ -1,0 +1,156 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets",
+  "our_value": "Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "required_inputs",
+  "paper_value": "market capitalization (value weights)",
+  "our_value": "not used",
+  "status": "adapted",
+  "reason": "market capitalization used only for weighting, breakpoints or filters"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "quintiles",
+  "our_value": "quintiles",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "highest gross profits-to-assets quintile (most profitable firms)",
+  "our_value": "highest group",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "NYSE breakpoints, quintile sort",
+  "our_value": "equal-count over eligible names",
+  "status": "adapted",
+  "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "value",
+  "our_value": "equal",
+  "status": "adapted",
+  "reason": "policy: equal weight everywhere"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long highest gross profits-to-assets quintile (most profitable firms) / short lowest gross profits-to-assets quintile (least profitable firms)",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "favored_group_higher",
+  "our_value": "favored_group_higher",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "until the next end-of-June rebalance (annual)",
+  "our_value": "12 months",
+  "status": "stated",
+  "reason": "as stated; overlapping monthly cohorts"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "not stated",
+  "our_value": "0 months",
+  "status": "assumed",
+  "reason": "no skip"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "annually, at the end of each June",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "Non-financial firms (one-digit SIC code 6 excluded), July 1963 to December 2009; exchange coverage for Table 4 not stated beyond NYSE breakpoints",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "no price filter unless stated"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "Most profitable minus least profitable quintile earns 0.33 percent per month in value-weighted excess returns (test-statistic 2.63); Fama-French three-factor alpha 0.55 percent per month (test-statistic 4.75)",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "252",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Skip/gap between accounting data date and portfolio formation not explicitly stated beyond lagging accounting data to end of June of the following year",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Exact fiscal-year-end alignment of the annual accounting data is ambiguous",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Exchange coverage (NYSE/AMEX/NASDAQ) of the Table 4 universe not stated explicitly",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Minimum price, size or data-availability filters other than the financial-firm exclusion not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention for excess returns (risk-free rate used) not stated for this table",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

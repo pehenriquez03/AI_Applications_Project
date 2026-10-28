@@ -1,0 +1,137 @@
+{
+ "n_runs": 2,
+ "mean_field_agreement": 0.9166666666666666,
+ "min_field_agreement": 0.5,
+ "field_agreement": {
+  "economic_rationale": 0.5,
+  "universe_and_filters": 0.5,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 0.5,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "evidence_valid_rate": 1.0,
+ "n_evidence_checked": 16,
+ "evidence_invalid_fields": [],
+ "n_consistency_issues": 1,
+ "n_check_disagreements": 0,
+ "unresolved_count": 15,
+ "unresolved_details_count": 15,
+ "assumed_count": 3,
+ "adapted_count": 6,
+ "decoy_refused": false,
+ "reference_label": "lowvol.preliminary.json",
+ "preliminary": true,
+ "agreement_rate": 0.7692307692307693,
+ "critical_errors": [
+  "signal_formula_words"
+ ],
+ "minor_errors": [
+  "required_inputs",
+  "headline_result"
+ ],
+ "n_critical_errors": 1,
+ "n_minor_errors": 2,
+ "n_compared": 13,
+ "fields": {
+  "required_inputs": {
+   "match": false,
+   "critical": false,
+   "ours": [
+    "daily stock returns",
+    "daily Fama-French factor returns (MKT, SMB, HML)",
+    "monthly stock returns",
+    "market capitalization (value weights)"
+   ],
+   "reference": [
+    "daily prices",
+    "daily market return (SPY)",
+    "optionally daily SMB and HML from Ken French's library"
+   ]
+  },
+  "signal_formula_words": {
+   "match": false,
+   "critical": true,
+   "ours": "Idiosyncratic volatility: the standard deviation of the residuals from a regression of each stock's daily returns on the Fama-French three factors (MKT, SMB, HML), estimated over the past one month of daily data.",
+   "reference": "standard deviation of daily residuals from a Fama-French three-factor regression over the previous month (the '1/0/1' strategy: 1-month formation, 0 skip, 1-month hold). A market-model residual is an acceptable single-factor approximation when SMB/HML are unavailable, if stated."
+  },
+  "formation_window": {
+   "match": true,
+   "critical": true,
+   "ours": "1 month of daily returns",
+   "reference": "1 month of daily data"
+  },
+  "skip_window": {
+   "match": true,
+   "critical": false,
+   "ours": "none (M = 0 in the 1/0/1 strategy)",
+   "reference": "none"
+  },
+  "holding_period": {
+   "match": true,
+   "critical": true,
+   "ours": "1 month",
+   "reference": "1 month"
+  },
+  "rebalance_frequency": {
+   "match": true,
+   "critical": false,
+   "ours": "monthly",
+   "reference": "monthly"
+  },
+  "sort_rule": {
+   "match": true,
+   "critical": true,
+   "ours": "quintiles",
+   "reference": "quintiles"
+  },
+  "breakpoints": {
+   "match": true,
+   "critical": false,
+   "ours": "equal-count quintiles across all sampled stocks (the paper notes quintile 5 contains 20% of the stocks); NYSE breakpoints are not mentioned",
+   "reference": "quintiles"
+  },
+  "favored_group": {
+   "match": true,
+   "critical": true,
+   "ours": "lowest idiosyncratic volatility quintile (quintile 1)",
+   "reference": "lowest idiosyncratic-volatility quintile"
+  },
+  "disfavored_group": {
+   "match": true,
+   "critical": false,
+   "ours": "highest idiosyncratic volatility quintile (quintile 5)",
+   "reference": "highest idiosyncratic-volatility quintile"
+  },
+  "weighting": {
+   "match": true,
+   "critical": false,
+   "ours": "value",
+   "reference": "value"
+  },
+  "expected_sign": {
+   "match": true,
+   "critical": true,
+   "ours": "favored_group_higher",
+   "reference": "favored_group_higher"
+  },
+  "headline_result": {
+   "match": false,
+   "critical": false,
+   "ours": "5-1 (high minus low idiosyncratic volatility) difference in FF-3 alphas of -1.31% per month, t-statistic -7.00; raw 5-1 average return difference -1.06% per month",
+   "reference": "quintile 5 minus quintile 1 average monthly return: -1.06 % per month (CRSP 1963-2000)"
+  }
+ }
+}

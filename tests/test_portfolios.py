@@ -73,10 +73,6 @@ def test_skip_when_too_few_names(ctx):
     assert all(s["n_names"] < 1000 for s in r.skip_log)
 
 
-def test_holding_months_not_built(ctx):
-    with pytest.raises(NotImplementedError, match="cohort"):
-        build_targets(ctx, spec(holding_months=6))
-
 
 def test_double_sort(ctx):
     ds = {"outer_op": "pret_12_2", "outer_sort": "quintiles", "outer_favored": "highest",

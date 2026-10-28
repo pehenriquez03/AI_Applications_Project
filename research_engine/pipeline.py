@@ -203,6 +203,8 @@ def stage_economics(run_dir: Path, exp: ExperimentSpec):
     llm_cost = 0.0
     if usage_f.exists():
         for u in json.loads(usage_f.read_text()):
+            if str(u.get('call', '')).startswith('narrative'):
+                continue  # the narrative is written after the economics; its cost cannot be cited by itself
             llm_cost += u.get("input_tokens", 0) * 2 / 1e6 + u.get("output_tokens", 0) * 10 / 1e6
     summary, paths = run_economics(returns, exp.fund, exp.research_cost, exp.monte_carlo,
                                    llm_cost_usd=llm_cost, seed=exp.monte_carlo["seed"])
@@ -251,6 +253,10 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
                 prog.set(paper_title=meta.get("title") or meta.get("title_guess", ""))
                 return f"{meta['n_pages']} pages · {meta['sha256'][:8]}"
             _stage(prog, 1, s1)
+        if start_stage > 1 and (run_dir / RunFiles.paper_meta).exists():
+            meta = json.loads((run_dir / RunFiles.paper_meta).read_text())
+            prog.set(paper_title=meta.get("title") or meta.get("title_guess", ""))
+            prog.update(1, "done", f"{meta.get('n_pages', '?')} pages · {meta.get('sha256', '')[:8]}")
         if start_stage <= 2:
             def s2():
                 nonlocal specs

@@ -20,10 +20,9 @@ if str(ROOT) not in sys.path:
 
 import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 
 from research_engine.app import helpers as H
-from research_engine.app.papers_registry import REGISTRY, abs_path
+from research_engine.app.papers_registry import REGISTRY, abs_path, known_papers
 from research_engine.contracts import MATERIAL_FIELDS, MODEL, RUNS_DIR, SNAPSHOT_DIR
 
 ACCENT = "#3b6ea5"
@@ -95,14 +94,29 @@ def _work(job: Job) -> None:
         return
     for i, t in enumerate(job.tasks):
         job.i, job.started = i, time.time()
+        bak = None
         try:
-            d = run_pipeline(Path(t["pdf"]), run_dir=t.get("run_dir"),
-                             selected_experiment=t.get("experiment") or None,
-                             llm="api", start_stage=t.get("start_stage", 1))
+            if t.get("run_dir") and t.get("start_stage") == 9:       # regenerate narrative: keep the old one as a fallback
+                nf = Path(t["run_dir"]) / "narrative.json"
+                if nf.exists():
+                    bak = nf.read_bytes()
+                    nf.unlink()
+                d = run_pipeline(Path(t["pdf"]), Path(t["run_dir"]), t.get("experiment") or None,
+                                 llm="api", start_stage=9)
+                if bak is not None and (H.read_json(nf) or {}).get("source", "template") == "template":
+                    nf.write_bytes(bak)                              # model unavailable: do not replace it with the template
+                    job.errors.append(f"{t['label']}: narrative not regenerated (model unavailable); kept the previous one")
+            else:
+                d = run_pipeline(Path(t["pdf"]), run_dir=t.get("run_dir"),
+                                 selected_experiment=t.get("experiment") or None,
+                                 llm="api", start_stage=t.get("start_stage", 1))
             job.last_dir = Path(d)
         except BaseException as e:  # noqa: BLE001 - recorded, next paper still runs
             job.errors.append(f"{t['label']}: {type(e).__name__}: {e}")
             job.last_dir = job.current_dir() or job.last_dir
+            nf = Path(t["run_dir"]) / "narrative.json" if t.get("run_dir") else None
+            if bak is not None and nf is not None and not nf.exists():
+                nf.write_bytes(bak)
     job.active = False
 
 
@@ -191,7 +205,7 @@ if sb.button("Run", type="primary", disabled=active or not (ss.queue or uploads)
         st.rerun()
 
 sb.markdown('<div class="side-h">Previous runs</div>', unsafe_allow_html=True)
-_runs = H.list_runs(RUNS_DIR)
+_runs = H.list_runs(RUNS_DIR, known_papers())
 if not _runs:
     sb.caption("None yet.")
 for r in _runs:
@@ -280,11 +294,11 @@ def tab_extraction(run_dir: Path) -> None:
         value, page, quote = H.field_value_and_evidence(spec, f)
         ok = H.evidence_ok(val, f)
         rows.append({"Field": H.pretty(f), "Value": value, "Page": "" if page is None else str(page),
-                     "Evidence": "" if ok is None else ("✓" if ok else "✗"),
+                     "Evidence": "" if ok is None else ("yes" if ok else "no"),
                      "Agreement": H.agreement_text(d.get("agreement"), f)})
         quotes.append((f, page, quote))
     if rows:
-        st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+        st.table(pd.DataFrame(rows).set_index("Field"))       # st.table wraps long values; st.dataframe clips them
         st.markdown("**Evidence quotes**")
         for f, page, quote in quotes:
             with st.expander(f"{H.pretty(f)}" + (f" · p. {page}" if page is not None else "")):
@@ -298,64 +312,111 @@ def tab_extraction(run_dir: Path) -> None:
         st.caption("None recorded.")
     if isinstance(val, dict) and "n_check_disagreements" in val:
         st.caption(f"Second-pass check disagreements: {val['n_check_disagreements']}")
+    ref = H.read_json(run_dir / "scorecard_interpretation.json")
+    if isinstance(ref, dict) and ref.get("n_compared"):
+        with st.expander("Comparison with the reference extraction"):
+            st.write(f"{ref.get('n_compared')} fields compared; agreement {H.pct(ref.get('agreement_rate'), 0)}. "
+                     f"Critical differences: {', '.join(map(H.pretty, ref.get('critical_errors') or [])) or 'none'}. "
+                     f"Minor differences: {', '.join(map(H.pretty, ref.get('minor_errors') or [])) or 'none'}.")
+
+
+def table(title: str, df: pd.DataFrame | None, note: str = "") -> None:
+    if df is None or df.empty:
+        return
+    st.markdown(f"**{title}**")
+    if note:
+        st.caption(note)
+    st.dataframe(df, width="stretch", hide_index=df.index.equals(pd.RangeIndex(len(df))))
+
+
+def safely(fn, *args) -> None:
+    """One malformed panel must never take the tab down."""
+    try:
+        fn(*args)
+    except Exception as ex:  # noqa: BLE001
+        st.caption(f"Panel unavailable: {type(ex).__name__}")
 
 
 def tab_evaluation(run_dir: Path) -> None:
     s = H.read_json(run_dir / "scorecard_strategy.json")
-    i = H.read_json(run_dir / "scorecard_interpretation.json")
-    if s is None and i is None:
+    if not isinstance(s, dict):
         st.caption(NA)
         return
-    st.markdown("#### Strategy")
-    if s is not None:
-        sections(s)
-    else:
-        st.caption(NA)
-    st.markdown("#### Interpretation")
-    if i is not None:
-        sections(i)
-    else:
-        st.caption(NA)
+    m = s.get("meta") if isinstance(s.get("meta"), dict) else {}
+    st.caption(f"Daily returns {m.get('first_date', '?')} to {m.get('last_date', '?')} ({m.get('n_days', '?')} days); "
+               f"base trading cost {m.get('cost_bps_base', '?')} bps; beta to SPY {H.num(s.get('beta_vs_spy'))}.")
+    safely(table, "Performance", H.performance_table(s))
+    safely(table, "Relative to the benchmarks", H.relative_table(s),
+           "Monthly differences, Newey-West standard errors.")
+    safely(table, "Alpha and spanning", H.alpha_table(s), "Daily regressions on market, size, value and momentum factors.")
+    st.markdown("#### Robustness")
+    safely(table, "Trading cost grid", H.cost_grid_table(s))
+    safely(table, "Sub-periods", H.subperiod_table(s))
+
+    def groups() -> None:
+        df, cap = H.groups_table(s)
+        table("Ranked groups", df, cap)
+    safely(groups)
+    safely(table, "Implementation", H.implementation_table(s))
+    if isinstance(s.get("definitions"), dict):
+        with st.expander("Definitions"):
+            for k, v in s["definitions"].items():
+                st.markdown(f"**{H.pretty(k)}.** {str(v).replace('$', chr(92) + '$')}")
 
 
 def tab_economics(run_dir: Path) -> None:
     e = H.read_json(run_dir / "economics.json")
     mc_path = run_dir / "montecarlo.parquet"
-    if e is None and not mc_path.exists():
+    if not isinstance(e, dict) and not mc_path.exists():
         st.caption(NA)
         return
-    if e is not None:
-        sections(e)
+    if isinstance(e, dict):
+        st.caption(f"{e.get('n_paths', '?')} bootstrapped paths, {e.get('horizon_days', '?')}-day horizon, "
+                   f"{e.get('mean_block_days', '?')}-day mean block; benchmark {H.pretty(e.get('benchmark', '?'))}.")
+        safely(table, "Share of paths", H.fractions_table(e))
+        safely(table, "Fund economics", H.money_table(e),
+               "Incremental fees are measured against an equal-weight universe fund under the same fee schedule.")
+        safely(table, "Distribution of outcomes", H.quantiles_table(e), "Percentiles across paths.")
+        safely(table, "Sensitivity to bootstrap block length", H.block_table(e))
     if mc_path.exists():
         try:
             mc = pd.read_parquet(mc_path)
-            for needle, name in (("npv", "NPV of the fee stream"), ("wealth", "Ending wealth")):
-                h = H.histograms(mc, needle)
+            for cols, name in ((["npv", "npv_demeaned"], "NPV"),
+                               (["end_wealth_strategy", "end_wealth_ew", "end_wealth_spy"], "Ending wealth")):
+                h = H.histograms(mc, "", cols=cols)
                 if h is not None:
-                    unit = f", {h.attrs['unit']}" if h.attrs.get("unit") else ""
-                    st.markdown(f"**{name}** (distribution over {len(mc):,} paths{unit})")
-                    st.bar_chart(h, x="bin", y=[c for c in h.columns if c != "bin"])
+                    unit = f", USD {h.attrs['unit']}" if h.attrs.get("unit") else ""
+                    st.markdown(f"**{name}** (histogram over {len(mc):,} paths{unit})")
+                    st.bar_chart(h, x="bin", y=[c for c in h.columns if c != "bin"], color=_series_colors(len(h.columns) - 1), stack=False)
         except Exception as ex:  # noqa: BLE001
             st.caption(f"Monte Carlo paths unreadable: {type(ex).__name__}")
+    if isinstance(e, dict) and e.get("assumptions"):
+        with st.expander("Assumptions"):
+            for a in e["assumptions"]:
+                st.markdown(f"- {str(a).replace('$', chr(92) + '$')}")
+
+
+def _series_colors(n: int) -> list[str]:
+    return [ACCENT, "#8a8a8a", "#c4c4c4", "#5c5c5c"][:max(n, 1)]
 
 
 def tab_dossier(run_dir: Path, busy: bool) -> None:
     f = run_dir / "dossier.html"
-    if not f.exists():
-        st.caption(NA)
-        return
-    c1, c2, _ = st.columns([1, 1, 3])
-    c1.download_button("Download dossier", f.read_bytes(), file_name=f"{run_dir.name}_dossier.html",
-                       mime="text/html", key=f"dl_{run_dir.name}")
-    if c2.button("Regenerate narrative", key=f"regen_{run_dir.name}", disabled=busy):
-        meta = H.read_json(run_dir / "paper_meta.json") or {}
-        pdf = meta.get("source") or meta.get("source_path") or meta.get("pdf_path") or ""
-        (run_dir / "narrative.json").unlink(missing_ok=True)
-        start_job([dict(label=run_dir.name, pdf=pdf, experiment=meta.get("selected_experiment"),
+    meta = H.read_json(run_dir / "paper_meta.json") or {}
+    c1, c2, _ = st.columns([2, 2, 5])
+    if f.exists():
+        c1.download_button("Download dossier", f.read_bytes(), file_name=f"{run_dir.name}_dossier.html",
+                           mime="text/html", key=f"dl_{run_dir.name}")
+    can_regen = bool(meta.get("source_path")) and (run_dir / "scorecard_strategy.json").exists()
+    if can_regen and c2.button("Regenerate narrative", key=f"regen_{run_dir.name}", disabled=busy):
+        start_job([dict(label=run_dir.name, pdf=meta["source_path"], experiment=meta.get("selected_experiment"),
                         prefix=run_dir.name[:12], run_dir=str(run_dir), start_stage=9)])
         go(run=run_dir.name)
         st.rerun()
-    components.html(f.read_text(errors="replace"), height=1200, scrolling=True)
+    if f.exists():
+        st.iframe(f, height=1200)
+    else:
+        st.caption(NA)
 
 
 def render_summary(p: dict | None, state: str) -> None:
@@ -393,7 +454,7 @@ def main_view() -> None:
     if ss.compare:
         idx = RUNS_DIR / "index.html"
         if idx.exists():
-            components.html(idx.read_text(errors="replace"), height=900, scrolling=True)
+            st.iframe(idx, height=900)
         else:
             st.caption(NA)
         return

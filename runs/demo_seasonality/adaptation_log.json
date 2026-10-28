@@ -1,0 +1,233 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Table 2, Years 2-5 Annual strategy: equal-weighted decile portfolios sorted on average returns at annual lags 24, 36, 48, and 60 months, held one month (10-1 winner-loser spread)",
+  "our_value": "Table 2, Years 2-5 Annual strategy: equal-weighted decile portfolios sorted on average returns at annual lags 24, 36, 48, and 60 months, held one month (10-1 winner-loser spread)",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "For each stock, the average of its monthly returns at the annual lags 24, 36, 48, and 60 months before the holding month (i.e., the same calendar month as the holding month in each of years 2 through 5 prior).",
+  "our_value": "avg_lagged_month_return(lags=[24, 36, 48, 60], min_lags=2)",
+  "status": "stated",
+  "reason": "mapped to registry operations by rule table"
+ },
+ {
+  "field": "formation_window",
+  "paper_value": "4 monthly returns at annual lags 24, 36, 48, and 60 months (the same calendar month in years 2-5 before the holding month)",
+  "our_value": "None",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "deciles",
+  "our_value": "deciles",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "highest decile (decile 10, winners) of average returns at annual lags 24, 36, 48, and 60",
+  "our_value": "highest group",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "equal-count deciles (equal number of stocks in each portfolio) of all NYSE/AMEX stocks in the sample each month",
+  "our_value": "equal-count over eligible names",
+  "status": "adapted",
+  "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "equal",
+  "our_value": "equal",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long highest decile (decile 10, winners) of average returns at annual lags 24, 36, 48, and 60 / short lowest decile (decile 1, losers) of average returns at annual lags 24, 36, 48, and 60",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "favored_group_higher",
+  "our_value": "favored_group_higher",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "1 month",
+  "our_value": "1 month",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "none stated separately; the signal uses only lags 24, 36, 48, and 60, so months t-1 through t-23 and the non-annual months in between are not used",
+  "our_value": "0 months",
+  "status": "assumed",
+  "reason": "no skip"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "monthly",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "NYSE/AMEX-listed firms whose data is available on the CRSP monthly returns file; holding-period returns January 1965 through December 2002 (456 months), with lagged returns back to January 1945; only stocks available strictly before each date are used. No further filters stated.",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "no price filter unless stated"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "Years 2-5 annual winner-minus-loser decile spread of 67 basis points per month (0.0067, t-statistic 5.35 in Table 2), January 1965-December 2002",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "min_lags",
+  "paper_value": "all listed annual lags",
+  "our_value": "mean of available lags, at least 2",
+  "status": "assumed",
+  "reason": "snapshot starts 2012-01, so 2015-16 formations have only lags 24 and 36 of the paper's 24-60"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "252",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Minimum return-history requirement: whether a stock must have returns at all four lags (24, 36, 48, 60) or can be ranked on a subset of available lags is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention not stated (e.g., whether CRSP returns include dividends; treatment of delisting returns).",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No share-code, price, or size filters stated beyond NYSE/AMEX listing on the CRSP monthly file.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Handling of stocks with missing returns in the holding month is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No equation or notation is given for the decile-sort signal.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No explicit skip period; the gap is implied only by using lags 24-60.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Prose on page 14 says 'decile 1 winners outperformed decile 10 losers', which conflicts with Table 2 labeling (decile 10 = winners, decile 1 = losers); the table labeling is followed here.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Breakpoints are described only as equal-number-of-stocks deciles; whether they are computed over all NYSE/AMEX stocks or NYSE only is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Decile labels conflict: Table 2 header labels decile 1 as losers and decile 10 as winners, but the page 14 prose says 'decile 1 winners outperformed decile 10 losers'; the table convention (10 = winners) is used here",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether a stock must have returns at all four lags (24, 36, 48, 60) or is ranked on the average of available lags is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No share-code (common stock), price, or size filters are stated beyond NYSE/AMEX listing on CRSP",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Breakpoints are equal-count deciles, but whether they are computed over all NYSE/AMEX stocks or NYSE-only stocks is not stated beyond 'equal number of stocks in each portfolio'",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No explicit equation is given for the decile-sort signal",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention (simple vs. log, inclusion of dividends) is not stated beyond CRSP monthly returns",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

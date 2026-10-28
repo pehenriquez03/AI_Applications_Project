@@ -1,0 +1,304 @@
+{
+ "run_id": "demo_lowvol",
+ "paper_sha256": "1edc3dfbfce8ecb6d5090d22ec676d633cfa68122869caa6742d0fbd067ff328",
+ "strategy_slug": "lowvol",
+ "status": "ready",
+ "blocked_reasons": [],
+ "signal_ops": [
+  {
+   "op": "residual_vol",
+   "params": {
+    "window_months": 1,
+    "factors": "ff3",
+    "min_days": 15
+   }
+  }
+ ],
+ "selection": {
+  "sort": "quintiles",
+  "n_groups": 5,
+  "percent": null,
+  "favored": "lowest",
+  "double_sort": null
+ },
+ "weighting": "equal",
+ "holding_months": 1,
+ "skip_months": 0,
+ "min_names": 20,
+ "price_floor": null,
+ "min_history_days": 252,
+ "min_formation_days": 15,
+ "expected_sign": "favored_group_higher",
+ "universe": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+ "snapshot": "snapshot_2026-10-28",
+ "warmup_start": "2012-01-01",
+ "eval_start": "2015-01-01",
+ "eval_end": "2025-12-31",
+ "execution": "signal through prior month's last close; execute at next month's first trading-day close; new weights earn only after execution",
+ "cost_bps": 10,
+ "benchmarks": [
+  "spy",
+  "ew_universe"
+ ],
+ "fund": {
+  "starting_aum": 100000000.0,
+  "management_fee_rate": 0.02,
+  "performance_fee_rate": 0.2,
+  "hurdle_rate": 0.05,
+  "hurdle_type": "hard",
+  "high_water_mark": true,
+  "crystallization_frequency": "annual",
+  "horizon_years": 5,
+  "discount_rate": 0.1
+ },
+ "research_cost": {
+  "dev_review_hours": 80,
+  "maintenance_hours_per_year": 10,
+  "hourly_rate": 150.0
+ },
+ "monte_carlo": {
+  "n_paths": 1000,
+  "mean_block_days": 126,
+  "block_sensitivity_days": [
+   63,
+   126,
+   252
+  ],
+  "seed": 20261028
+ },
+ "adaptations": [
+  {
+   "field": "selected_experiment",
+   "paper_value": "Table VI, Panel B: value-weighted quintile portfolios sorted on idiosyncratic volatility relative to the Fama-French (1993) three-factor model (1/0/1 strategy)",
+   "our_value": "Table VI, Panel B: value-weighted quintile portfolios sorted on idiosyncratic volatility relative to the Fama-French (1993) three-factor model (1/0/1 strategy)",
+   "status": "stated",
+   "reason": "identified by the extraction"
+  },
+  {
+   "field": "required_inputs",
+   "paper_value": "market capitalization (value weights)",
+   "our_value": "not used",
+   "status": "adapted",
+   "reason": "market capitalization used only for weighting, breakpoints or filters"
+  },
+  {
+   "field": "signal_formula_words",
+   "paper_value": "Idiosyncratic volatility: the standard deviation of the residuals from a regression of each stock's daily returns on the Fama-French three factors (MKT, SMB, HML), estimated over the past one month of daily data.",
+   "our_value": "residual_vol(window_months=1, factors=ff3, min_days=15)",
+   "status": "stated",
+   "reason": "mapped to registry operations by rule table"
+  },
+  {
+   "field": "formation_window",
+   "paper_value": "1 month of daily returns",
+   "our_value": "1",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "sort_rule",
+   "paper_value": "quintiles",
+   "our_value": "quintiles",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "favored_group",
+   "paper_value": "lowest idiosyncratic volatility quintile (quintile 1)",
+   "our_value": "lowest group",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "breakpoints",
+   "paper_value": "equal-count quintiles across all sampled stocks (the paper notes quintile 5 contains 20% of the stocks); NYSE breakpoints are not mentioned",
+   "our_value": "equal-count over eligible names",
+   "status": "adapted",
+   "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+  },
+  {
+   "field": "weighting",
+   "paper_value": "value",
+   "our_value": "equal",
+   "status": "adapted",
+   "reason": "policy: equal weight everywhere"
+  },
+  {
+   "field": "disfavored_group",
+   "paper_value": "long lowest idiosyncratic volatility quintile (quintile 1) / short highest idiosyncratic volatility quintile (quintile 5)",
+   "our_value": "long-only favored group; every group computed for the monotonicity table",
+   "status": "adapted",
+   "reason": "policy: long-only, no short leg"
+  },
+  {
+   "field": "expected_sign",
+   "paper_value": "favored_group_higher",
+   "our_value": "favored_group_higher",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "holding_period",
+   "paper_value": "1 month",
+   "our_value": "1 month",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "skip_window",
+   "paper_value": "none (M = 0 in the 1/0/1 strategy)",
+   "our_value": "0 months",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "rebalance_frequency",
+   "paper_value": "monthly",
+   "our_value": "monthly",
+   "status": "stated",
+   "reason": "as stated (cohorts rebalance monthly)"
+  },
+  {
+   "field": "universe_and_filters",
+   "paper_value": "not stated for Table VI (implied: NYSE, AMEX and NASDAQ stocks, since the NYSE-only robustness check excludes NASDAQ and AMEX; sample July 1963 to December 2000)",
+   "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+   "status": "adapted",
+   "reason": "policy: our 415-name S&P 500 survivor universe"
+  },
+  {
+   "field": "price_floor",
+   "paper_value": null,
+   "our_value": "none",
+   "status": "assumed",
+   "reason": "no price filter unless stated"
+  },
+  {
+   "field": "sample_period",
+   "paper_value": "5-1 (high minus low idiosyncratic volatility) difference in FF-3 alphas of -1.31% per month, t-statistic -7.00; raw 5-1 average return difference -1.06% per month",
+   "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+   "status": "adapted",
+   "reason": "policy: our snapshot sample"
+  },
+  {
+   "field": "min_history_days",
+   "paper_value": null,
+   "our_value": "252",
+   "status": "assumed",
+   "reason": "one year of history to be eligible (or the signal window if longer)"
+  },
+  {
+   "field": "min_formation_days",
+   "paper_value": null,
+   "our_value": "15",
+   "status": "assumed",
+   "reason": "15 trading days minimum in a formation month"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Stock universe and filters for the idiosyncratic volatility sorts are not stated (exchanges, share codes, price filters); the minimum of more than 17 daily observations is stated only for the beta-to-delta-VIX regressions.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Whether equation (8) uses excess or raw daily stock returns is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Breakpoint universe is not named explicitly; equal-count quintiles over all stocks is implied by quintile 5 containing 20% of the stocks.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Date of the market capitalization used for value weights is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Exact window end for 'the past month' (calendar month ending at formation date) and the timing of the 1/0/1 formation are not spelled out; the paper adds a 1/1/1 variant to ensure information is definitely available at time t.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Treatment of delisting returns and the return convention for holding-period returns beyond 'total, not excess, simple returns' are not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Source of the daily Fama-French factors is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "The paper has two central experiments (Table I, beta-to-delta-VIX sorts; Table VI, idiosyncratic volatility sorts); Table VI Panel B was selected as the headline low-volatility result.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Universe filters for the idiosyncratic volatility sorts (share codes, price screens, exchange coverage) are not stated in Section II; NYSE/AMEX/NASDAQ coverage is only implied.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Minimum number of daily observations required to estimate idiosyncratic volatility is not stated for Section II (Section I uses more than 17 daily observations for the beta_dVIX regression).",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Whether regression (8) uses excess or raw stock returns is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Breakpoint universe (all stocks vs NYSE breakpoints) is not stated; equal-count quintiles across all stocks are only implied.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Exact definition of the formation month end (calendar month vs trading days) and the timing between formation and first return is not stated beyond the 1/0/1 description.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Treatment of delisting returns and missing returns is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Return convention: portfolio statistics are total, not excess, simple monthly returns.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  }
+ ],
+ "n_assumed": 0,
+ "n_adapted": 6
+}

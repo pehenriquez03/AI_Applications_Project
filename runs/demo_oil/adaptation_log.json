@@ -1,0 +1,303 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Sections 5-7 methodology (no empirical table): OILP regime portfolios - constrained long-short optimized positive (+0.25), neutral (0.00) and negative (-0.10) OILP-exposure equity portfolios, with a timing signal s(t) selecting which regime to hold at each rebalance date",
+  "our_value": "Sections 5-7 methodology (no empirical table): OILP regime portfolios - constrained long-short optimized positive (+0.25), neutral (0.00) and negative (-0.10) OILP-exposure equity portfolios, with a timing signal s(t) selecting which regime to hold at each rebalance date",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "OILP is each security's slope coefficient b_i,oil from a time-series regression of its returns on monthly simple oil-price changes plus other risk controls, estimated on a training sample. A constrained long-short optimizer builds positive, neutral and negative OILP-target portfolios (maximizing exposure to historical residual returns subject to the OILP target, other factor targets, gross long/short allocations and name bounds); a timing signal s(t) picks positive if s(t) >= h, negative if s(t) <= -h, neutral otherwise.",
+  "our_value": "oil_beta(window_months=36)",
+  "status": "stated",
+  "reason": "mapped to registry operations by rule table"
+ },
+ {
+  "field": "formation_window",
+  "paper_value": "not stated (OILP estimated on a training sample of unspecified length; exposures should use only data available at each rebalance date)",
+  "our_value": "36",
+  "status": "assumed",
+  "reason": "window not stated or not parseable; strategy default"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "other",
+  "our_value": "deciles",
+  "status": "adapted",
+  "reason": "paper sort 'other' is not a ranked-group sort; deciles with equal-count breakpoints"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "positive-OILP portfolio, conditional on higher contemporaneous or correctly forecast oil returns (no unconditional premium claimed)",
+  "our_value": "highest group",
+  "status": "assumed",
+  "reason": "paper claims no unconditional relation (expected_sign unclear); the engine tests this group as a default and reports every group"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "no breakpoints; constrained optimizer targets portfolio OILP exposures of +0.25 (positive), 0.00 (neutral), -0.10 (negative)",
+  "our_value": "equal-count over eligible names",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "other",
+  "our_value": "equal",
+  "status": "adapted",
+  "reason": "policy: equal weight everywhere"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long positive-OILP portfolio, conditional on higher contemporaneous or correctly forecast oil returns (no unconditional premium claimed) / short negative-OILP portfolio (conditionally favored when oil returns are lower)",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "unclear",
+  "our_value": "favored_group_higher",
+  "status": "assumed",
+  "reason": "favored group expected to earn more"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "1 month (monthly dates) or explicitly defined holding intervals",
+  "our_value": "1 month",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "not stated",
+  "our_value": "0 months",
+  "status": "assumed",
+  "reason": "no skip"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "monthly (or explicitly defined holding intervals); regime chosen at each rebalance date",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "the available equity universe on each construction date; no universe definition or filters stated",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "no price filter unless stated"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "not stated (synthetic methodology note; no empirical tests or performance estimates reported)",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "timing_signal",
+  "paper_value": "conditional timing signal with threshold h selects the +/0/- oil-exposure portfolio (optimizer-built)",
+  "our_value": "dropped: unconditional monthly sort on each stock's trailing oil beta, long the favored group",
+  "status": "adapted",
+  "reason": "the note's signal is built from realized future oil returns (an oracle); the engine tests the exposure sort only"
+ },
+ {
+  "field": "oil_series",
+  "paper_value": "monthly oil price level (paper's input)",
+  "our_value": "data/oil_prices.csv, ends 2024-03",
+  "status": "adapted",
+  "reason": "oil beta is NaN after 2024-03; months with too few names are skipped and logged"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "756",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Length of the training sample / estimation window for OILP betas, and whether it is rolling or static",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Exact set of risk controls X(t); only examples given (market, credit, consumer, employment proxies)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Equity universe definition and stock filters (price, size, exchange, missing data)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Deployable timing signal s(t) is not specified; only an oracle-calibrated simulated signal from future oil returns is described",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Value of the regime threshold h",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Skip between estimation/decision date and holding period",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Holding period fixed only as monthly dates or explicitly defined holding intervals",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Numerical gross long/short allocations and name-level weight bounds for the optimizer",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Trailing window for the cross-sectional regression producing residual returns e_i",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Oil benchmark, units, currency, inflation adjustment and roll convention of the Factor Level series",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Equity return convention (simple vs log, dividends) and treatment of transaction costs",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No headline empirical result and no unconditional expected-return sign; direction is only conditional on oil returns",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No unconditional favored or disfavored group: the direction is only conditional on oil returns",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Length of the training sample used to estimate OILP",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Exact composition and source of control series X(t) (market, credit, consumer, employment proxies)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Which oil benchmark, units, currency and roll convention the Factor Level represents",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Investable universe and any stock filters",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Skip between estimation and holding",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Holding period and whether rebalancing is strictly monthly",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Deployable timing signal s(t) and threshold h: the described signal is an oracle simulation from future oil returns",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Optimizer gross long/short allocations, name-level weight bounds and tolerance",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether exposures are estimated point-in-time or statically",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention and transaction costs",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No headline empirical result reported",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

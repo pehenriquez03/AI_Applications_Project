@@ -1,0 +1,38 @@
+[
+ {
+  "call": "extract_1",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 22409,
+  "output_tokens": 1281,
+  "estimated": true,
+  "cached": false,
+  "source": "session"
+ },
+ {
+  "call": "check_1",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 23184,
+  "output_tokens": 6,
+  "estimated": true,
+  "cached": false,
+  "source": "session"
+ },
+ {
+  "call": "narrative",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 12782,
+  "output_tokens": 1462,
+  "estimated": true,
+  "cached": false,
+  "source": "session"
+ },
+ {
+  "call": "extract_2",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 22409,
+  "output_tokens": 1336,
+  "estimated": true,
+  "cached": false,
+  "source": "session"
+ }
+]

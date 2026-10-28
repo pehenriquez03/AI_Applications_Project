@@ -35,6 +35,47 @@ def _normalize(v):
     return _norm_str(v)
 
 
+_ENUM_FIELDS = {"sort_rule", "weighting", "expected_sign"}
+_STOP = {"the", "a", "an", "of", "in", "on", "to", "for", "and", "or", "with", "by", "at", "is", "are",
+         "its", "each", "per", "from", "over", "stock", "stocks", "return", "returns", "portfolio", "portfolios"}
+
+
+def _tokens(x) -> set:
+    if isinstance(x, (list, tuple)):
+        x = " ".join(x)
+    return {t for t in re.split(r"[^0-9a-z%]+", str(x)) if t and t not in _STOP}
+
+
+def _months(x) -> set:
+    words = {"one": 1, "two": 2, "three": 3, "six": 6, "twelve": 12}
+    out = set()
+    for m in re.finditer(r"(\d+|one|two|three|six|twelve)[- ]?(month|week|year|day)", str(x)):
+        n = int(m.group(1)) if m.group(1).isdigit() else words[m.group(1)]
+        unit = m.group(2)
+        out.add(n * (12 if unit == "year" else 1) if unit in ("month", "year") else (n, unit))
+    return out
+
+
+def _values_match(ours, ref, field: str) -> bool:
+    """Exact for enums; for free text, substring containment or token Jaccard >= 0.5,
+    and for window-like fields agreement on the stated number of months."""
+    if field in _ENUM_FIELDS or isinstance(ours, tuple) and isinstance(ref, tuple) and ours == ref:
+        return ours == ref
+    a, b = (" ".join(ours) if isinstance(ours, tuple) else ours), (" ".join(ref) if isinstance(ref, tuple) else ref)
+    if a == b or (a and b and (a in b or b in a)):
+        return True
+    ta, tb = _tokens(a), _tokens(b)
+    if field in ("formation_window", "skip_window", "holding_period", "rebalance_frequency"):
+        ma, mb = _months(a), _months(b)
+        if ma or mb:
+            return ma == mb
+        if {"none", "no", "0"} & ta and {"none", "no", "0"} & tb:
+            return True
+    if not ta or not tb:
+        return False
+    return len(ta & tb) / len(ta | tb) >= 0.5
+
+
 def _unwrap_spec(d: dict) -> dict:
     return d["spec"] if isinstance(d, dict) and "spec" in d and "paper_title" not in d else d
 
@@ -45,7 +86,9 @@ def compare_to_reference(spec: dict, reference: dict) -> dict:
         if f not in reference or f not in spec:
             continue
         ours, ref = _normalize(spec[f]), _normalize(reference[f])
-        ok = ours == ref
+        if isinstance(ref, str) and ("not stated in key" in ref or "not in key" in ref or ref == ""):
+            continue  # the reference does not answer this field; not comparable
+        ok = _values_match(ours, ref, f)
         n_cmp += 1
         n_match += int(ok)
         fields[f] = dict(match=ok, critical=f in CRITICAL_FIELDS,

@@ -1,0 +1,212 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Table I, (6, 6) 52-week high strategy: equally weighted winner (top 30%) minus loser (bottom 30%) portfolios sorted on the ratio of current price to the 52-week high, held 6 months",
+  "our_value": "Table I, (6, 6) 52-week high strategy: equally weighted winner (top 30%) minus loser (bottom 30%) portfolios sorted on the ratio of current price to the 52-week high, held 6 months",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "Nearness to the 52-week high: the stock's price at the end of month t-1 divided by its highest price during the 12-month period ending on the last day of month t-1.",
+  "our_value": "price_to_rolling_high(window_days=252, high_field=high)",
+  "status": "stated",
+  "reason": "mapped to registry operations by rule table"
+ },
+ {
+  "field": "formation_window",
+  "paper_value": "12 months (highest price over the 12-month period ending on the last day of month t-1)",
+  "our_value": "252",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "top_bottom_percent",
+  "our_value": "top/bottom 30%",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "winner portfolio: top 30% of stocks with the highest ratio of current price to 52-week high (long leg)",
+  "our_value": "highest group",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "Top 30% (winners) and bottom 30% (losers) of all sample stocks ranked by the 52-week high measure; remaining 40% is the middle portfolio. NYSE breakpoints are not mentioned.",
+  "our_value": "equal-count over eligible names",
+  "status": "adapted",
+  "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "equal",
+  "our_value": "equal",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long winner portfolio: top 30% of stocks with the highest ratio of current price to 52-week high (long leg) / short loser portfolio: bottom 30% of stocks with the lowest ratio of current price to 52-week high (short leg)",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "favored_group_higher",
+  "our_value": "favored_group_higher",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "6 months",
+  "our_value": "6 months",
+  "status": "stated",
+  "reason": "as stated; overlapping monthly cohorts"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "none (no skip month in Tables I-IV; one month is skipped only in the regression tests)",
+  "our_value": "0 months",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "monthly (overlapping portfolios: month-t return is the equally weighted average of six portfolios formed in months t-6 to t-1)",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "All stocks on CRSP, 1963 to 2001 (Table I returns July 1963 through December 2001); no price, size, exchange, or share-code filters stated.",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "no price filter unless stated"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "Table I: 52-week high winner 1.51%, loser 1.06%, winner minus loser 0.45% per month (t = 2.00); 1.23% per month (t = 7.06) excluding January (Table II)",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "252",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "No price, size, exchange, or share-code filters are stated beyond 'all stocks on CRSP'.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether the 12-month high uses daily closing prices, daily highs, or month-end prices is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Adjustment of prices for splits and distributions when computing the 52-week high is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns and missing returns during the holding period is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Minimum price history required to compute the 52-week high (e.g. stocks with under 12 months of data) is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether the 30% cutoffs are computed over all CRSP stocks or a subset (e.g. NYSE) is not stated explicitly.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Tables I-IV use no skip month, while the regression tests skip one month; the headline table follows the no-skip convention.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Breakpoint universe not stated (all CRSP stocks vs NYSE breakpoints); text says only top/bottom 30% of stocks.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Sample filters (share codes, exchanges, price or size screens, minimum history) not stated beyond 'collected exactly as described in MG'.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether the 52-week high uses daily prices or month-end prices, and how prices are adjusted for splits and distributions, is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of stocks lacking a full 12 months of price history is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention (delisting returns, raw vs excess) not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Table I uses no skip month; the regression tests (Table V) skip one month, so skip differs across experiments.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

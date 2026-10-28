@@ -1,0 +1,129 @@
+{
+ "paper_title": "The 52-Week High and Momentum Investing",
+ "authors": [
+  "Thomas J. George",
+  "Chuan-Yang Hwang"
+ ],
+ "year": 2004,
+ "selected_experiment": "Table I, (6, 6) 52-week high strategy: equally weighted winner (top 30%) minus loser (bottom 30%) portfolios ranked on the ratio of current price to the 52-week high, held 6 months, July 1963 to December 2001",
+ "can_implement": true,
+ "cannot_implement_reasons": [],
+ "economic_rationale": {
+  "value": "Anchoring: traders use the 52-week high as a reference point; when good news pushes a price near the 52-week high they are reluctant to bid it higher, and when bad news pushes it far from the high they are reluctant to sell as low as the information implies, so prices underreact and later continue.",
+  "evidence": {
+   "page": 2,
+   "quote": "traders\nuse the 52-week high as a reference point against which they evaluate the\npotential impact of news."
+  }
+ },
+ "universe_and_filters": {
+  "value": "All stocks on CRSP, 1963 to 2001, data collected exactly as described in Moskowitz and Grinblatt (1999); no further filters stated",
+  "evidence": {
+   "page": 4,
+   "quote": "The data are collected exactly as described in MG. We use all stocks on CRSP\nfrom 1963 to 2001."
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "monthly stock returns",
+   "month-end stock prices",
+   "highest stock price over the past 12 months (52-week high)"
+  ],
+  "evidence": {
+   "page": 5,
+   "quote": "Pi,t−1 is the price of stock i at the end of month t – 1 and highi,t−1 is the highest\nprice of stock i during the 12-month period that ends on the last day of month"
+  }
+ },
+ "signal_formula_words": {
+  "value": "Nearness to the 52-week high: the stock's price at the end of month t-1 divided by its highest price during the 12-month period ending on the last day of month t-1",
+  "evidence": {
+   "page": 5,
+   "quote": "For the 52-week high strategy, stocks are ranked based on Pi,t−1highi,t−1 , where\nPi,t−1 is the price of stock i at the end of month t – 1 and highi,t−1 is the highest\nprice of stock i during the 12-month period that ends on the last day of month\nt – 1."
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "P_{i,t-1} / high_{i,t-1}",
+  "evidence": {
+   "page": 5,
+   "quote": "stocks are ranked based on Pi,t−1highi,t−1"
+  }
+ },
+ "formation_window": {
+  "value": "12 months of prices (52-week high over the 12-month period ending at the end of month t-1)",
+  "evidence": {
+   "page": 5,
+   "quote": "highi,t−1 is the highest\nprice of stock i during the 12-month period that ends on the last day of month"
+  }
+ },
+ "skip_window": {
+  "value": "none",
+  "evidence": {
+   "page": 5,
+   "quote": "We do not skip a month for the more descriptive Tables I –IV to better compare"
+  }
+ },
+ "holding_period": {
+  "value": "6 months",
+  "evidence": {
+   "page": 4,
+   "quote": "All portfolios\nare held for 6 months."
+  }
+ },
+ "rebalance_frequency": {
+  "value": "monthly (overlapping portfolios: each month's return is the equally weighted average of six portfolios formed in the six prior months)",
+  "evidence": {
+   "page": 5,
+   "quote": "In any particular month t of a (6, 6)\nstrategy, the return to winners is calculated as the equally weighted average\nof the month t returns from six separate winner portfolios"
+  }
+ },
+ "sort_rule": "top_bottom_percent",
+ "sort_rule_evidence": {
+  "page": 7,
+  "quote": "we define the winner portfolio to include stocks per-\nforming in the top 30%, and the loser portfolio to include the bottom 30%."
+ },
+ "breakpoints": {
+  "value": "top 30%, middle 40%, bottom 30% of sample stocks ranked on the 52-week high measure; whether breakpoints use all CRSP stocks or NYSE stocks is not stated",
+  "evidence": {
+   "page": 7,
+   "quote": "The\nremaining 40% is the middle portfolio."
+  }
+ },
+ "favored_group": {
+  "value": "52-week high winners: top 30% of stocks with price closest to the 52-week high (highest ratio of current price to 52-week high)",
+  "evidence": {
+   "page": 30,
+   "quote": "Long (short) positions are\ntaken in stocks whose current price is close to (far from) the 52-week high."
+  }
+ },
+ "disfavored_group": {
+  "value": "52-week high losers: bottom 30% of stocks with price farthest from the 52-week high (lowest ratio of current price to 52-week high)",
+  "evidence": {
+   "page": 30,
+   "quote": "Long (short) positions are\ntaken in stocks whose current price is close to (far from) the 52-week high."
+  }
+ },
+ "weighting": "equal",
+ "weighting_evidence": {
+  "page": 5,
+  "quote": "Our use of equally weighted portfolios follows JT."
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 2,
+  "quote": "We\nfind that nearness to the 52-week high is a better predictor of future returns"
+ },
+ "headline_result": {
+  "value": "52-week high winner minus loser: 0.45% per month (t = 2.00), July 1963 to December 2001 (winner 1.51%, loser 1.06%); 1.23% per month (t = 7.06) excluding January (Table II)",
+  "evidence": {
+   "page": 5,
+   "quote": "The returns\nto these strategies are very close, all around 0.45% per month."
+  }
+ },
+ "unresolved_details": [
+  "Breakpoint universe not stated (all CRSP stocks vs NYSE breakpoints); text says only top/bottom 30% of stocks.",
+  "Sample filters (share codes, exchanges, price or size screens, minimum history) not stated beyond 'collected exactly as described in MG'.",
+  "Whether the 52-week high uses daily prices or month-end prices, and how prices are adjusted for splits and distributions, is not stated.",
+  "Treatment of stocks lacking a full 12 months of price history is not stated.",
+  "Return convention (delisting returns, raw vs excess) not stated.",
+  "Table I uses no skip month; the regression tests (Table V) skip one month, so skip differs across experiments."
+ ]
+}

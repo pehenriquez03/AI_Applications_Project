@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_high52",
+ "paper_title": "The 52-Week High and Momentum Investing",
+ "strategy_slug": "high52",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "32 pages · b6e80dd8",
+   "started": null,
+   "finished": "2026-10-28T09:16:15+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "2 run(s) · fields agree 94%",
+   "started": "2026-10-28T09:01:12+00:00",
+   "finished": "2026-10-28T09:12:10+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "ready · 0 assumed · 4 adapted",
+   "started": "2026-10-28T09:01:12+00:00",
+   "finished": "2026-10-28T09:12:10+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "414 eligible names · 3520 trading days",
+   "started": "2026-10-28T09:01:12+00:00",
+   "finished": "2026-10-28T09:12:10+00:00"
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "132 months · 112 names/month",
+   "started": "2026-10-28T09:01:12+00:00",
+   "finished": "2026-10-28T09:12:11+00:00"
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "2766 days · net CAGR 10.6% · turnover 11%/rebalance · 0.8s",
+   "started": "2026-10-28T09:01:13+00:00",
+   "finished": "2026-10-28T09:12:12+00:00"
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "net CAGR 10.6% · alpha t -1.17",
+   "started": "2026-10-28T09:01:14+00:00",
+   "finished": "2026-10-28T09:12:13+00:00"
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "1000 paths · P(NPV>0) 15%",
+   "started": "2026-10-28T09:01:15+00:00",
+   "finished": "2026-10-28T09:16:16+00:00"
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "done",
+   "detail": "deprioritize",
+   "started": "2026-10-28T09:01:15+00:00",
+   "finished": "2026-10-28T09:16:16+00:00"
+  }
+ ],
+ "recommendation": "deprioritize",
+ "summary": "Deprioritize. The strategy is the 52-week high momentum rule from George and Hwang (2004): rank stocks by the ratio of current price to the highest price of the past 12 months and hold the top 30% for 6 months. Our long-only test on a 415-name survivor universe over 2015 to 2025 returned a net CAGR of 10.57% against 12.71% for the equal-weight universe, with a Sharpe ratio of 0.57 against 0.65. The economics are also negative: the probability that the fund's incremental fees beat the equal-weight fund after research cost is 15%, with a median incremental fee PV of -$2.1M. The main reason for the recommendation is that the strategy fails to beat a passive equal-weight basket of the same names, and the edge does not hold in either sub-period.",
+ "error": null
+}

@@ -328,6 +328,7 @@ def _economics(econ: Optional[dict], exp: Optional[dict]) -> Optional[dict]:
 def _llm_usage(rows: Optional[list]) -> Optional[dict]:
     if rows is None:
         return None
+    rows = [r for r in rows if not str(r.get("call", "")).startswith("narrative")]  # exclude the self-referential narrative call
     tin = sum(int(r.get("input_tokens", 0) or 0) for r in rows)
     tout = sum(int(r.get("output_tokens", 0) or 0) for r in rows)
     fresh = [r for r in rows if not r.get("cached")]

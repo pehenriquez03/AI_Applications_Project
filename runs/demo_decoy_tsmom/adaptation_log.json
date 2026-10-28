@@ -1,0 +1,156 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Section 4 / Table 3, the diversified 12-month time series momentum (TSMOM) strategy with a 1-month holding period across 58 futures contracts, January 1985 to December 2009",
+  "our_value": "Section 4 / Table 3, the diversified 12-month time series momentum (TSMOM) strategy with a 1-month holding period across 58 futures contracts, January 1985 to December 2009",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "Sign of the instrument's own excess return over the past 12 months: long the contract if positive, short if negative, with position size inversely proportional to its ex ante volatility (target 40% annualized)",
+  "our_value": "rolling_vol(window_months=12, freq=daily)",
+  "status": "stated",
+  "reason": "mapped to registry operations by rule table"
+ },
+ {
+  "field": "formation_window",
+  "paper_value": "12 months (look-back k = 12)",
+  "our_value": "12",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "other",
+  "our_value": "deciles",
+  "status": "adapted",
+  "reason": "paper sort 'other' is not a ranked-group sort; deciles with equal-count breakpoints"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "Instruments with a positive past 12-month excess return (held long)",
+  "our_value": "highest group",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "No breakpoints or ranking: each instrument is classified by the sign of its own past 12-month excess return (zero cutoff), long if positive and short if negative",
+  "our_value": "equal-count over eligible names",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "other",
+  "our_value": "equal",
+  "status": "adapted",
+  "reason": "policy: equal weight everywhere"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long Instruments with a positive past 12-month excess return (held long) / short Instruments with a negative past 12-month excess return (held short)",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "favored_group_higher",
+  "our_value": "favored_group_higher",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "1 month (h = 1)",
+  "our_value": "1 month",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "not stated",
+  "our_value": "0 months",
+  "status": "assumed",
+  "reason": "no skip"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "monthly",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "58 liquid futures and forward contracts: 24 commodities, 12 cross-currency pairs (nine underlying currencies), nine developed equity indexes and 13 developed government bond futures; data January 1965 to December 2009, strategy evaluated from January 1985; no further filters stated",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "no price filter unless stated"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "The diversified TSMOM strategy earns an alpha of about 1.58% per month (4.75% per quarter) relative to MSCI World, SMB, HML and UMD",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "252",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Whether the 12-month signal skips the most recent month is not stated for TSMOM (Eq. 5 shows return from t-12 to t; Section 3.2 describes t-k-1 to t-1)",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Exact roll rule for the most liquid contract is only given as typically the nearest or next nearest-to-delivery contract",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of instruments with short or missing history, minimum data requirements and any exclusion filters are not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Transaction costs and margin or financing assumptions are not included in the headline results",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Exact return convention (arithmetic vs compounded monthly returns) for the 12-month signal is not fully specified",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

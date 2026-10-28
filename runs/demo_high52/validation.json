@@ -1,0 +1,124 @@
+{
+ "evidence": {
+  "economic_rationale": {
+   "valid": true,
+   "page": 2,
+   "found_page": 2,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "universe_and_filters": {
+   "valid": true,
+   "page": 4,
+   "found_page": 4,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "required_inputs": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "signal_formula_words": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "signal_formula_symbols": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "formation_window": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "skip_window": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "holding_period": {
+   "valid": true,
+   "page": 4,
+   "found_page": 4,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "rebalance_frequency": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "sort_rule": {
+   "valid": true,
+   "page": 4,
+   "found_page": 4,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "breakpoints": {
+   "valid": true,
+   "page": 7,
+   "found_page": 7,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "favored_group": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "disfavored_group": {
+   "valid": true,
+   "page": 8,
+   "found_page": 8,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "weighting": {
+   "valid": true,
+   "page": 4,
+   "found_page": 4,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "expected_sign": {
+   "valid": true,
+   "page": 7,
+   "found_page": 7,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "headline_result": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  }
+ },
+ "consistency_issues": [],
+ "check_pass": [
+  {
+   "agrees": true,
+   "items": []
+  }
+ ],
+ "n_check_disagreements": 0
+}

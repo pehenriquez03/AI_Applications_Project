@@ -1,0 +1,136 @@
+{
+ "n_runs": 2,
+ "mean_field_agreement": 1.0,
+ "min_field_agreement": 1.0,
+ "field_agreement": {
+  "economic_rationale": 1.0,
+  "universe_and_filters": 1.0,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "evidence_valid_rate": 1.0,
+ "n_evidence_checked": 16,
+ "evidence_invalid_fields": [],
+ "n_consistency_issues": 1,
+ "n_check_disagreements": 0,
+ "unresolved_count": 11,
+ "unresolved_details_count": 11,
+ "assumed_count": 4,
+ "adapted_count": 5,
+ "decoy_refused": false,
+ "reference_label": "max.preliminary.json",
+ "preliminary": true,
+ "agreement_rate": 0.6923076923076923,
+ "critical_errors": [
+  "signal_formula_words"
+ ],
+ "minor_errors": [
+  "required_inputs",
+  "breakpoints",
+  "headline_result"
+ ],
+ "n_critical_errors": 1,
+ "n_minor_errors": 3,
+ "n_compared": 13,
+ "fields": {
+  "required_inputs": {
+   "match": false,
+   "critical": false,
+   "ours": [
+    "daily stock returns (to compute MAX)",
+    "monthly stock returns (portfolio returns in the holding month)",
+    "share prices and shares outstanding (market capitalization, value weights)",
+    "exchange listing NYSE/AMEX/NASDAQ (universe filter)"
+   ],
+   "reference": [
+    "daily prices"
+   ]
+  },
+  "signal_formula_words": {
+   "match": false,
+   "critical": true,
+   "ours": "MAX: the maximum daily return of the stock within the month (the portfolio formation month).",
+   "reference": "MAX_i,t = maximum daily return of stock i during month t-1 (robustness: average of the 2 to 5 highest daily returns)"
+  },
+  "formation_window": {
+   "match": true,
+   "critical": true,
+   "ours": "1 month of daily returns (the previous month)",
+   "reference": "1 month of daily data"
+  },
+  "skip_window": {
+   "match": true,
+   "critical": false,
+   "ours": "none",
+   "reference": "none"
+  },
+  "holding_period": {
+   "match": true,
+   "critical": true,
+   "ours": "1 month",
+   "reference": "1 month"
+  },
+  "rebalance_frequency": {
+   "match": true,
+   "critical": false,
+   "ours": "monthly",
+   "reference": "monthly"
+  },
+  "sort_rule": {
+   "match": true,
+   "critical": true,
+   "ours": "deciles",
+   "reference": "deciles"
+  },
+  "breakpoints": {
+   "match": false,
+   "critical": false,
+   "ours": "not stated",
+   "reference": "deciles"
+  },
+  "favored_group": {
+   "match": true,
+   "critical": true,
+   "ours": "lowest MAX decile (portfolio 1, low MAX)",
+   "reference": "lowest-MAX decile"
+  },
+  "disfavored_group": {
+   "match": true,
+   "critical": false,
+   "ours": "highest MAX decile (portfolio 10, high MAX)",
+   "reference": "highest-MAX decile"
+  },
+  "weighting": {
+   "match": true,
+   "critical": false,
+   "ours": "value",
+   "reference": "value"
+  },
+  "expected_sign": {
+   "match": true,
+   "critical": true,
+   "ours": "favored_group_higher",
+   "reference": "favored_group_higher"
+  },
+  "headline_result": {
+   "match": false,
+   "critical": false,
+   "ours": "Value-weighted decile 10 (high MAX) minus decile 1 (low MAX): -1.03% per month (Newey-West t = -2.83); Fama-French-Carhart 4-factor alpha difference -1.18% per month (t = -4.71).",
+   "reference": "decile 10 minus decile 1, value-weighted: -1.03 % per month raw (Newey-West t = -2.83) (CRSP July 1962 - December 2005)"
+  }
+ }
+}

@@ -45,11 +45,13 @@ def _ops_frog(spec):
     w = DEFAULTS["frog_window"]["value"]
     lags = parse_window_lags(f"{spec.formation_window.value} {spec.signal_formula_symbols.value}")
     months, skip = (lags[0] - lags[1] + 1, lags[1] - 1) if lags else (w["months"], w["skip"])
-    ops = [SignalOp(op="cum_return", params={"months": months, "skip": skip, "name": "pret_12_2"}),
-           SignalOp(op="info_discreteness", params={"months": months, "skip": skip, "name": "id"})]
+    # months t-12..t-2 is the paper's 12-month formation with the most recent month skipped;
+    # the registered ops take (months=12, skip_months=1) and cover exactly that span.
+    ops = [SignalOp(op="pret_12_2", params={"months": 12, "skip_months": 1}),
+           SignalOp(op="info_discreteness", params={"months": 12, "skip_months": 1})]
     selection = {"sort": "quintiles", "n_groups": 5, "percent": None, "favored": "highest",
-                 "double_sort": {"outer_signal": "pret_12_2", "outer_sort": "quintiles", "outer_n_groups": 5,
-                                 "outer_favored": "highest", "inner_signal": "id", "inner_sort": "terciles",
+                 "double_sort": {"outer_op": "pret_12_2", "outer_sort": "quintiles", "outer_n_groups": 5,
+                                 "outer_favored": "highest", "inner_op": "info_discreteness", "inner_sort": "terciles",
                                  "inner_n_groups": 3, "inner_favored": "lowest",
                                  "min_names": MIN_NAMES_DOUBLE_SORT}}
     return ops, selection, bool(lags)
@@ -61,7 +63,7 @@ def _ops_max(spec):
 
 
 def _ops_high52(spec):
-    return [SignalOp(op="price_to_rolling_high", params={"window_days": 252, "price": "raw_split_adjusted_high"})], None, True
+    return [SignalOp(op="price_to_rolling_high", params={"window_days": 252, "high_field": "high"})], None, True
 
 
 def _ops_residual_vol(spec):
@@ -94,7 +96,7 @@ def _ops_rolling_vol(spec):
 
 def _ops_momentum(spec):
     m, ok = _months_or(spec.formation_window.value, STRATEGY_FALLBACKS["momentum"]["formation_months"])
-    return [SignalOp(op="cum_return", params={"months": m, "skip": _skip_months(spec)[0]})], None, ok
+    return [SignalOp(op="cum_return", params={"months": m, "skip_months": _skip_months(spec)[0]})], None, ok
 
 
 # order matters: most specific first
@@ -145,9 +147,10 @@ def _skip_months(spec: StrategySpec) -> tuple[int, str, str]:
 
 def _price_floor(spec: StrategySpec) -> tuple[Optional[float], str, str]:
     u = spec.universe_and_filters.value or ""
-    m = re.search(r"\$\s*(\d+(?:\.\d+)?)", u)
-    if m and re.search(r"price", u, re.I):
-        return float(m.group(1)), "stated", "price filter as stated"
+    m = re.search(r"(exclud|drop|remov|screen|omit|delet|eliminat)\w*[^.]{0,80}\$\s*(\d+(?:\.\d+)?)", u, re.I)
+    if m:
+        return None, "adapted", (f"paper excludes stocks priced below ${m.group(2)}; NOT applied: the snapshot's prices are "
+                                 "split-adjusted, not as-traded, so a dollar floor would drop the wrong names (e.g. NVDA 2017-18)")
     return None, "assumed", DEFAULTS["price_floor"]["text"]
 
 
@@ -240,6 +243,11 @@ def adapt(spec: StrategySpec, run_id: str, paper_sha256: str, selected_experimen
             selection["favored"] = fb["favored"]
             entry("favored_group", spec.favored_group.value, fb["favored"], "assumed",
                   "favored side not stated; strategy default, all groups are computed")
+        elif spec.expected_sign == "unclear":
+            selection["favored"] = fav_dir
+            entry("favored_group", spec.favored_group.value, f"{fav_dir} group", "assumed",
+                  "paper claims no unconditional relation (expected_sign unclear); the engine tests this group as a "
+                  "default and reports every group")
         else:
             selection["favored"] = fav_dir
             entry("favored_group", spec.favored_group.value, f"{fav_dir} group", "stated", "as stated")
@@ -305,6 +313,18 @@ def adapt(spec: StrategySpec, run_id: str, paper_sha256: str, selected_experimen
           "none" if floor is None else f"${floor:g}", f_status, f_reason)
     entry("sample_period", spec.headline_result.value, f"{EVAL_START}..{EVAL_END} (warm-up from {WARMUP_START})",
           "adapted", "policy: our snapshot sample")
+    if slug == "frog":
+        entry("inner_sort", "quintiles within the past-return quintile (paper)", "terciles", "adapted",
+              "415-name universe: quintile-within-quintile leaves ~17 names, under the 20-name floor; terciles with a 15-name floor")
+    if slug == "oil":
+        entry("timing_signal", "conditional timing signal with threshold h selects the +/0/- oil-exposure portfolio (optimizer-built)",
+              "dropped: unconditional monthly sort on each stock's trailing oil beta, long the favored group", "adapted",
+              "the note's signal is built from realized future oil returns (an oracle); the engine tests the exposure sort only")
+        entry("oil_series", "monthly oil price level (paper's input)", "data/oil_prices.csv, ends 2024-03", "adapted",
+              "oil beta is NaN after 2024-03; months with too few names are skipped and logged")
+    if any(o.op == "avg_lagged_month_return" for o in ops):
+        entry("min_lags", "all listed annual lags", "mean of available lags, at least 2", "assumed",
+              "snapshot starts 2012-01, so 2015-16 formations have only lags 24 and 36 of the paper's 24-60")
 
     window_days = 0
     for o in ops:

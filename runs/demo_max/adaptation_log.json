@@ -1,0 +1,205 @@
+[
+ {
+  "field": "selected_experiment",
+  "paper_value": "Table I, univariate value-weighted decile portfolios sorted on MAX (maximum daily return over the past one month), July 1962 to December 2005",
+  "our_value": "Table I, univariate value-weighted decile portfolios sorted on MAX (maximum daily return over the past one month), July 1962 to December 2005",
+  "status": "stated",
+  "reason": "identified by the extraction"
+ },
+ {
+  "field": "required_inputs",
+  "paper_value": "share prices and shares outstanding (market capitalization, value weights)",
+  "our_value": "not used",
+  "status": "adapted",
+  "reason": "market capitalization used only for weighting, breakpoints or filters"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "MAX: the maximum daily return of the stock within the month (the portfolio formation month).",
+  "our_value": "rolling_max_daily_return(window_months=1, min_days=15)",
+  "status": "stated",
+  "reason": "mapped to registry operations by rule table"
+ },
+ {
+  "field": "formation_window",
+  "paper_value": "1 month of daily returns (the previous month)",
+  "our_value": "1",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "sort_rule",
+  "paper_value": "deciles",
+  "our_value": "deciles",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "favored_group",
+  "paper_value": "lowest MAX decile (portfolio 1, low MAX)",
+  "our_value": "lowest group",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "breakpoints",
+  "paper_value": "not stated",
+  "our_value": "equal-count over eligible names",
+  "status": "assumed",
+  "reason": "equal-count breakpoints over eligible names"
+ },
+ {
+  "field": "weighting",
+  "paper_value": "value",
+  "our_value": "equal",
+  "status": "adapted",
+  "reason": "policy: equal weight everywhere"
+ },
+ {
+  "field": "disfavored_group",
+  "paper_value": "long lowest MAX decile (portfolio 1, low MAX) / short highest MAX decile (portfolio 10, high MAX)",
+  "our_value": "long-only favored group; every group computed for the monotonicity table",
+  "status": "adapted",
+  "reason": "policy: long-only, no short leg"
+ },
+ {
+  "field": "expected_sign",
+  "paper_value": "favored_group_higher",
+  "our_value": "favored_group_higher",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "1 month",
+  "our_value": "1 month",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "skip_window",
+  "paper_value": "none",
+  "our_value": "0 months",
+  "status": "stated",
+  "reason": "as stated"
+ },
+ {
+  "field": "rebalance_frequency",
+  "paper_value": "monthly",
+  "our_value": "monthly",
+  "status": "stated",
+  "reason": "as stated (cohorts rebalance monthly)"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "All NYSE, AMEX and NASDAQ financial and nonfinancial firms on CRSP; Table I sample period July 1962 to December 2005. No price, share-code or size filter is applied in the headline table (a $5 price screen is only a robustness check).",
+  "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+  "status": "adapted",
+  "reason": "policy: our 415-name S&P 500 survivor universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "no price filter unless stated"
+ },
+ {
+  "field": "sample_period",
+  "paper_value": "Value-weighted decile 10 (high MAX) minus decile 1 (low MAX): -1.03% per month (Newey-West t = -2.83); Fama-French-Carhart 4-factor alpha difference -1.18% per month (t = -4.71).",
+  "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+  "status": "adapted",
+  "reason": "policy: our snapshot sample"
+ },
+ {
+  "field": "min_history_days",
+  "paper_value": null,
+  "our_value": "252",
+  "status": "assumed",
+  "reason": "one year of history to be eligible (or the signal window if longer)"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "15 trading days minimum in a formation month"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Decile breakpoints: the paper does not say whether deciles use NYSE breakpoints or all NYSE/AMEX/NASDAQ stocks.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Share-code filter: the paper does not say whether only common stocks (e.g. CRSP share codes 10/11) are included.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Minimum number of valid daily returns in the month required to compute MAX is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns is not stated.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Timing of the market capitalization used for value weights (e.g. end of formation month) is not stated for the portfolio sorts.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Skip between formation and holding month is not stated explicitly; the text implies returns are measured in the month immediately after the formation month.",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Decile breakpoints: the paper does not say whether deciles use NYSE breakpoints or all NYSE/AMEX/NASDAQ stocks",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Universe filters (share codes, minimum price, minimum number of daily observations in the formation month) are not stated for the headline table",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Date of the market capitalization used for value weights is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Treatment of delisting returns is not stated",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ },
+ {
+  "field": "unresolved_detail",
+  "paper_value": "Return convention for the holding month (e.g., month t+1 calendar return) is implied but not stated explicitly",
+  "our_value": "engine default or convention",
+  "status": "unresolved",
+  "reason": "left open by the paper; see defaults"
+ }
+]

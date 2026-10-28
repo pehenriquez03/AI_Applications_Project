@@ -1,6 +1,8 @@
 """Known papers for the app's left column: (label, path relative to repo root, strategy slug)."""
 from __future__ import annotations
 
+import hashlib
+from functools import lru_cache
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,3 +22,17 @@ REGISTRY: list[tuple[str, str, str]] = [
 
 def abs_path(rel: str) -> Path:
     return ROOT / rel
+
+
+@lru_cache(maxsize=1)
+def known_papers() -> dict:
+    """{"sha": {sha256: label}, "file": {file_name: label}} for registry PDFs that exist (hashed once per process)."""
+    sha, file = {}, {}
+    for label, rel, _ in REGISTRY:
+        p = abs_path(rel)
+        file[p.name] = label
+        try:
+            sha[hashlib.sha256(p.read_bytes()).hexdigest()] = label
+        except OSError:
+            pass
+    return {"sha": sha, "file": file}

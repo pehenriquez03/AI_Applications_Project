@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_lowvol",
+ "paper_title": "THE CROSS-SECTION OF VOLATILITY AND EXPECTED RETURNS",
+ "strategy_slug": "lowvol",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "57 pages · 1edc3dfb",
+   "started": null,
+   "finished": "2026-10-28T09:16:14+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "2 run(s) · fields agree 92%",
+   "started": "2026-10-28T08:55:36+00:00",
+   "finished": "2026-10-28T09:12:07+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "ready · 0 assumed · 6 adapted",
+   "started": "2026-10-28T08:55:36+00:00",
+   "finished": "2026-10-28T09:12:07+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "414 eligible names · 3520 trading days",
+   "started": "2026-10-28T08:55:36+00:00",
+   "finished": "2026-10-28T09:12:07+00:00"
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "132 months · 75 names/month",
+   "started": "2026-10-28T08:55:36+00:00",
+   "finished": "2026-10-28T09:12:08+00:00"
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "2766 days · net CAGR 11.9% · turnover 63%/rebalance · 0.7s",
+   "started": "2026-10-28T08:56:07+00:00",
+   "finished": "2026-10-28T09:12:08+00:00"
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "net CAGR 11.9% · alpha t -0.10",
+   "started": "2026-10-28T08:56:08+00:00",
+   "finished": "2026-10-28T09:12:09+00:00"
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "1000 paths · P(NPV>0) 34%",
+   "started": "2026-10-28T08:56:09+00:00",
+   "finished": "2026-10-28T09:16:14+00:00"
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "done",
+   "detail": "deprioritize",
+   "started": "2026-10-28T08:56:09+00:00",
+   "finished": "2026-10-28T09:16:15+00:00"
+  }
+ ],
+ "recommendation": "deprioritize",
+ "summary": "Deprioritize. The strategy comes from Ang, Hodrick, Xing and Zhang (2004), who sort stocks each month on idiosyncratic volatility relative to the Fama-French three-factor model and find that the lowest-volatility quintile outperforms the highest. We tested the long-only, equal-weighted lowest-volatility quintile on a 415-name S&P 500 survivor universe over 2015 to 2025 and found net CAGR of 11.92% against 12.71% for the equal-weight universe, with Sharpe 0.63 against 0.65. The Monte Carlo fund simulation put the probability of positive NPV at 34%, with a median incremental fee PV of -$600k against the equal-weight universe fund. The edge fails at 10 bps, holds in neither sub-period, and the group ranking runs the wrong way, so the recommendation is to deprioritize even though implementation reliability is green.",
+ "error": "KeyError: \"None of [Index(['f', 'f', '3'], dtype='str')] are in the [columns]\""
+}

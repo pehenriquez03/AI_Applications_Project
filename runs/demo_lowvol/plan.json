@@ -1,0 +1,21 @@
+{
+ "signal_ops": [
+  {
+   "op": "residual_vol",
+   "params": {
+    "window_months": 1,
+    "factors": "ff3",
+    "min_days": 15
+   }
+  }
+ ],
+ "selection": {
+  "sort": "quintiles",
+  "n_groups": 5,
+  "percent": null,
+  "favored": "lowest",
+  "double_sort": null
+ },
+ "holding_months": 1,
+ "skipped_months": []
+}

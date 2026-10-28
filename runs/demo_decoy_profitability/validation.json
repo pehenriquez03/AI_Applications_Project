@@ -1,0 +1,162 @@
+{
+ "evidence": {
+  "economic_rationale": {
+   "valid": true,
+   "page": 7,
+   "found_page": 7,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "universe_and_filters": {
+   "valid": true,
+   "page": 18,
+   "found_page": 18,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "required_inputs": {
+   "valid": true,
+   "page": 19,
+   "found_page": 19,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "signal_formula_words": {
+   "valid": true,
+   "page": 19,
+   "found_page": 19,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "signal_formula_symbols": {
+   "valid": true,
+   "page": 19,
+   "found_page": 19,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "formation_window": {
+   "valid": true,
+   "page": 13,
+   "found_page": 13,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "skip_window": {
+   "valid": true,
+   "page": 13,
+   "found_page": 13,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "holding_period": {
+   "valid": true,
+   "page": 17,
+   "found_page": 17,
+   "adjacent_page": false,
+   "match": "loose"
+  },
+  "rebalance_frequency": {
+   "valid": true,
+   "page": 17,
+   "found_page": 17,
+   "adjacent_page": false,
+   "match": "loose"
+  },
+  "sort_rule": {
+   "valid": true,
+   "page": 17,
+   "found_page": 17,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "breakpoints": {
+   "valid": true,
+   "page": 19,
+   "found_page": 19,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "favored_group": {
+   "valid": true,
+   "page": 18,
+   "found_page": 18,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "disfavored_group": {
+   "valid": true,
+   "page": 18,
+   "found_page": 18,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "weighting": {
+   "valid": true,
+   "page": 19,
+   "found_page": 19,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "expected_sign": {
+   "valid": true,
+   "page": 5,
+   "found_page": 5,
+   "adjacent_page": false,
+   "match": "exact"
+  },
+  "headline_result": {
+   "valid": true,
+   "page": 18,
+   "found_page": 18,
+   "adjacent_page": false,
+   "match": "exact"
+  }
+ },
+ "consistency_issues": [
+  {
+   "field": "skip_window",
+   "tag": "not_stated",
+   "severity": "info",
+   "message": "skip_window not stated; default applies"
+  },
+  {
+   "field": "required_inputs",
+   "tag": "missing_input",
+   "severity": "block",
+   "message": "'revenues (REVT)': fundamental data"
+  },
+  {
+   "field": "required_inputs",
+   "tag": "missing_input",
+   "severity": "block",
+   "message": "'cost of goods sold (COGS)': fundamental data"
+  },
+  {
+   "field": "required_inputs",
+   "tag": "missing_input",
+   "severity": "block",
+   "message": "'total assets (AT)': fundamental data"
+  },
+  {
+   "field": "required_inputs",
+   "tag": "adaptable_input",
+   "severity": "info",
+   "message": "'market capitalization (value weights)': market capitalization used only for weighting, breakpoints or filters"
+  },
+  {
+   "field": "required_inputs",
+   "tag": "unknown_input",
+   "severity": "warn",
+   "message": "'SIC codes (financial-firm filter)': input not recognised; assumed derivable from daily prices"
+  },
+  {
+   "field": "can_implement",
+   "tag": "cannot_implement",
+   "severity": "info",
+   "message": "extraction says the paper cannot be implemented: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements"
+  }
+ ],
+ "check_pass": [],
+ "n_check_disagreements": 0
+}

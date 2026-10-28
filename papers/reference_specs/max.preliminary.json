@@ -1,0 +1,124 @@
+{
+ "paper_title": "Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+ "authors": [
+  "Bali, T. G.",
+  "Cakici, N.",
+  "Whitelaw, R. F."
+ ],
+ "year": 2011,
+ "selected_experiment": "Table I",
+ "can_implement": true,
+ "cannot_implement_reasons": [],
+ "economic_rationale": {
+  "value": "not in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "universe_and_filters": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "daily prices"
+  ],
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_words": {
+  "value": "MAX_i,t = maximum daily return of stock i during month t-1 (robustness: average of the 2 to 5 highest daily returns)",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "formation_window": {
+  "value": "1 month of daily data",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "skip_window": {
+  "value": "none",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "holding_period": {
+  "value": "1 month",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "monthly",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "sort_rule": "deciles",
+ "sort_rule_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "breakpoints": {
+  "value": "deciles",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "favored_group": {
+  "value": "lowest-MAX decile",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "disfavored_group": {
+  "value": "highest-MAX decile",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "weighting": "value",
+ "weighting_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "headline_result": {
+  "value": "decile 10 minus decile 1, value-weighted: -1.03 % per month raw (Newey-West t = -2.83) (CRSP July 1962 - December 2005)",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "unresolved_details": [
+  "value weighting needs market cap (not in repo)",
+  "the effect is concentrated in small, illiquid stocks; an S&P 500 universe is the wrong place to expect it"
+ ]
+}

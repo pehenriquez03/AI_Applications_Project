@@ -1,0 +1,20 @@
+{
+ "signal_ops": [
+  {
+   "op": "cum_return",
+   "params": {
+    "months": 6,
+    "skip_months": 0
+   }
+  }
+ ],
+ "selection": {
+  "sort": "deciles",
+  "n_groups": 10,
+  "percent": null,
+  "favored": "highest",
+  "double_sort": null
+ },
+ "holding_months": 6,
+ "skipped_months": []
+}

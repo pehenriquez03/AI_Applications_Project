@@ -1,0 +1,142 @@
+{
+ "n_runs": 2,
+ "mean_field_agreement": 0.8888888888888888,
+ "min_field_agreement": 0.5,
+ "field_agreement": {
+  "economic_rationale": 1.0,
+  "universe_and_filters": 0.5,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 0.5,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 0.5,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 0.5,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "evidence_valid_rate": 1.0,
+ "n_evidence_checked": 16,
+ "evidence_invalid_fields": [],
+ "n_consistency_issues": 0,
+ "n_check_disagreements": 0,
+ "unresolved_count": 18,
+ "unresolved_details_count": 18,
+ "assumed_count": 4,
+ "adapted_count": 6,
+ "decoy_refused": false,
+ "reference_label": "frog.preliminary.json",
+ "preliminary": true,
+ "agreement_rate": 0.3076923076923077,
+ "critical_errors": [
+  "signal_formula_words",
+  "sort_rule",
+  "favored_group"
+ ],
+ "minor_errors": [
+  "required_inputs",
+  "rebalance_frequency",
+  "breakpoints",
+  "disfavored_group",
+  "weighting",
+  "headline_result"
+ ],
+ "n_critical_errors": 3,
+ "n_minor_errors": 6,
+ "n_compared": 13,
+ "fields": {
+  "required_inputs": {
+   "match": false,
+   "critical": false,
+   "ours": [
+    "daily stock returns",
+    "monthly stock returns (formation-period and holding-period returns)",
+    "stock prices ($5 price filter)",
+    "delisting returns",
+    "Fama-French three-factor returns (risk adjustment only)"
+   ],
+   "reference": [
+    "daily prices"
+   ]
+  },
+  "signal_formula_words": {
+   "match": false,
+   "critical": true,
+   "ours": "Information discreteness (ID): the sign of the formation-period cumulative return (PRET) times the percentage of formation-period days with negative daily returns minus the percentage with positive daily returns. Daily return signs are equally weighted, ignoring magnitude. Small (low) ID = continuous information; large (high) ID = discrete information. Stocks are first sorted on PRET, then on ID.",
+   "reference": "PRET = cumulative return over the past 12 months skipping the most recent month; ID = sgn(PRET) * (%neg - %pos), where %pos and %neg are the fractions of formation-period days with positive and negative returns (eq. 1). Low ID = continuous information."
+  },
+  "formation_window": {
+   "match": true,
+   "critical": true,
+   "ours": "12 months: PRET is the cumulative return over the past twelve months after skipping the most recent month; ID uses the daily returns of the same formation period",
+   "reference": "12 months (months t-12 to t-2)"
+  },
+  "skip_window": {
+   "match": true,
+   "critical": false,
+   "ours": "1 month (one intermediate month between formation and holding periods)",
+   "reference": "1 month"
+  },
+  "holding_period": {
+   "match": true,
+   "critical": true,
+   "ours": "6 months",
+   "reference": "6 months"
+  },
+  "rebalance_frequency": {
+   "match": false,
+   "critical": false,
+   "ours": "monthly (portfolios formed each month; handling of overlapping six-month holding periods not stated)",
+   "reference": "monthly, overlapping"
+  },
+  "sort_rule": {
+   "match": false,
+   "critical": true,
+   "ours": "quintiles",
+   "reference": "other"
+  },
+  "breakpoints": {
+   "match": false,
+   "critical": false,
+   "ours": "Sequential 5x5 double sort: PRET quintiles first, then ID quintiles within each PRET quintile; breakpoint universe (NYSE vs all stocks) not stated",
+   "reference": "double sort: momentum winners/losers (quintiles or deciles on PRET), then quintiles on ID within momentum groups"
+  },
+  "favored_group": {
+   "match": false,
+   "critical": true,
+   "ours": "past winners (highest PRET quintile) in the lowest-ID (continuous information) subportfolio",
+   "reference": "winners with low ID (continuous information)"
+  },
+  "disfavored_group": {
+   "match": false,
+   "critical": false,
+   "ours": "past losers (lowest PRET quintile) in the lowest-ID (continuous information) subportfolio",
+   "reference": "losers with low ID"
+  },
+  "weighting": {
+   "match": false,
+   "critical": false,
+   "ours": "other",
+   "reference": "equal"
+  },
+  "expected_sign": {
+   "match": true,
+   "critical": true,
+   "ours": "favored_group_higher",
+   "reference": "favored_group_higher"
+  },
+  "headline_result": {
+   "match": false,
+   "critical": false,
+   "ours": "Six-month momentum (winners minus losers) is 5.94% (t = 4.63) in the continuous-information (low ID) quintile versus \u20132.07% in the discrete (high ID) quintile; the 8.01% difference has a t-statistic of 8.54 (post-1927).",
+   "reference": "six-month momentum return (winners minus losers) by ID quintile: 5.94 % per six months, lowest-ID (continuous) quintile (CRSP 1927-2007)"
+  }
+ }
+}

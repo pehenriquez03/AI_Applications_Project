@@ -1,0 +1,123 @@
+{
+ "paper_title": "The Other Side of Value: The Gross Profitability Premium",
+ "authors": [
+  "Novy-Marx, R."
+ ],
+ "year": 2013,
+ "selected_experiment": "main table",
+ "can_implement": false,
+ "cannot_implement_reasons": [
+  "single clean factor (gross profits / total assets) but it requires income-statement and balance-sheet data; prices alone cannot compute it"
+ ],
+ "economic_rationale": {
+  "value": "not in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "universe_and_filters": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "fundamentals (Compustat-like)"
+  ],
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_words": {
+  "value": "(revenue - cost of goods sold) / total assets, annual, lagged to ensure availability",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "formation_window": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "skip_window": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "holding_period": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "sort_rule": "other",
+ "sort_rule_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "breakpoints": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "favored_group": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "disfavored_group": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "weighting": "other",
+ "weighting_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "headline_result": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "unresolved_details": [
+  "the correct answer is 'implementable in principle, not with the supplied data'; score the LLM on naming the missing inputs"
+ ]
+}

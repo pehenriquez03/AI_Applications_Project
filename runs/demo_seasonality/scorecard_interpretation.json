@@ -1,0 +1,137 @@
+{
+ "n_runs": 2,
+ "mean_field_agreement": 0.9722222222222222,
+ "min_field_agreement": 0.5,
+ "field_agreement": {
+  "economic_rationale": 0.5,
+  "universe_and_filters": 1.0,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "evidence_valid_rate": 1.0,
+ "n_evidence_checked": 16,
+ "evidence_invalid_fields": [],
+ "n_consistency_issues": 1,
+ "n_check_disagreements": 0,
+ "unresolved_count": 15,
+ "unresolved_details_count": 15,
+ "assumed_count": 5,
+ "adapted_count": 4,
+ "decoy_refused": false,
+ "reference_label": "seasonality.preliminary.json",
+ "preliminary": true,
+ "agreement_rate": 0.46153846153846156,
+ "critical_errors": [
+  "signal_formula_words",
+  "formation_window",
+  "favored_group"
+ ],
+ "minor_errors": [
+  "required_inputs",
+  "breakpoints",
+  "disfavored_group",
+  "headline_result"
+ ],
+ "n_critical_errors": 3,
+ "n_minor_errors": 4,
+ "n_compared": 13,
+ "fields": {
+  "required_inputs": {
+   "match": false,
+   "critical": false,
+   "ours": [
+    "monthly stock returns",
+    "exchange listing (NYSE/AMEX universe filter)"
+   ],
+   "reference": [
+    "monthly prices with at least 1-20 years of history"
+   ]
+  },
+  "signal_formula_words": {
+   "match": false,
+   "critical": true,
+   "ours": "For each stock, the average of its monthly returns at the annual lags 24, 36, 48, and 60 months before the holding month (i.e., the same calendar month as the holding month in each of years 2 through 5 prior).",
+   "reference": "the stock's return in the same calendar month k years ago (lag 12k months), or the average of same-calendar-month returns over past years; the paper's cleanest single-lag version uses the return 12 months ago"
+  },
+  "formation_window": {
+   "match": false,
+   "critical": true,
+   "ours": "4 monthly returns at annual lags 24, 36, 48, and 60 months (the same calendar month in years 2-5 before the holding month)",
+   "reference": "single month at lag 12 (also lags 24, 36, ..., 240 and averages over annual lags)"
+  },
+  "skip_window": {
+   "match": true,
+   "critical": false,
+   "ours": "none stated separately; the signal uses only lags 24, 36, 48, and 60, so months t-1 through t-23 and the non-annual months in between are not used",
+   "reference": "n/a"
+  },
+  "holding_period": {
+   "match": true,
+   "critical": true,
+   "ours": "1 month",
+   "reference": "1 month"
+  },
+  "rebalance_frequency": {
+   "match": true,
+   "critical": false,
+   "ours": "monthly",
+   "reference": "monthly"
+  },
+  "sort_rule": {
+   "match": true,
+   "critical": true,
+   "ours": "deciles",
+   "reference": "deciles"
+  },
+  "breakpoints": {
+   "match": false,
+   "critical": false,
+   "ours": "equal-count deciles (equal number of stocks in each portfolio) of all NYSE/AMEX stocks in the sample each month",
+   "reference": "deciles on the lagged same-month return"
+  },
+  "favored_group": {
+   "match": false,
+   "critical": true,
+   "ours": "highest decile (decile 10, winners) of average returns at annual lags 24, 36, 48, and 60",
+   "reference": "decile with the highest return in the same calendar month in prior year(s)"
+  },
+  "disfavored_group": {
+   "match": false,
+   "critical": false,
+   "ours": "lowest decile (decile 1, losers) of average returns at annual lags 24, 36, 48, and 60",
+   "reference": "decile with the lowest"
+  },
+  "weighting": {
+   "match": true,
+   "critical": false,
+   "ours": "equal",
+   "reference": "equal"
+  },
+  "expected_sign": {
+   "match": true,
+   "critical": true,
+   "ours": "favored_group_higher",
+   "reference": "favored_group_higher"
+  },
+  "headline_result": {
+   "match": false,
+   "critical": false,
+   "ours": "Years 2-5 annual winner-minus-loser decile spread of 67 basis points per month (0.0067, t-statistic 5.35 in Table 2), January 1965-December 2002",
+   "reference": "decile winner minus loser monthly return: 1.15 % per month (NYSE/AMEX 1965-2002 (38 years))"
+  }
+ }
+}

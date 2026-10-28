@@ -1,0 +1,20 @@
+{
+ "signal_ops": [
+  {
+   "op": "rolling_max_daily_return",
+   "params": {
+    "window_months": 1,
+    "min_days": 15
+   }
+  }
+ ],
+ "selection": {
+  "sort": "deciles",
+  "n_groups": 10,
+  "percent": null,
+  "favored": "lowest",
+  "double_sort": null
+ },
+ "holding_months": 1,
+ "skipped_months": []
+}

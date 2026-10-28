@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Other Side of Value: Good Growth and the Gross Profitability Premium · dossier</title>
+<style>:root {
+  --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #85837d; --line: #e6e5e0; --bg: #ffffff; --panel: #f7f7f5;
+  --accent: #2a78d6; --accent-soft: #e8f1fb;
+  --good: #1f7a3a; --good-bg: #e6f4ea; --warn: #8a5a00; --warn-bg: #fdf3dc; --bad: #a12b2b; --bad-bg: #fbe9e9;
+  --neutral-bg: #efeeea;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+h1 { font-size: 22px; line-height: 1.3; margin: 0 0 4px; font-weight: 650; }
+h2 { font-size: 17px; margin: 40px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); font-weight: 650; }
+h3 { font-size: 14px; margin: 20px 0 6px; color: var(--ink-2); font-weight: 600; }
+p { margin: 6px 0 10px; }
+.sub { color: var(--ink-2); font-size: 13.5px; }
+.muted { color: var(--ink-3); }
+a { color: var(--accent); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 6px 0 12px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; font-size: 12.5px; background: var(--panel); }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.card { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 18px 20px;
+  background: var(--panel); margin: 18px 0; }
+.card .word { font-size: 26px; font-weight: 700; text-transform: capitalize; margin: 0 0 6px; }
+.card.pursue { border-left-color: var(--good); } .card.pursue .word { color: var(--good); }
+.card.investigate-further { border-left-color: var(--warn); } .card.investigate-further .word { color: var(--warn); }
+.card.deprioritize { border-left-color: var(--bad); } .card.deprioritize .word { color: var(--bad); }
+.card.unable-to-evaluate { border-left-color: var(--ink-3); } .card.unable-to-evaluate .word { color: var(--ink-2); }
+.card ul { margin: 6px 0; padding-left: 20px; }
+.flags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: var(--neutral-bg); color: var(--ink-2); white-space: nowrap; }
+.badge.good, .badge.green, .badge.positive, .badge.strong, .badge.stated { background: var(--good-bg); color: var(--good); }
+.badge.amber, .badge.mixed, .badge.moderate, .badge.uncertain, .badge.assumed, .badge.preliminary { background: var(--warn-bg); color: var(--warn); }
+.badge.red, .badge.negative, .badge.weak, .badge.bad, .badge.unresolved { background: var(--bad-bg); color: var(--bad); }
+.badge.adapted { background: var(--accent-soft); color: var(--accent); }
+.tick { color: var(--good); font-weight: 700; } .cross { color: var(--bad); font-weight: 700; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 12.5px; }
+details blockquote { margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--line); color: var(--ink-2); font-size: 13px; }
+img.chart { width: 100%; height: auto; display: block; margin: 8px 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 720px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.kv td:first-child { color: var(--ink-2); width: 42%; }
+.headline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 10px 0; }
+@media (max-width: 720px) { .headline { grid-template-columns: 1fr 1fr; } }
+.stat { background: var(--panel); border-radius: 8px; padding: 10px 12px; }
+.stat .v { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.stat .l { font-size: 12px; color: var(--ink-2); }
+.narr { background: var(--panel); border-radius: 8px; padding: 2px 16px 8px; }
+footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 12px; }
+code { font-size: 12.5px; background: var(--panel); padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+<div class="sub">Research dossier · run <code>dev_decoy_profitability</code> · strategy <code>unmapped</code></div>
+<h1>The Other Side of Value: Good Growth and the Gross Profitability Premium</h1>
+<div class="sub">Robert Novy-Marx (2010) · experiment: Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets</div>
+
+<!-- 1. recommendation card -->
+<section class="card unable-to-evaluate" id="recommendation">
+  <div class="sub">Recommendation</div>
+  <div class="word">unable to evaluate</div>
+<p><strong>Reason:</strong> paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: &#39;revenues (REVT)&#39;: fundamental data; required input not in snapshot: &#39;cost of goods sold (COGS)&#39;: fundamental data; required input not in snapshot: &#39;total assets (AT)&#39;: fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets</p>  <ul><li>Unable to evaluate: paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: &#39;revenues (REVT)&#39;: fundamental data; required input not in snapshot: &#39;cost of goods sold (COGS)&#39;: fundamental data; required input not in snapshot: &#39;total assets (AT)&#39;: fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets</li></ul>
+  <details><summary>Limitations (8)</summary>
+  <ul><li>Survivor universe: today&#39;s index constituents only (0 excluded for missing Yahoo data); delisted names are absent, which flatters returns.</li><li>Equal weighting (paper: value).</li><li>Long-only adaptation: the strategy holds the favored group only; no short leg.</li><li>Sample 2015-2025 lies entirely after publication.</li><li>Cash earns zero yield.</li><li>Returns use Yahoo adjusted-close conventions (dividends and splits folded in).</li><li>Effort reduction from the engine is not measured.</li><li>4 fields assumed (paper silent; labeled defaults) and 6 fields adapted.</li></ul>
+  </details>
+</section>
+
+<!-- 2. summary -->
+<section id="summary"><p>The run stopped before evaluation. paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: &#39;revenues (REVT)&#39;: fundamental data; required input not in snapshot: &#39;cost of goods sold (COGS)&#39;: fundamental data; required input not in snapshot: &#39;total assets (AT)&#39;: fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets</p></section>
+
+<!-- 3. what the paper proposes -->
+<h2 id="paper">What the paper proposes</h2>
+<p class="sub">Consensus of 1 extraction run(s); mean field agreement 100.0%;
+evidence valid for 16 of 16 material fields;
+0 check-pass disagreement(s), 0 on critical fields.</p>
+<p><span class="badge bad">cannot implement</span> Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements</p><div class="scroll"><table>
+<tr><th>Field</th><th>Paper says</th><th class="n">Page</th><th class="n">Evidence</th><th class="n">Agreement</th></tr>
+<tr>
+  <td>economic rationale</td>
+  <td>The paper offers rational (productive firms require higher returns) and behavioral (productive firms are underpriced) motivations and says it does not distinguish between them
+<details><summary>quote</summary><blockquote>Distinguishing between competing stories for the observed proﬁtability premium is,</blockquote></details></td>
+  <td class="n">7</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>universe and filters</td>
+  <td>Non-financial firms (one-digit SIC code 6 excluded), July 1963 to December 2009; exchange coverage for Table 4 not stated beyond NYSE breakpoints
+<details><summary>quote</summary><blockquote>ﬁrms (those with one-digit SIC codes of six), and covers July 1963 to December 2009.</blockquote></details></td>
+  <td class="n">18</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>required inputs</td>
+  <td>revenues (REVT), cost of goods sold (COGS), total assets (AT), monthly stock returns, market capitalization (value weights), NYSE listing indicator (breakpoints), SIC codes (financial-firm filter), Fama-French three factors (alpha regressions only)
+<details><summary>quote</summary><blockquote>proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series</blockquote></details></td>
+  <td class="n">19</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>signal formula words</td>
+  <td>Gross profits (revenues minus cost of goods sold) divided by total assets
+<details><summary>quote</summary><blockquote>proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series</blockquote></details></td>
+  <td class="n">19</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>signal formula symbols</td>
+  <td>(REVT - COGS) / AT
+<details><summary>quote</summary><blockquote>proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series</blockquote></details></td>
+  <td class="n">19</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>formation window</td>
+  <td>annual accounting data, lagged to the end of June of the following year
+<details><summary>quote</summary><blockquote>data to the end of June of the following year, asset pricing te sts start with the returns over July 1963.</blockquote></details></td>
+  <td class="n">13</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>skip window</td>
+  <td>not stated
+<details><summary>quote</summary><blockquote>data to the end of June of the following year, asset pricing te sts start with the returns over July 1963.</blockquote></details></td>
+  <td class="n">13</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>holding period</td>
+  <td>until the next end-of-June rebalance (annual)
+<details><summary>quote</summary><blockquote>(NYSE) break points, and are rebalanced at the end of each Jun e. The table shows the port-</blockquote></details></td>
+  <td class="n">17</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>rebalance frequency</td>
+  <td>annually, at the end of each June
+<details><summary>quote</summary><blockquote>(NYSE) break points, and are rebalanced at the end of each Jun e. The table shows the port-</blockquote></details></td>
+  <td class="n">17</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>sort rule</td>
+  <td>quintiles
+<details><summary>quote</summary><blockquote>A T). Portfolios are constructed using a quintile sort, base d on New Y ork Stock Exchange</blockquote></details></td>
+  <td class="n">17</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>breakpoints</td>
+  <td>NYSE breakpoints, quintile sort
+<details><summary>quote</summary><blockquote>proﬁts-to-assets ((REVT - COGS) / A T), employing NYSE break points, and results of time-series</blockquote></details></td>
+  <td class="n">19</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>favored group</td>
+  <td>highest gross profits-to-assets quintile (most profitable firms)
+<details><summary>quote</summary><blockquote>generally increasing with proﬁtability, with the most proﬁ table ﬁrms earning 0.33 percent</blockquote></details></td>
+  <td class="n">18</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>disfavored group</td>
+  <td>lowest gross profits-to-assets quintile (least profitable firms)
+<details><summary>quote</summary><blockquote>per month higher average returns than the least proﬁtable ﬁr ms, with a test-statistic of</blockquote></details></td>
+  <td class="n">18</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>weighting</td>
+  <td>value
+<details><summary>quote</summary><blockquote>This table shows monthly value-weighted average excess ret urns to portfolios sorted on gross</blockquote></details></td>
+  <td class="n">19</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>expected sign</td>
+  <td>favored_group_higher
+<details><summary>quote</summary><blockquote>itable ﬁrms earn signiﬁcantly higher average returns than u nproﬁtable ﬁrms. They do so</blockquote></details></td>
+  <td class="n">5</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>headline result</td>
+  <td>Most profitable minus least profitable quintile earns 0.33 percent per month in value-weighted excess returns (test-statistic 2.63); Fama-French three-factor alpha 0.55 percent per month (test-statistic 4.75)
+<details><summary>quote</summary><blockquote>generally increasing with proﬁtability, with the most proﬁ table ﬁrms earning 0.33 percent</blockquote></details></td>
+  <td class="n">18</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+</table></div>
+<h3>Details the paper leaves open</h3><ul><li>Skip/gap between accounting data date and portfolio formation not explicitly stated beyond lagging accounting data to end of June of the following year</li><li>Exact fiscal-year-end alignment of the annual accounting data is ambiguous</li><li>Exchange coverage (NYSE/AMEX/NASDAQ) of the Table 4 universe not stated explicitly</li><li>Minimum price, size or data-availability filters other than the financial-firm exclusion not stated</li><li>Treatment of delisting returns not stated</li><li>Return convention for excess returns (risk-free rate used) not stated for this table</li></ul><h3>Consistency issues</h3><ul><li>field: skip_window; tag: not_stated; severity: info; message: skip_window not stated; default applies</li><li>field: required_inputs; tag: missing_input; severity: block; message: &#39;revenues (REVT)&#39;: fundamental data</li><li>field: required_inputs; tag: missing_input; severity: block; message: &#39;cost of goods sold (COGS)&#39;: fundamental data</li><li>field: required_inputs; tag: missing_input; severity: block; message: &#39;total assets (AT)&#39;: fundamental data</li><li>field: required_inputs; tag: adaptable_input; severity: info; message: &#39;market capitalization (value weights)&#39;: market capitalization used only for weighting, breakpoints or filters</li><li>field: required_inputs; tag: unknown_input; severity: warn; message: &#39;SIC codes (financial-firm filter)&#39;: input not recognised; assumed derivable from daily prices</li><li>field: can_implement; tag: cannot_implement; severity: info; message: extraction says the paper cannot be implemented: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements</li></ul>
+
+<!-- 10. interpretation accuracy -->
+<h2 id="interpretation">Interpretation accuracy </h2>
+<p class="muted">No interpretation scorecard on file.</p>
+<!-- 11. narrative -->
+
+<h2 id="usage">Model usage</h2>
+<p class="sub">1 calls (0 from cache) · 35,378 input and 1,188 output tokens · $0.08 at $2/$10 per million tokens</p>
+
+<!-- 12. downloads -->
+<h2 id="downloads">Downloads</h2>
+<div class="scroll"><table><tr><th>File</th><th class="n">Size</th></tr>
+<tr><td><a href="adaptation_log.json">adaptation_log.json</a></td><td class="n">5.1 KB</td></tr><tr><td><a href="dossier.html">dossier.html</a></td><td class="n">18.1 KB</td></tr><tr><td><a href="experiment_spec.json">experiment_spec.json</a></td><td class="n">7.3 KB</td></tr><tr><td><a href="extract_prompt_1.txt">extract_prompt_1.txt</a></td><td class="n">145.8 KB</td></tr><tr><td><a href="llm_usage.json">llm_usage.json</a></td><td class="n">176 B</td></tr><tr><td><a href="paper_meta.json">paper_meta.json</a></td><td class="n">462 B</td></tr><tr><td><a href="paper_text.json">paper_text.json</a></td><td class="n">139.4 KB</td></tr><tr><td><a href="progress.json">progress.json</a></td><td class="n">2.6 KB</td></tr><tr><td><a href="results.json">results.json</a></td><td class="n">17.7 KB</td></tr><tr><td><a href="run.log">run.log</a></td><td class="n">0 B</td></tr><tr><td><a href="session_response_1.json">session_response_1.json</a></td><td class="n">5.1 KB</td></tr><tr><td><a href="spec_consensus.json">spec_consensus.json</a></td><td class="n">5.8 KB</td></tr><tr><td><a href="spec_raw_1.json">spec_raw_1.json</a></td><td class="n">5.1 KB</td></tr><tr><td><a href="validation.json">validation.json</a></td><td class="n">3.4 KB</td></tr></table></div>
+
+<footer>
+Run dev_decoy_profitability · snapshot snapshot_2026-10-28 · code aa7a866445b0 · model claude-sonnet-5-5 · generated 2026-10-28 09:04 UTC
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,125 @@
+{
+ "paper_title": "Time series momentum",
+ "authors": [
+  "Moskowitz, T. J.",
+  "Ooi, Y. H.",
+  "Pedersen, L. H."
+ ],
+ "year": 2012,
+ "selected_experiment": "main table",
+ "can_implement": false,
+ "cannot_implement_reasons": [
+  "the factor is a time-series (own past 12-month excess return sign, volatility-scaled) strategy on 58 futures contracts across asset classes, not a cross-sectional equity factor; the universe and instruments are not available"
+ ],
+ "economic_rationale": {
+  "value": "not in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "universe_and_filters": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "not stated in key"
+  ],
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_words": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "formation_window": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "skip_window": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "holding_period": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "sort_rule": "other",
+ "sort_rule_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "breakpoints": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "favored_group": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "disfavored_group": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "weighting": "other",
+ "weighting_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "expected_sign": "unclear",
+ "expected_sign_evidence": {
+  "page": 0,
+  "quote": "reference spec (preliminary answer key); no quote"
+ },
+ "headline_result": {
+  "value": "not stated in key",
+  "evidence": {
+   "page": 0,
+   "quote": "reference spec (preliminary answer key); no quote"
+  }
+ },
+ "unresolved_details": [
+  "whether an equity adaptation is acceptable"
+ ]
+}

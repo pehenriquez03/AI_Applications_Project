@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_frog",
+ "paper_title": "Frog in the Pan: Continuous Information and",
+ "strategy_slug": "frog",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "48 pages · 7202cb81",
+   "started": null,
+   "finished": "2026-10-28T09:16:17+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "2 run(s) · fields agree 89%",
+   "started": "2026-10-28T09:01:16+00:00",
+   "finished": "2026-10-28T09:12:14+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "ready · 1 assumed · 6 adapted",
+   "started": "2026-10-28T09:01:16+00:00",
+   "finished": "2026-10-28T09:12:14+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "414 eligible names · 3520 trading days",
+   "started": "2026-10-28T09:01:16+00:00",
+   "finished": "2026-10-28T09:12:14+00:00"
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "132 months · 25 names/month",
+   "started": "2026-10-28T09:01:16+00:00",
+   "finished": "2026-10-28T09:12:15+00:00"
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "2766 days · net CAGR 11.9% · turnover 14%/rebalance · 0.6s",
+   "started": "2026-10-28T09:01:17+00:00",
+   "finished": "2026-10-28T09:12:15+00:00"
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "net CAGR 11.9% · alpha t -0.99",
+   "started": "2026-10-28T09:01:18+00:00",
+   "finished": "2026-10-28T09:12:16+00:00"
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "1000 paths · P(NPV>0) 43%",
+   "started": "2026-10-28T09:01:18+00:00",
+   "finished": "2026-10-28T09:16:17+00:00"
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "done",
+   "detail": "deprioritize",
+   "started": "2026-10-28T09:01:18+00:00",
+   "finished": "2026-10-28T09:16:17+00:00"
+  }
+ ],
+ "recommendation": "deprioritize",
+ "summary": "Deprioritize. The paper (Frog in the Pan, Da, Gurun and Warachka, 2014) argues that momentum is stronger when a stock's past return built up through many small daily moves than through a few large jumps, and we tested a long-only version on a 415-name S&P 500 survivor universe over 2015-2025. The strategy earned a net CAGR of 11.87% against 12.71% for the equal-weight universe, with a Sharpe ratio of 0.58 against 0.65, and the edge over the equal-weight universe fails at 10 bps and holds in 0 of 2 sub-periods. The simulated fund economics are uncertain: P(NPV > 0) is 43% and the median incremental fee PV is -$496k versus the equal-weight universe fund. The recommendation rests mainly on negative historical performance and weak robustness, with an amber implementation reliability because 4 fields were assumed and 6 adapted.",
+ "error": null
+}

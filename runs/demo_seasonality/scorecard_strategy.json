@@ -1,0 +1,303 @@
+{
+ "meta": {
+  "run_dir": "dev_seasonality",
+  "eval_start": "2015-01-01",
+  "eval_end": "2025-12-31",
+  "n_days": 2766,
+  "first_date": "2015-01-02",
+  "last_date": "2025-12-31",
+  "holding_months": 1,
+  "expected_sign": "favored_group_higher",
+  "selection": {
+   "sort": "deciles",
+   "n_groups": 10,
+   "percent": null,
+   "favored": "highest",
+   "double_sort": null
+  },
+  "factors_available": true,
+  "fund_aum": 100000000.0,
+  "cost_bps_base": 10
+ },
+ "performance": {
+  "strategy_gross": {
+   "cagr": 0.102858,
+   "vol": 0.211025,
+   "sharpe": 0.47552,
+   "max_drawdown": -0.447433,
+   "end_wealth": 2.928891,
+   "n_days": 2766
+  },
+  "strategy_net": {
+   "cagr": 0.080298,
+   "vol": 0.211454,
+   "sharpe": 0.377223,
+   "max_drawdown": -0.449151,
+   "end_wealth": 2.334438,
+   "n_days": 2766
+  },
+  "spy": {
+   "cagr": 0.13453,
+   "vol": 0.178,
+   "sharpe": 0.686041,
+   "max_drawdown": -0.337358,
+   "end_wealth": 3.996431,
+   "n_days": 2766
+  },
+  "ew_universe": {
+   "cagr": 0.127103,
+   "vol": 0.178551,
+   "sharpe": 0.647779,
+   "max_drawdown": -0.379469,
+   "end_wealth": 3.718471,
+   "n_days": 2766
+  }
+ },
+ "relative": {
+  "vs_spy": {
+   "n_months": 132,
+   "mean_monthly_diff": -0.00336,
+   "nw_t": -1.639487,
+   "nw_se": 0.002049,
+   "nw_lags": 1,
+   "ci95_low": -0.007376,
+   "ci95_high": 0.000657,
+   "annualized_diff": -0.040318,
+   "cagr_diff": -0.054232
+  },
+  "vs_ew_universe": {
+   "n_months": 132,
+   "mean_monthly_diff": -0.002907,
+   "nw_t": -1.595213,
+   "nw_se": 0.001822,
+   "nw_lags": 1,
+   "ci95_low": -0.006478,
+   "ci95_high": 0.000665,
+   "annualized_diff": -0.034878,
+   "cagr_diff": -0.046805
+  }
+ },
+ "beta_vs_spy": 1.071393,
+ "alpha": {
+  "alpha_annual": -0.039823,
+  "alpha_t": -1.705506,
+  "alpha_daily": -0.000158,
+  "betas": {
+   "mkt_rf": 1.027547,
+   "smb": 0.127798,
+   "hml": 0.114189,
+   "mom": -0.090221
+  },
+  "beta_t": {
+   "mkt_rf": 36.056212,
+   "smb": 6.499086,
+   "hml": 3.290811,
+   "mom": -3.851802
+  },
+  "r2": 0.846749,
+  "n_obs": 2766,
+  "nw_lags": 21
+ },
+ "spanning": {
+  "alpha_annual": -0.047751,
+  "alpha_t": -2.271093,
+  "alpha_daily": -0.000189,
+  "betas": {
+   "mkt_rf": 0.102142,
+   "smb": 0.107899,
+   "hml": -0.120849,
+   "mom": -0.012914
+  },
+  "beta_t": {
+   "mkt_rf": 5.659531,
+   "smb": 5.723466,
+   "hml": -4.295308,
+   "mom": -0.618525
+  },
+  "r2": 0.135924,
+  "n_obs": 2766,
+  "nw_lags": 21
+ },
+ "turnover": {
+  "mean_monthly": 0.873087,
+  "max_monthly": 0.97781,
+  "n_months": 130
+ },
+ "costs": {
+  "total_cost": 0.358941,
+  "avg_net_value": 1.572603,
+  "pct_of_avg_value": 0.228247,
+  "annualized_pct_of_avg_value": 0.020795
+ },
+ "holdings": {
+  "mean_n_holdings": 36.599783,
+  "min_n_holdings": 0.0,
+  "max_weight": 0.065458,
+  "mean_hhi": 0.027559
+ },
+ "capacity": {
+  "fund_aum": 100000000.0,
+  "n_trades": 8985,
+  "n_missing_adv": 0,
+  "per_trade": {
+   "mean": 0.019907,
+   "median": 0.016233,
+   "p95": 0.051832,
+   "p99": 0.076621,
+   "max": 0.13903
+  },
+  "per_day_sum": {
+   "mean": 1.365349,
+   "median": 1.313501,
+   "p95": 1.976413,
+   "p99": 2.068483,
+   "max": 2.14971
+  },
+  "max_trade": {
+   "date": "2021-11-01",
+   "ticker": "ROL",
+   "adv_usd": 37633618.277225,
+   "participation": 0.13903
+  },
+  "frac_trades_over_10pct_adv": 0.001002
+ },
+ "robustness": {
+  "cost_grid": {
+   "0": {
+    "cagr": 0.102858,
+    "sharpe": 0.47552,
+    "alpha_t": -0.819607,
+    "alpha_annual": -0.019108
+   },
+   "10": {
+    "cagr": 0.080298,
+    "sharpe": 0.377223,
+    "alpha_t": -1.705506,
+    "alpha_annual": -0.039823
+   },
+   "25": {
+    "cagr": 0.047179,
+    "sharpe": 0.229874,
+    "alpha_t": -3.029876,
+    "alpha_annual": -0.070964
+   }
+  },
+  "subperiods": {
+   "first": {
+    "start": "2015-01-02",
+    "end": "2019-12-31",
+    "cagr": 0.076843,
+    "sharpe": 0.48646,
+    "rel_ew_mean_monthly": -0.003886,
+    "rel_ew_t": -1.708931
+   },
+   "second": {
+    "start": "2020-01-02",
+    "end": "2025-12-31",
+    "cagr": 0.083189,
+    "sharpe": 0.333263,
+    "rel_ew_mean_monthly": -0.00209,
+    "rel_ew_t": -0.762229
+   }
+  },
+  "groups": {
+   "rows": [
+    {
+     "group": 1,
+     "mean_monthly": 0.011345,
+     "cagr_daily": 0.125705,
+     "annualized_mean_x12": 0.136145
+    },
+    {
+     "group": 2,
+     "mean_monthly": 0.009264,
+     "cagr_daily": 0.103453,
+     "annualized_mean_x12": 0.111173
+    },
+    {
+     "group": 3,
+     "mean_monthly": 0.00988,
+     "cagr_daily": 0.113486,
+     "annualized_mean_x12": 0.118563
+    },
+    {
+     "group": 4,
+     "mean_monthly": 0.009216,
+     "cagr_daily": 0.104189,
+     "annualized_mean_x12": 0.110598
+    },
+    {
+     "group": 5,
+     "mean_monthly": 0.009847,
+     "cagr_daily": 0.110927,
+     "annualized_mean_x12": 0.118164
+    },
+    {
+     "group": 6,
+     "mean_monthly": 0.009962,
+     "cagr_daily": 0.113189,
+     "annualized_mean_x12": 0.119538
+    },
+    {
+     "group": 7,
+     "mean_monthly": 0.009517,
+     "cagr_daily": 0.107548,
+     "annualized_mean_x12": 0.114199
+    },
+    {
+     "group": 8,
+     "mean_monthly": 0.008249,
+     "cagr_daily": 0.089776,
+     "annualized_mean_x12": 0.09899
+    },
+    {
+     "group": 9,
+     "mean_monthly": 0.008355,
+     "cagr_daily": 0.090179,
+     "annualized_mean_x12": 0.100258
+    },
+    {
+     "group": 10,
+     "mean_monthly": 0.00812,
+     "cagr_daily": 0.080298,
+     "annualized_mean_x12": 0.097435
+    }
+   ],
+   "rho": -0.709091,
+   "rho_p": 0.021666,
+   "n_groups": 10,
+   "favored": "highest",
+   "expected_sign": "favored_group_higher",
+   "expected_rho_sign": 1,
+   "rho_in_expected_direction": false,
+   "favored_minus_disfavored": {
+    "favored_group": 10,
+    "disfavored_group": 1,
+    "mean_monthly_diff": -0.003226,
+    "nw_t": -1.060702,
+    "nw_lags": 1
+   }
+  },
+  "universe_sensitivity": null
+ },
+ "definitions": {
+  "window": "All statistics use daily returns from EVAL_START to EVAL_END (inclusive).",
+  "cagr": "end_wealth ** (252 / n_days) - 1, compounding daily returns.",
+  "vol": "standard deviation of daily returns (ddof=1) times sqrt(252).",
+  "sharpe": "mean daily return in excess of the daily risk-free rate (Fama-French RF; zero if unavailable) times 252, divided by vol.",
+  "max_drawdown": "most negative peak-to-trough change of the wealth curve, which starts at 1; reported as a negative number.",
+  "end_wealth": "growth of 1 over the window.",
+  "relative": "strategy_net minus the benchmark, computed on calendar-month compounded returns; t-statistic and se are Newey-West (Bartlett) with lags = holding_months; ci95 = mean +/- 1.96 se; annualized_diff = 12 * mean monthly difference; cagr_diff = cagr difference.",
+  "beta_vs_spy": "OLS slope of daily strategy_net on daily spy.",
+  "alpha": "four-factor regression of daily (strategy_net - rf) on mkt_rf, smb, hml, mom; Newey-West lags = 21 * holding_months; alpha_annual = daily intercept * 252.",
+  "spanning": "four-factor regression of daily (strategy_net - ew_universe) on mkt_rf, smb, hml, mom; same lags; a positive alpha means the strategy adds return beyond the equal-weight universe and factor exposures.",
+  "turnover": "portfolio_value.turnover on execution days (one-way, as written by the engine); the first execution day (initial build from cash) is excluded.",
+  "costs": "total_cost = sum of trades.cost over the window; pct_of_avg_value = total_cost / mean net_value; annualized divides by years = n_days / 252.",
+  "holdings": "mean_n_holdings = mean of portfolio_value.n_holdings; max_weight = largest single weight in holdings.parquet; mean_hhi = mean over dates of the sum of squared weights.",
+  "capacity": "per trade, participation = |trade value| * fund_aum / (20-day average dollar volume of the ticker, close * volume, ending the prior trading day); fund_aum scales the backtest's $1 book to the stated fund size. per_trade gives mean, median, 95th/99th percentile and max over trades (max_trade names the worst one); per_day_sum sums participations across the trades of one execution day. Trades without 20 days of volume history are counted in n_missing_adv and excluded.",
+  "cost_grid": "strategy_net re-run at each cost in bps (0, 10, 25); alpha_t is the four-factor alpha t-statistic.",
+  "subperiods": "first = EVAL_START to the day before SUBPERIOD_SPLIT; second = SUBPERIOD_SPLIT to EVAL_END; rel_ew_t is the Newey-West t of strategy_net minus ew_universe (monthly, lags = holding_months).",
+  "groups": "group_k = k-th ranked group (1 = lowest signal), net of costs; mean_monthly = mean of monthly compounded returns; cagr_daily from daily compounding; rho = Spearman correlation of group index with mean monthly return; expected_rho_sign is -1 when favored='lowest' and expected_sign='favored_group_higher' (or favored='highest' with 'favored_group_lower'), +1 for the other two cases; rho_in_expected_direction = rho * expected_rho_sign > 0 (null when expected_sign is unclear or rho undefined). favored_minus_disfavored is the mean monthly difference between the favored end group and the opposite end group with its Newey-West t.",
+  "universe_sensitivity": "not computed here; the pipeline may fill it."
+ }
+}

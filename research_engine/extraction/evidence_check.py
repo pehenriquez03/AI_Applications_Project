@@ -120,7 +120,10 @@ def consensus(specs: list[StrategySpec]) -> tuple[StrategySpec, dict]:
             data[_SIBLING_EVIDENCE[field]] = src_dump[_SIBLING_EVIDENCE[field]]
         if field == "can_implement":
             data["cannot_implement_reasons"] = src_dump["cannot_implement_reasons"]
-        agreement[field] = sum(k == chosen_key for k in keys) / n
+        # paraphrase-tolerant agreement (same rule as the interpretation scorer): exact for enums,
+        # containment / token overlap / month parsing for free text
+        from ..evaluation.interpretation import _values_match
+        agreement[field] = sum(_values_match(k, chosen_key, field) for k in keys) / n
     # unresolved details: union in first-seen order
     seen, merged = set(), []
     for s in specs:

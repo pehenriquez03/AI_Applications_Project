@@ -1,0 +1,27 @@
+{
+ "signal_ops": [
+  {
+   "op": "avg_lagged_month_return",
+   "params": {
+    "lags": [
+     24,
+     36,
+     48,
+     60
+    ],
+    "min_lags": 2
+   }
+  }
+ ],
+ "selection": {
+  "sort": "deciles",
+  "n_groups": 10,
+  "percent": null,
+  "favored": "highest",
+  "double_sort": null
+ },
+ "holding_months": 1,
+ "skipped_months": [
+  "2014-12-31 00:00:00"
+ ]
+}

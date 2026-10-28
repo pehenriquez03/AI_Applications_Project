@@ -333,8 +333,8 @@ def test_interpretation_reference_comparison(tmp_path):
     run = _interp_run(tmp_path, spec)
     ref = copy.deepcopy(spec)
     ref["holding_period"]["value"] = "3 months"                  # critical
-    ref["favored_group"]["value"] = "highest MAX decile"         # critical
-    ref["breakpoints"]["value"] = "NYSE breakpoints"             # minor
+    ref["favored_group"]["value"] = "top-ranked portfolio by extreme return"  # critical (no token overlap)
+    ref["breakpoints"]["value"] = "NYSE-only cutoffs"              # minor (no token overlap)
     ref["headline_result"]["value"] = "something else"           # minor
     ref["required_inputs"]["value"] = ["Market Cap", "daily prices"]   # same set, different order/case: still equal
     ref["signal_formula_words"]["value"] = "Mean of the five highest daily returns in the month."  # case/punct only

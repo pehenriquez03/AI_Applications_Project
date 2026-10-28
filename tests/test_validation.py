@@ -59,7 +59,7 @@ def test_adapt_fixture_ready(spec):
     assert e.holding_months == 1 and e.skip_months == 0 and e.weighting == "equal"
     w = [a for a in e.adaptations if a.field == "weighting"][0]
     assert w.status == "adapted" and w.paper_value == "value"
-    assert e.n_adapted >= 3 and e.price_floor == 5.0
+    assert e.n_adapted >= 3 and e.price_floor is None  # floors are never applied: snapshot prices are split-adjusted
 
 
 def test_adapt_missing_input_blocks(spec):
@@ -94,7 +94,7 @@ def test_adapt_cannot_implement_blocks_unless_disputed(spec):
     ("return in the same calendar month one year earlier", "seasonality", ["lagged_month_return"]),
     ("idiosyncratic volatility relative to the Fama-French three-factor model", "lowvol", ["residual_vol"]),
     ("ratio of current price to the 52-week high", "high52", ["price_to_rolling_high"]),
-    ("information discreteness among past winners", "frog", ["cum_return", "info_discreteness"]),
+    ("information discreteness among past winners", "frog", ["pret_12_2", "info_discreteness"]),
     ("sensitivity of stock returns to oil price changes", "oil", ["oil_beta"]),
     ("volatility of weekly returns over the past 3 years", "lowvol", ["rolling_vol"]),
 ])
@@ -115,5 +115,5 @@ def test_frog_double_sort(spec):
     ds = e.selection["double_sort"]
     assert ds["outer_sort"] == "quintiles" and ds["outer_favored"] == "highest"
     assert ds["inner_sort"] == "terciles" and ds["inner_favored"] == "lowest"
-    assert e.signal_ops[0].params == {"months": 11, "skip": 1, "name": "pret_12_2"}
+    assert e.signal_ops[0].params == {"months": 12, "skip_months": 1}
     assert e.holding_months == 6 and e.min_names == 15

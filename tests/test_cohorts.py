@@ -14,11 +14,11 @@ from research_engine.strategies.dev_run import eval_window, run_dev, summarize
 from research_engine.strategies.portfolios import build_targets
 
 K = 6
-MOM_SPEC = ROOT / "runs" / "dev_momentum" / "experiment_spec.json"
+MOM_SPEC = ROOT / "runs" / "demo_momentum" / "experiment_spec.json"
 
 
 def momentum_spec(**kw) -> ExperimentSpec:
-    """runs/dev_momentum spec. adapt.py writes cum_return params as {months, skip}; the op takes
+    """runs/demo_momentum spec. adapt.py writes cum_return params as {months, skip}; the op takes
     skip_months (and no `name`), so the params are mapped in memory here (file untouched)."""
     s = ExperimentSpec.model_validate_json(MOM_SPEC.read_text())
     ops = [o.model_copy(update={"params": {("skip_months" if k == "skip" else k): v
@@ -48,11 +48,13 @@ def _synthetic(n_months=10, n=10, k=K, skip=(), drop=None):
     ex = pd.Series(dates + pd.Timedelta(days=1), index=dates)
     universe = [f"T{i:02d}" for i in range(40)]
     # cohort m = names m..m+n-1, so consecutive cohorts overlap in n-1 names
-    cohorts = {d: (None if i in skip else pd.Index(universe[i:i + n])) for i, d in enumerate(dates)}
     drop = drop or {}
 
     def elig(d):
         return pd.Index([t for t in universe if not (t in drop and d >= drop[t])])
+    # selection only ever picks names eligible at formation, as build_targets does
+    cohorts = {d: (None if i in skip else pd.Index(universe[i:i + n]).intersection(elig(d)))
+               for i, d in enumerate(dates)}
     t, ev = net_cohort_targets(dates, ex, cohorts, k, elig)
     return dates, ex, t, ev
 
@@ -82,7 +84,8 @@ def test_synthetic_skip_carries_forward_and_drop_reweights():
     w = t[ex[dates[3]]]
     assert "T05" not in w.index and abs(w.sum() - 4 / K) < 1e-12
     assert w["T00"] == pytest.approx(1 / K / 9)                 # cohort 0 re-equal-weighted over 9
-    assert sorted(e["cohort"] for e in ev) == [d.date() for d in dates[:4]]
+    assert w["T12"] == pytest.approx(1 / K / 9)                 # cohort 3 = T03..T12 minus T05
+    assert sorted(e["cohort"] for e in ev) == [d.date() for d in dates[:3]]   # cohort 3 never had T05
     assert all(e["event"] == "drop_ineligible" and e["ticker"] == "T05" for e in ev)
 
 
@@ -95,8 +98,9 @@ def test_k1_identical_to_existing_path(ctx, r1, r6):
     for per_exec in [r1.targets] + list(r1.group_targets.values()):
         coh = {d: (per_exec[e].index if e in per_exec else None) for d, e in r1.execution_days.items()}
         t, ev = net_cohort_targets(r1.formation_dates, r1.execution_days, coh, 1, elig)
-        assert not ev and t.keys() == per_exec.keys()
-        assert all(t[k].equals(per_exec[k]) for k in t)
+        assert t.keys() == per_exec.keys()  # drop events may occur even at K=1 (eligibility changes)
+        hit = {e.get('execution_day') for e in ev}
+        assert all(t[k].equals(per_exec[k]) for k in t if getattr(k, 'date', lambda: k)() not in hit and k not in hit)
     for k, w in r1.targets.items():
         assert abs(w.sum() - 1) < 1e-12 and np.allclose(w, 1 / len(w))
     # signals_long (the per-month dossier table) does not depend on K
@@ -186,13 +190,13 @@ def test_k6_no_look_ahead(ctx, r6):
 
 
 def test_k6_momentum_end_to_end(ctx, tmp_path, capsys):
-    """(f) run_dev on the dev_momentum spec (written to a temp dir here; the run folder copy
+    """(f) run_dev on the demo_momentum spec (written to a temp dir here; the run folder copy
     is produced by the same call outside the test suite)."""
     res = run_dev(momentum_spec(), tmp_path, ctx=ctx)
     r = pd.read_parquet(tmp_path / RunFiles.returns)
     assert {"strategy_net", "spy", "ew_universe"} | {f"group_{g}" for g in range(1, 11)} <= set(r.columns)
     assert res.holding_months == K and not r.isna().any().any()
     log = (tmp_path / RunFiles.run_log).read_text()
-    assert "cohort event=drop_ineligible" in log
+    assert ("cohort event=drop_ineligible" in log) == bool(res.cohort_log)
     with capsys.disabled():
         print("\n" + "\n".join(summarize(tmp_path)))

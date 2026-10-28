@@ -420,4 +420,38 @@ def render_index(runs_dir) -> Path:
     html = _env().get_template("index.html.j2").render(
         rows=rows, css=_css(), generated=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         code_version=code_version())
+    corr = _correlation_block(runs_dir, rows)
+    if corr and "</body>" in html:
+        html = html.replace("</body>", corr + "\n</body>", 1)
     return _write(runs_dir / "index.html", html)
+
+
+def _correlation_block(runs_dir: Path, rows: list) -> str:
+    """Monthly net-return correlation across completed strategies (one run per strategy slug,
+    newest wins), rendered as a small table. Five of the six papers consume past prices, so this
+    is how much independent evidence the set holds."""
+    import pandas as pd
+    series = {}
+    for r in rows:
+        d = runs_dir / r["run_id"]
+        f = d / RunFiles.returns
+        if not f.exists() or not r.get("slug"):
+            continue
+        try:
+            rr = pd.read_parquet(f)
+            x = rr["strategy_net"] - rr["ew_universe"]   # excess over the EW universe: strips the shared market move
+            series[r["slug"]] = x.resample("ME").sum()
+        except Exception:  # noqa: BLE001
+            continue
+    if len(series) < 2:
+        return ""
+    df = pd.DataFrame(series).dropna()
+    c = df.corr().round(2)
+    head = "".join(f"<th>{k}</th>" for k in c.columns)
+    body = "".join("<tr><th>" + i + "</th>" + "".join(f"<td>{c.at[i, j]:.2f}</td>" for j in c.columns) + "</tr>"
+                   for i in c.index)
+    return ('<section class="card"><h2>Monthly excess-return correlation across strategies (net, minus the EW universe)</h2>'
+            '<p class="muted">Equal-weighted, long-only versions on the same universe and sample, measured in excess of the equal-weighted universe so the shared market move is removed. High correlations '
+            'mean the papers are not independent evidence.</p>'
+            f'<table><thead><tr><th></th>{head}</tr></thead><tbody>{body}</tbody></table></section>')
+

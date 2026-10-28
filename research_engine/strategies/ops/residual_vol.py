@@ -15,6 +15,9 @@ def residual_vol(ctx, dates, *, window_months: int = 1, factors=("mkt_rf", "smb"
     on an intercept and `factors`, over the days of the `window_months` calendar months ending
     with the month containing `date` (days <= date only). NaN with < min_days observations."""
     R = ctx.returns.to_numpy()
+    aliases = {"ff3": ("mkt_rf", "smb", "hml"), "ff4": ("mkt_rf", "smb", "hml", "mom"), "capm": ("mkt_rf",), "market": ("mkt_rf",)}
+    if isinstance(factors, str):
+        factors = aliases.get(factors.lower(), (factors,))
     F = ctx.factors[list(factors)].to_numpy()
     rf = ctx.factors["rf"].to_numpy()
     out = empty(ctx, dates)

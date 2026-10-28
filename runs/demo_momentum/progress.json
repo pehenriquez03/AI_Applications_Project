@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_momentum",
+ "paper_title": "PROFITABILITY OF MOMENTUM",
+ "strategy_slug": "momentum",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "38 pages · d14087ac",
+   "started": null,
+   "finished": "2026-10-28T09:16:32+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "2 run(s) · fields agree 94%",
+   "started": "2026-10-28T09:01:00+00:00",
+   "finished": "2026-10-28T09:11:59+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "ready · 0 assumed · 5 adapted",
+   "started": "2026-10-28T09:01:00+00:00",
+   "finished": "2026-10-28T09:11:59+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "414 eligible names · 3520 trading days",
+   "started": "2026-10-28T09:01:00+00:00",
+   "finished": "2026-10-28T09:11:59+00:00"
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "132 months · 37 names/month",
+   "started": "2026-10-28T09:01:01+00:00",
+   "finished": "2026-10-28T09:12:01+00:00"
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "2766 days · net CAGR 14.5% · turnover 15%/rebalance · 1.2s",
+   "started": "2026-10-28T09:01:02+00:00",
+   "finished": "2026-10-28T09:12:02+00:00"
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "net CAGR 14.5% · alpha t 0.32",
+   "started": "2026-10-28T09:01:03+00:00",
+   "finished": "2026-10-28T09:12:02+00:00"
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "1000 paths · P(NPV>0) 76%",
+   "started": "2026-10-28T09:01:04+00:00",
+   "finished": "2026-10-28T09:16:12+00:00"
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "done",
+   "detail": "investigate further",
+   "started": "2026-10-28T09:01:04+00:00",
+   "finished": "2026-10-28T09:16:33+00:00"
+  }
+ ],
+ "recommendation": "investigate further",
+ "summary": "investigate further: the paper's six-month momentum strategy, adapted here to a long-only top-decile portfolio drawn from 415 current S&P 500 names, earned a net CAGR of 14.54% against 12.71% for the equal-weight universe, with Sharpe 0.68 against 0.65. The edge is not robust: it fails at 10 bps of cost, holds in 0 of 2 sub-periods, the ten groups do not rank in the expected direction (rho -0.28), and the alpha t-statistic is 0.32. The Monte Carlo economics are positive, with P(NPV > 0) 76% and a median incremental fee PV of $2.0M against the equal-weight fund, but this rests on an assumed 2/20 fee schedule with a hard hurdle. The test uses a survivor universe, is long-only, and lies entirely after publication. The recommendation is to investigate further because performance and economics are positive while robustness is weak.",
+ "error": null
+}

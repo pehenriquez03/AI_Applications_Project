@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_oil",
+ "paper_title": "Oil-Price Exposure as a Single-Factor Smart-Beta Strategy",
+ "strategy_slug": "oil",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "4 pages · eb6a1a7e",
+   "started": null,
+   "finished": "2026-10-28T09:16:18+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "2 run(s) · fields agree 75%",
+   "started": "2026-10-28T08:55:37+00:00",
+   "finished": "2026-10-28T09:12:17+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "ready · 4 assumed · 7 adapted",
+   "started": "2026-10-28T08:55:37+00:00",
+   "finished": "2026-10-28T09:12:17+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "414 eligible names · 3520 trading days",
+   "started": "2026-10-28T08:55:37+00:00",
+   "finished": "2026-10-28T09:12:18+00:00"
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "123 months · 37 names/month",
+   "started": "2026-10-28T08:55:37+00:00",
+   "finished": "2026-10-28T09:12:18+00:00"
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "2766 days · net CAGR 15.8% · turnover 15%/rebalance · 0.9s",
+   "started": "2026-10-28T08:55:37+00:00",
+   "finished": "2026-10-28T09:12:19+00:00"
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "net CAGR 15.8% · alpha t 1.40",
+   "started": "2026-10-28T08:55:38+00:00",
+   "finished": "2026-10-28T09:12:19+00:00"
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "1000 paths · P(NPV>0) 80%",
+   "started": "2026-10-28T08:55:39+00:00",
+   "finished": "2026-10-28T09:16:18+00:00"
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "done",
+   "detail": "investigate further",
+   "started": "2026-10-28T08:55:39+00:00",
+   "finished": "2026-10-28T09:16:19+00:00"
+  }
+ ],
+ "recommendation": "investigate further",
+ "summary": "Investigate further. The paper is a methodology note on oil-price exposure (OILP) that builds optimized regime portfolios and picks among them with a timing signal, and it reports no empirical results. We dropped that timing signal, because the note builds it from realized future oil returns, and tested only an unconditional monthly decile sort on each stock's trailing 36-month oil beta, long the top decile; the checking pass also disputed that the paper is implementable as written. Over 2015 to 2025 the strategy earned a net CAGR of 15.80% against 12.83% for the equal-weight universe, but its Sharpe was 0.63 against 0.66, the edge fails at 10 bps, and it holds in 0 of 2 sub-periods, so the historical result is mixed and robustness is weak. The economics are positive, with P(NPV > 0) of 80% and a median incremental fee PV of $4.4M against the equal-weight fund, but implementation reliability is red with 7 fields assumed and 7 adapted, which is why the recommendation stops at further investigation.",
+ "error": null
+}

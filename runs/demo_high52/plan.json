@@ -1,0 +1,20 @@
+{
+ "signal_ops": [
+  {
+   "op": "price_to_rolling_high",
+   "params": {
+    "window_days": 252,
+    "high_field": "high"
+   }
+  }
+ ],
+ "selection": {
+  "sort": "top_bottom_percent",
+  "n_groups": 3,
+  "percent": 0.3,
+  "favored": "highest",
+  "double_sort": null
+ },
+ "holding_months": 6,
+ "skipped_months": []
+}

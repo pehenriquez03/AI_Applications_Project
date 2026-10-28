@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_decoy_tsmom",
+ "paper_title": "Time Series Momentum",
+ "strategy_slug": "",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "23 pages · c71533ac",
+   "started": null,
+   "finished": "2026-10-28T09:04:52+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "1 run(s) · fields agree 100%",
+   "started": "2026-10-28T08:55:41+00:00",
+   "finished": "2026-10-28T08:55:41+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "blocked",
+   "detail": "paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: 'daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)': non-equity instruments",
+   "started": "2026-10-28T08:55:41+00:00",
+   "finished": "2026-10-28T09:04:52+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  }
+ ],
+ "recommendation": "unable to evaluate",
+ "summary": "Unable to evaluate. Time series momentum: paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: 'daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)': non-equity instruments",
+ "error": null
+}

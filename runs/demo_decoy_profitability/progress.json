@@ -1,0 +1,82 @@
+{
+ "run_id": "demo_decoy_profitability",
+ "paper_title": "THE OTHER SIDE OF VALUE:",
+ "strategy_slug": "",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "65 pages · 8621e93f",
+   "started": null,
+   "finished": "2026-10-28T09:04:51+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "1 run(s) · fields agree 100%",
+   "started": "2026-10-28T08:55:40+00:00",
+   "finished": "2026-10-28T08:55:40+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "blocked",
+   "detail": "paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: 'revenues (REVT)': fundamental data; required input not in snapshot: 'cost of goods sold (COGS)': fundamental data; required input not in snapshot: 'total assets (AT)': fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets",
+   "started": "2026-10-28T08:55:40+00:00",
+   "finished": "2026-10-28T09:04:51+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  }
+ ],
+ "recommendation": "unable to evaluate",
+ "summary": "Unable to evaluate. The Other Side of Value: Good Growth and the Gross Profitability Premium: paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements; required input not in snapshot: 'revenues (REVT)': fundamental data; required input not in snapshot: 'cost of goods sold (COGS)': fundamental data; required input not in snapshot: 'total assets (AT)': fundamental data; signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets",
+ "error": null
+}

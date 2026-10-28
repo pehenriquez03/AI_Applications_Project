@@ -1,0 +1,138 @@
+{
+ "n_runs": 2,
+ "mean_field_agreement": 0.9444444444444444,
+ "min_field_agreement": 0.5,
+ "field_agreement": {
+  "economic_rationale": 1.0,
+  "universe_and_filters": 0.5,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 0.5,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "evidence_valid_rate": 1.0,
+ "n_evidence_checked": 16,
+ "evidence_invalid_fields": [],
+ "n_consistency_issues": 0,
+ "n_check_disagreements": 0,
+ "unresolved_count": 13,
+ "unresolved_details_count": 13,
+ "assumed_count": 3,
+ "adapted_count": 4,
+ "decoy_refused": false,
+ "reference_label": "high52.preliminary.json",
+ "preliminary": true,
+ "agreement_rate": 0.46153846153846156,
+ "critical_errors": [
+  "signal_formula_words",
+  "favored_group"
+ ],
+ "minor_errors": [
+  "required_inputs",
+  "rebalance_frequency",
+  "breakpoints",
+  "disfavored_group",
+  "headline_result"
+ ],
+ "n_critical_errors": 2,
+ "n_minor_errors": 5,
+ "n_compared": 13,
+ "fields": {
+  "required_inputs": {
+   "match": false,
+   "critical": false,
+   "ours": [
+    "monthly stock prices (price at end of month t-1)",
+    "stock price history over the past 12 months (highest price, i.e. 52-week high)",
+    "monthly stock returns"
+   ],
+   "reference": [
+    "daily prices (to compute the 12-month high)"
+   ]
+  },
+  "signal_formula_words": {
+   "match": false,
+   "critical": true,
+   "ours": "Nearness to the 52-week high: the stock's price at the end of month t-1 divided by its highest price during the 12-month period ending on the last day of month t-1.",
+   "reference": "P_i,t-1 / high_i,t-1 where P is the month-end price and high is the highest price over the 12 months ending at the end of month t-1"
+  },
+  "formation_window": {
+   "match": true,
+   "critical": true,
+   "ours": "12 months (highest price over the 12-month period ending on the last day of month t-1)",
+   "reference": "12-month high; ranking at end of month t-1"
+  },
+  "skip_window": {
+   "match": true,
+   "critical": false,
+   "ours": "none (no skip month in Tables I-IV; one month is skipped only in the regression tests)",
+   "reference": "none"
+  },
+  "holding_period": {
+   "match": true,
+   "critical": true,
+   "ours": "6 months",
+   "reference": "6 months (robustness: (6,12), (12,6), (12,12))"
+  },
+  "rebalance_frequency": {
+   "match": false,
+   "critical": false,
+   "ours": "monthly (overlapping portfolios: month-t return is the equally weighted average of six portfolios formed in months t-6 to t-1)",
+   "reference": "monthly, overlapping cohorts (JT method)"
+  },
+  "sort_rule": {
+   "match": true,
+   "critical": true,
+   "ours": "top_bottom_percent",
+   "reference": "top_bottom_percent"
+  },
+  "breakpoints": {
+   "match": false,
+   "critical": false,
+   "ours": "Top 30% (winners) and bottom 30% (losers) of all sample stocks ranked by the 52-week high measure; remaining 40% is the middle portfolio. NYSE breakpoints are not mentioned.",
+   "reference": "top 30% winners, bottom 30% losers, middle 40%"
+  },
+  "favored_group": {
+   "match": false,
+   "critical": true,
+   "ours": "winner portfolio: top 30% of stocks with the highest ratio of current price to 52-week high (long leg)",
+   "reference": "30% of stocks closest to their 52-week high"
+  },
+  "disfavored_group": {
+   "match": false,
+   "critical": false,
+   "ours": "loser portfolio: bottom 30% of stocks with the lowest ratio of current price to 52-week high (short leg)",
+   "reference": "30% of stocks farthest from their 52-week high"
+  },
+  "weighting": {
+   "match": true,
+   "critical": false,
+   "ours": "equal",
+   "reference": "equal"
+  },
+  "expected_sign": {
+   "match": true,
+   "critical": true,
+   "ours": "favored_group_higher",
+   "reference": "favored_group_higher"
+  },
+  "headline_result": {
+   "match": false,
+   "critical": false,
+   "ours": "Table I: 52-week high winner 1.51%, loser 1.06%, winner minus loser 0.45% per month (t = 2.00); 1.23% per month (t = 7.06) excluding January (Table II)",
+   "reference": "winner minus loser average monthly return, (6,6) strategy: 0.45 % per month (CRSP 1963-2001, all months)"
+  }
+ }
+}

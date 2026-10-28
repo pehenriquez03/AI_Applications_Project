@@ -278,7 +278,10 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only") -> dict:
     nar: Optional[dict] = None
     source = None
     error = None
-    if path.exists():
+    raw = run_dir / "narrative_raw.json"   # written by the session runner (model stand-in) or an import
+    if raw.exists() and (not path.exists() or raw.stat().st_mtime >= path.stat().st_mtime):
+        pass  # a newer import wins over an existing narrative.json
+    elif path.exists():
         try:
             old = json.loads(path.read_text())
             if old.get("source") != "template":
@@ -286,6 +289,12 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only") -> dict:
                 source = old.get("source") or "session"
         except Exception as e:  # noqa: BLE001
             log.warning("could not read narrative.json: %s", e)
+    if nar is None and raw.exists():
+        try:
+            nar = _validate(json.loads(raw.read_text()))
+            source = "session" if nar else None
+        except Exception as e:  # noqa: BLE001
+            log.warning("could not read narrative_raw.json: %s", e)
     if nar is None and llm == "api":
         try:
             from research_engine.extraction.client import call_structured

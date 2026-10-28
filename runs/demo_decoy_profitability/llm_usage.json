@@ -1,0 +1,11 @@
+[
+ {
+  "call": "extract_1",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 35378,
+  "output_tokens": 1188,
+  "estimated": true,
+  "cached": false,
+  "source": "session"
+ }
+]

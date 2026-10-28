@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Time series momentum · dossier</title>
+<style>:root {
+  --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #85837d; --line: #e6e5e0; --bg: #ffffff; --panel: #f7f7f5;
+  --accent: #2a78d6; --accent-soft: #e8f1fb;
+  --good: #1f7a3a; --good-bg: #e6f4ea; --warn: #8a5a00; --warn-bg: #fdf3dc; --bad: #a12b2b; --bad-bg: #fbe9e9;
+  --neutral-bg: #efeeea;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+h1 { font-size: 22px; line-height: 1.3; margin: 0 0 4px; font-weight: 650; }
+h2 { font-size: 17px; margin: 40px 0 10px; padding-top: 14px; border-top: 1px solid var(--line); font-weight: 650; }
+h3 { font-size: 14px; margin: 20px 0 6px; color: var(--ink-2); font-weight: 600; }
+p { margin: 6px 0 10px; }
+.sub { color: var(--ink-2); font-size: 13.5px; }
+.muted { color: var(--ink-3); }
+a { color: var(--accent); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; margin: 6px 0 12px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; font-size: 12.5px; background: var(--panel); }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.scroll { overflow-x: auto; }
+.card { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 18px 20px;
+  background: var(--panel); margin: 18px 0; }
+.card .word { font-size: 26px; font-weight: 700; text-transform: capitalize; margin: 0 0 6px; }
+.card.pursue { border-left-color: var(--good); } .card.pursue .word { color: var(--good); }
+.card.investigate-further { border-left-color: var(--warn); } .card.investigate-further .word { color: var(--warn); }
+.card.deprioritize { border-left-color: var(--bad); } .card.deprioritize .word { color: var(--bad); }
+.card.unable-to-evaluate { border-left-color: var(--ink-3); } .card.unable-to-evaluate .word { color: var(--ink-2); }
+.card ul { margin: 6px 0; padding-left: 20px; }
+.flags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  background: var(--neutral-bg); color: var(--ink-2); white-space: nowrap; }
+.badge.good, .badge.green, .badge.positive, .badge.strong, .badge.stated { background: var(--good-bg); color: var(--good); }
+.badge.amber, .badge.mixed, .badge.moderate, .badge.uncertain, .badge.assumed, .badge.preliminary { background: var(--warn-bg); color: var(--warn); }
+.badge.red, .badge.negative, .badge.weak, .badge.bad, .badge.unresolved { background: var(--bad-bg); color: var(--bad); }
+.badge.adapted { background: var(--accent-soft); color: var(--accent); }
+.tick { color: var(--good); font-weight: 700; } .cross { color: var(--bad); font-weight: 700; }
+details summary { cursor: pointer; color: var(--ink-2); font-size: 12.5px; }
+details blockquote { margin: 6px 0; padding: 6px 10px; border-left: 3px solid var(--line); color: var(--ink-2); font-size: 13px; }
+img.chart { width: 100%; height: auto; display: block; margin: 8px 0; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 720px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.kv td:first-child { color: var(--ink-2); width: 42%; }
+.headline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 10px 0; }
+@media (max-width: 720px) { .headline { grid-template-columns: 1fr 1fr; } }
+.stat { background: var(--panel); border-radius: 8px; padding: 10px 12px; }
+.stat .v { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.stat .l { font-size: 12px; color: var(--ink-2); }
+.narr { background: var(--panel); border-radius: 8px; padding: 2px 16px 8px; }
+footer { margin-top: 48px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 12px; }
+code { font-size: 12.5px; background: var(--panel); padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<main>
+<div class="sub">Research dossier · run <code>dev_decoy_tsmom</code> · strategy <code>lowvol</code></div>
+<h1>Time series momentum</h1>
+<div class="sub">Tobias J. Moskowitz, Yao Hua Ooi, Lasse Heje Pedersen (2012) · experiment: Section 4 / Table 3, the diversified 12-month time series momentum (TSMOM) strategy with a 1-month holding period across 58 futures contracts, January 1985 to December 2009</div>
+
+<!-- 1. recommendation card -->
+<section class="card unable-to-evaluate" id="recommendation">
+  <div class="sub">Recommendation</div>
+  <div class="word">unable to evaluate</div>
+<p><strong>Reason:</strong> paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: &#39;daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)&#39;: non-equity instruments</p>  <ul><li>Unable to evaluate: paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: &#39;daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)&#39;: non-equity instruments</li></ul>
+  <details><summary>Limitations (8)</summary>
+  <ul><li>Survivor universe: today&#39;s index constituents only (0 excluded for missing Yahoo data); delisted names are absent, which flatters returns.</li><li>Equal weighting (paper: other).</li><li>Long-only adaptation: the strategy holds the favored group only; no short leg.</li><li>Sample 2015-2025 lies entirely after publication.</li><li>Cash earns zero yield.</li><li>Returns use Yahoo adjusted-close conventions (dividends and splits folded in).</li><li>Effort reduction from the engine is not measured.</li><li>4 fields assumed (paper silent; labeled defaults) and 5 fields adapted.</li></ul>
+  </details>
+</section>
+
+<!-- 2. summary -->
+<section id="summary"><p>The run stopped before evaluation. paper cannot be implemented with our data: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio); required input not in snapshot: &#39;daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)&#39;: non-equity instruments</p></section>
+
+<!-- 3. what the paper proposes -->
+<h2 id="paper">What the paper proposes</h2>
+<p class="sub">Consensus of 1 extraction run(s); mean field agreement 100.0%;
+evidence valid for 16 of 16 material fields;
+0 check-pass disagreement(s), 0 on critical fields.</p>
+<p><span class="badge bad">cannot implement</span> Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio)</p><div class="scroll"><table>
+<tr><th>Field</th><th>Paper says</th><th class="n">Page</th><th class="n">Evidence</th><th class="n">Agreement</th></tr>
+<tr>
+  <td>economic rationale</td>
+  <td>Consistent with sentiment theories of initial under-reaction and delayed over-reaction
+<details><summary>quote</summary><blockquote>consistent with sentiment theories of initial under-reaction and delayed over-reaction.</blockquote></details></td>
+  <td class="n">1</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>universe and filters</td>
+  <td>58 liquid futures and forward contracts: 24 commodities, 12 cross-currency pairs (nine underlying currencies), nine developed equity indexes and 13 developed government bond futures; data January 1965 to December 2009, strategy evaluated from January 1985; no further filters stated
+<details><summary>quote</summary><blockquote>Our data consist of futures prices for 24 commodities,</blockquote></details></td>
+  <td class="n">3</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>required inputs</td>
+  <td>daily futures prices of the most liquid contract for each instrument (to compute daily excess returns), daily excess returns of each instrument (past 12-month signal), ex ante volatility estimate from exponentially weighted lagged squared daily returns (position sizing)
+<details><summary>quote</summary><blockquote>Each day, we compute the daily excess return of the most liquid futures contract</blockquote></details></td>
+  <td class="n">4</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>signal formula words</td>
+  <td>Sign of the instrument&#39;s own excess return over the past 12 months: long the contract if positive, short if negative, with position size inversely proportional to its ex ante volatility (target 40% annualized)
+<details><summary>quote</summary><blockquote>whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths.</blockquote></details></td>
+  <td class="n">6</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>signal formula symbols</td>
+  <td>r^{TSMOM,s}_{t,t+1} = sign(r^s_{t-12,t}) * (40% / sigma^s_{t-1}) * r^s_{t,t+1} (Eq. 5); diversified factor = (1/S_t) * sum over s of the same term
+<details><summary>quote</summary><blockquote>rTSMOM,st,tþ1 ¼signðrst/C012,tÞ40%sstrst,tþ1: ð5Þ</blockquote></details></td>
+  <td class="n">9</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>formation window</td>
+  <td>12 months (look-back k = 12)
+<details><summary>quote</summary><blockquote>egy with a 1-month holding period (e.g.,k¼12 andh¼1),</blockquote></details></td>
+  <td class="n">9</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>skip window</td>
+  <td>not stated
+<details><summary>quote</summary><blockquote>timet/C0k/C01 to t/C01. We then compute the time- t</blockquote></details></td>
+  <td class="n">7</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>holding period</td>
+  <td>1 month (h = 1)
+<details><summary>quote</summary><blockquote>egy with a 1-month holding period (e.g.,k¼12 andh¼1),</blockquote></details></td>
+  <td class="n">9</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>rebalance frequency</td>
+  <td>monthly
+<details><summary>quote</summary><blockquote>the instrument’s ex ante volatility, 1 =sst/C01, each month.</blockquote></details></td>
+  <td class="n">6</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>sort rule</td>
+  <td>other
+<details><summary>quote</summary><blockquote>whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths.</blockquote></details></td>
+  <td class="n">6</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>breakpoints</td>
+  <td>No breakpoints or ranking: each instrument is classified by the sign of its own past 12-month excess return (zero cutoff), long if positive and short if negative
+<details><summary>quote</summary><blockquote>whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths.</blockquote></details></td>
+  <td class="n">6</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>favored group</td>
+  <td>Instruments with a positive past 12-month excess return (held long)
+<details><summary>quote</summary><blockquote>We ﬁnd that the past 12-month excess return of each instrument is a positive predictor of its future return.</blockquote></details></td>
+  <td class="n">1</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>disfavored group</td>
+  <td>Instruments with a negative past 12-month excess return (held short)
+<details><summary>quote</summary><blockquote>whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths.</blockquote></details></td>
+  <td class="n">6</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>weighting</td>
+  <td>other
+<details><summary>quote</summary><blockquote>We set the position size to be inversely proportional to the instrument’s ex ante volatility, 1 =sst/C01, each month.</blockquote></details></td>
+  <td class="n">6</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>expected sign</td>
+  <td>favored_group_higher
+<details><summary>quote</summary><blockquote>We ﬁnd that the past 12-month excess return of each instrument is a positive predictor of its future return.</blockquote></details></td>
+  <td class="n">1</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+<tr>
+  <td>headline result</td>
+  <td>The diversified TSMOM strategy earns an alpha of about 1.58% per month (4.75% per quarter) relative to MSCI World, SMB, HML and UMD
+<details><summary>quote</summary><blockquote>TSMOM delivers a large and signiﬁcant alpha or intercept with respect to these factors of about 1.58% per month or 4.75% per quarter.</blockquote></details></td>
+  <td class="n">9</td>
+  <td class="n"><span class="tick" title="quote found on cited page">✓</span></td>
+  <td class="n">100%</td>
+</tr>
+</table></div>
+<h3>Details the paper leaves open</h3><ul><li>Whether the 12-month signal skips the most recent month is not stated for TSMOM (Eq. 5 shows return from t-12 to t; Section 3.2 describes t-k-1 to t-1)</li><li>Exact roll rule for the most liquid contract is only given as typically the nearest or next nearest-to-delivery contract</li><li>Treatment of instruments with short or missing history, minimum data requirements and any exclusion filters are not stated</li><li>Transaction costs and margin or financing assumptions are not included in the headline results</li><li>Exact return convention (arithmetic vs compounded monthly returns) for the 12-month signal is not fully specified</li></ul><h3>Consistency issues</h3><ul><li>field: skip_window; tag: not_stated; severity: info; message: skip_window not stated; default applies</li><li>field: required_inputs; tag: missing_input; severity: block; message: &#39;daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)&#39;: non-equity instruments</li><li>field: can_implement; tag: cannot_implement; severity: info; message: extraction says the paper cannot be implemented: Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments; Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio)</li></ul>
+
+<!-- 10. interpretation accuracy -->
+<h2 id="interpretation">Interpretation accuracy </h2>
+<p class="muted">No interpretation scorecard on file.</p>
+<!-- 11. narrative -->
+
+<h2 id="usage">Model usage</h2>
+<p class="sub">1 calls (0 from cache) · 26,666 input and 1,363 output tokens · $0.07 at $2/$10 per million tokens</p>
+
+<!-- 12. downloads -->
+<h2 id="downloads">Downloads</h2>
+<div class="scroll"><table><tr><th>File</th><th class="n">Size</th></tr>
+<tr><td><a href="adaptation_log.json">adaptation_log.json</a></td><td class="n">5.6 KB</td></tr><tr><td><a href="dossier.html">dossier.html</a></td><td class="n">18.2 KB</td></tr><tr><td><a href="experiment_spec.json">experiment_spec.json</a></td><td class="n">7.9 KB</td></tr><tr><td><a href="extract_prompt_1.txt">extract_prompt_1.txt</a></td><td class="n">110.6 KB</td></tr><tr><td><a href="llm_usage.json">llm_usage.json</a></td><td class="n">176 B</td></tr><tr><td><a href="paper_meta.json">paper_meta.json</a></td><td class="n">474 B</td></tr><tr><td><a href="paper_text.json">paper_text.json</a></td><td class="n">104.0 KB</td></tr><tr><td><a href="progress.json">progress.json</a></td><td class="n">2.5 KB</td></tr><tr><td><a href="results.json">results.json</a></td><td class="n">18.4 KB</td></tr><tr><td><a href="run.log">run.log</a></td><td class="n">0 B</td></tr><tr><td><a href="session_response_1.json">session_response_1.json</a></td><td class="n">5.8 KB</td></tr><tr><td><a href="spec_consensus.json">spec_consensus.json</a></td><td class="n">6.5 KB</td></tr><tr><td><a href="spec_raw_1.json">spec_raw_1.json</a></td><td class="n">5.8 KB</td></tr><tr><td><a href="validation.json">validation.json</a></td><td class="n">2.9 KB</td></tr></table></div>
+
+<footer>
+Run dev_decoy_tsmom · snapshot snapshot_2026-10-28 · code aa7a866445b0 · model claude-sonnet-5-5 · generated 2026-10-28 09:04 UTC
+</footer>
+</main>
+</body>
+</html>

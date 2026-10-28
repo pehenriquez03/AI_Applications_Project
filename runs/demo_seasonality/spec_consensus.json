@@ -1,0 +1,160 @@
+{
+ "spec": {
+  "paper_title": "Seasonality in the Cross-Section of Stock Returns",
+  "authors": [
+   "Steven L. Heston",
+   "Ronnie Sadka"
+  ],
+  "year": 2006,
+  "selected_experiment": "Table 2, Years 2-5 Annual strategy: equal-weighted decile portfolios sorted on average returns at annual lags 24, 36, 48, and 60 months, held one month (10-1 winner-loser spread)",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Persistent seasonal variation in expected returns: individual stocks persistently earn different (relatively high or low) returns in specific calendar months, so stocks that did well in a given calendar month in past years tend to do well in that same calendar month again.",
+   "evidence": {
+    "page": 35,
+    "quote": "This result is consistent with individual stocks that persistently earn different returns over"
+   }
+  },
+  "universe_and_filters": {
+   "value": "NYSE/AMEX-listed firms whose data is available on the CRSP monthly returns file; holding-period returns January 1965 through December 2002 (456 months), with lagged returns back to January 1945; only stocks available strictly before each date are used. No further filters stated.",
+   "evidence": {
+    "page": 6,
+    "quote": "Our sample includes NYSE/AMEX-listed firms whose data is available on the CRSP"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "monthly stock returns",
+    "exchange listing (NYSE/AMEX universe filter)"
+   ],
+   "evidence": {
+    "page": 13,
+    "quote": "based on the average monthly return of stocks over all months in each lagged interval and"
+   }
+  },
+  "signal_formula_words": {
+   "value": "For each stock, the average of its monthly returns at the annual lags 24, 36, 48, and 60 months before the holding month (i.e., the same calendar month as the holding month in each of years 2 through 5 prior).",
+   "evidence": {
+    "page": 43,
+    "quote": "ranks stocks according to their average returns during the historical lags 24, 36, 48, and 60."
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "not stated",
+   "evidence": {
+    "page": 13,
+    "quote": "We also divide th e historical formation months into annual lags 12, 24, \u2026, 240"
+   }
+  },
+  "formation_window": {
+   "value": "4 monthly returns at annual lags 24, 36, 48, and 60 months (the same calendar month in years 2-5 before the holding month)",
+   "evidence": {
+    "page": 14,
+    "quote": "sorting only on annual lags 24, 36, 48, and 60"
+   }
+  },
+  "skip_window": {
+   "value": "none stated separately; the signal uses only lags 24, 36, 48, and 60, so months t-1 through t-23 and the non-annual months in between are not used",
+   "evidence": {
+    "page": 26,
+    "quote": "strategies measure historical returns over formation months that match the calendar"
+   }
+  },
+  "holding_period": {
+   "value": "1 month",
+   "evidence": {
+    "page": 13,
+    "quote": "measure the returns over the next month."
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 33,
+    "quote": "require rebalancing the entire portfolio ever y month."
+   }
+  },
+  "sort_rule": "deciles",
+  "sort_rule_evidence": {
+   "page": 13,
+   "quote": "We form decile portfolios"
+  },
+  "breakpoints": {
+   "value": "equal-count deciles (equal number of stocks in each portfolio) of all NYSE/AMEX stocks in the sample each month",
+   "evidence": {
+    "page": 43,
+    "quote": "Every month stocks are grouped into ten portfolios (with equal number of stocks in each portfolio)"
+   }
+  },
+  "favored_group": {
+   "value": "highest decile (decile 10, winners) of average returns at annual lags 24, 36, 48, and 60",
+   "evidence": {
+    "page": 4,
+    "quote": "returns were in the upper 10% of all stocks\u2019 returns over prev ious Aprils."
+   }
+  },
+  "disfavored_group": {
+   "value": "lowest decile (decile 1, losers) of average returns at annual lags 24, 36, 48, and 60",
+   "evidence": {
+    "page": 13,
+    "quote": "with the decile 10 winne rs outperforming the decile 1 losers"
+   }
+  },
+  "weighting": "equal",
+  "weighting_evidence": {
+   "page": 13,
+   "quote": "would be an equally wei ghted combination of stocks"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 30,
+   "quote": "Annual winners outperform losers"
+  },
+  "headline_result": {
+   "value": "Years 2-5 annual winner-minus-loser decile spread of 67 basis points per month (0.0067, t-statistic 5.35 in Table 2), January 1965-December 2002",
+   "evidence": {
+    "page": 14,
+    "quote": "But when sorting only on annual lags 24, 36, 48, and 60 th e decile 1 winners outperformed decile 10 losers by 67 basis points."
+   }
+  },
+  "unresolved_details": [
+   "Minimum return-history requirement: whether a stock must have returns at all four lags (24, 36, 48, 60) or can be ranked on a subset of available lags is not stated.",
+   "Return convention not stated (e.g., whether CRSP returns include dividends; treatment of delisting returns).",
+   "No share-code, price, or size filters stated beyond NYSE/AMEX listing on the CRSP monthly file.",
+   "Handling of stocks with missing returns in the holding month is not stated.",
+   "No equation or notation is given for the decile-sort signal.",
+   "No explicit skip period; the gap is implied only by using lags 24-60.",
+   "Prose on page 14 says 'decile 1 winners outperformed decile 10 losers', which conflicts with Table 2 labeling (decile 10 = winners, decile 1 = losers); the table labeling is followed here.",
+   "Breakpoints are described only as equal-number-of-stocks deciles; whether they are computed over all NYSE/AMEX stocks or NYSE only is not stated.",
+   "Decile labels conflict: Table 2 header labels decile 1 as losers and decile 10 as winners, but the page 14 prose says 'decile 1 winners outperformed decile 10 losers'; the table convention (10 = winners) is used here",
+   "Whether a stock must have returns at all four lags (24, 36, 48, 60) or is ranked on the average of available lags is not stated",
+   "No share-code (common stock), price, or size filters are stated beyond NYSE/AMEX listing on CRSP",
+   "Treatment of delisting returns is not stated",
+   "Breakpoints are equal-count deciles, but whether they are computed over all NYSE/AMEX stocks or NYSE-only stocks is not stated beyond 'equal number of stocks in each portfolio'",
+   "No explicit equation is given for the decile-sort signal",
+   "Return convention (simple vs. log, inclusion of dividends) is not stated beyond CRSP monthly returns"
+  ]
+ },
+ "agreement": {
+  "economic_rationale": 0.5,
+  "universe_and_filters": 1.0,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 1.0,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0,
+  "can_implement": 1.0,
+  "selected_experiment": 1.0
+ },
+ "n_runs": 2
+}

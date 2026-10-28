@@ -1,0 +1,334 @@
+{
+ "run_id": "demo_frog",
+ "paper_sha256": "7202cb813e00031e96c6a101cc49cd243a0bb55dc554a3bf960e0bbca14c525f",
+ "strategy_slug": "frog",
+ "status": "ready",
+ "blocked_reasons": [],
+ "signal_ops": [
+  {
+   "op": "pret_12_2",
+   "params": {
+    "months": 12,
+    "skip_months": 1
+   }
+  },
+  {
+   "op": "info_discreteness",
+   "params": {
+    "months": 12,
+    "skip_months": 1
+   }
+  }
+ ],
+ "selection": {
+  "sort": "quintiles",
+  "n_groups": 5,
+  "percent": null,
+  "favored": "highest",
+  "double_sort": {
+   "outer_op": "pret_12_2",
+   "outer_sort": "quintiles",
+   "outer_n_groups": 5,
+   "outer_favored": "highest",
+   "inner_op": "info_discreteness",
+   "inner_sort": "terciles",
+   "inner_n_groups": 3,
+   "inner_favored": "lowest",
+   "min_names": 15
+  }
+ },
+ "weighting": "equal",
+ "holding_months": 6,
+ "skip_months": 0,
+ "min_names": 15,
+ "price_floor": null,
+ "min_history_days": 252,
+ "min_formation_days": 15,
+ "expected_sign": "favored_group_higher",
+ "universe": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+ "snapshot": "snapshot_2026-10-28",
+ "warmup_start": "2012-01-01",
+ "eval_start": "2015-01-01",
+ "eval_end": "2025-12-31",
+ "execution": "signal through prior month's last close; execute at next month's first trading-day close; new weights earn only after execution",
+ "cost_bps": 10,
+ "benchmarks": [
+  "spy",
+  "ew_universe"
+ ],
+ "fund": {
+  "starting_aum": 100000000.0,
+  "management_fee_rate": 0.02,
+  "performance_fee_rate": 0.2,
+  "hurdle_rate": 0.05,
+  "hurdle_type": "hard",
+  "high_water_mark": true,
+  "crystallization_frequency": "annual",
+  "horizon_years": 5,
+  "discount_rate": 0.1
+ },
+ "research_cost": {
+  "dev_review_hours": 80,
+  "maintenance_hours_per_year": 10,
+  "hourly_rate": 150.0
+ },
+ "monte_carlo": {
+  "n_paths": 1000,
+  "mean_block_days": 126,
+  "block_sensitivity_days": [
+   63,
+   126,
+   252
+  ],
+  "seed": 20261028
+ },
+ "adaptations": [
+  {
+   "field": "selected_experiment",
+   "paper_value": "Table 2, Panel A: sequential double-sorts on PRET quintiles, then ID quintiles; six-month post-formation momentum returns (winners minus losers) per ID quintile, post-1927 sample",
+   "our_value": "Table 2, Panel A: sequential double-sorts on PRET quintiles, then ID quintiles; six-month post-formation momentum returns (winners minus losers) per ID quintile, post-1927 sample",
+   "status": "stated",
+   "reason": "identified by the extraction"
+  },
+  {
+   "field": "signal_formula_words",
+   "paper_value": "Information discreteness (ID): the sign of the formation-period cumulative return (PRET) times the percentage of formation-period days with negative daily returns minus the percentage with positive daily returns. Daily return signs are equally weighted, ignoring magnitude. Small (low) ID = continuous information; large (high) ID = discrete information. Stocks are first sorted on PRET, then on ID.",
+   "our_value": "pret_12_2(months=12, skip_months=1); info_discreteness(months=12, skip_months=1)",
+   "status": "stated",
+   "reason": "mapped to registry operations by rule table"
+  },
+  {
+   "field": "formation_window",
+   "paper_value": "12 months: PRET is the cumulative return over the past twelve months after skipping the most recent month; ID uses the daily returns of the same formation period",
+   "our_value": "12",
+   "status": "assumed",
+   "reason": "window not stated or not parseable; strategy default"
+  },
+  {
+   "field": "sort_rule",
+   "paper_value": "quintiles",
+   "our_value": "quintiles on past return, then terciles on information discreteness",
+   "status": "stated",
+   "reason": "double sort per rule table; inner sort terciles with a 15-name floor"
+  },
+  {
+   "field": "breakpoints",
+   "paper_value": "Sequential 5x5 double sort: PRET quintiles first, then ID quintiles within each PRET quintile; breakpoint universe (NYSE vs all stocks) not stated",
+   "our_value": "equal-count over eligible names",
+   "status": "adapted",
+   "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+  },
+  {
+   "field": "weighting",
+   "paper_value": "other",
+   "our_value": "equal",
+   "status": "adapted",
+   "reason": "policy: equal weight everywhere"
+  },
+  {
+   "field": "disfavored_group",
+   "paper_value": "long past winners (highest PRET quintile) in the lowest-ID (continuous information) subportfolio / short past losers (lowest PRET quintile) in the lowest-ID (continuous information) subportfolio",
+   "our_value": "long-only favored group; every group computed for the monotonicity table",
+   "status": "adapted",
+   "reason": "policy: long-only, no short leg"
+  },
+  {
+   "field": "expected_sign",
+   "paper_value": "favored_group_higher",
+   "our_value": "favored_group_higher",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "holding_period",
+   "paper_value": "6 months",
+   "our_value": "6 months",
+   "status": "stated",
+   "reason": "as stated; overlapping monthly cohorts"
+  },
+  {
+   "field": "skip_window",
+   "paper_value": "1 month (one intermediate month between formation and holding periods)",
+   "our_value": "0 months",
+   "status": "stated",
+   "reason": "skip embedded in the t-12..t-2 window"
+  },
+  {
+   "field": "rebalance_frequency",
+   "paper_value": "monthly (portfolios formed each month; handling of overlapping six-month holding periods not stated)",
+   "our_value": "monthly",
+   "status": "stated",
+   "reason": "as stated (cohorts rebalance monthly)"
+  },
+  {
+   "field": "universe_and_filters",
+   "paper_value": "CRSP stocks (returns adjusted for delistings), 1927 to 2007 sample; $5 price filter imposed at the beginning of each month. Share-code, exchange, and breakpoint-universe filters not stated; the data section also says negative book values are eliminated from the sample.",
+   "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+   "status": "adapted",
+   "reason": "policy: our 415-name S&P 500 survivor universe"
+  },
+  {
+   "field": "price_floor",
+   "paper_value": null,
+   "our_value": "none",
+   "status": "assumed",
+   "reason": "no price filter unless stated"
+  },
+  {
+   "field": "sample_period",
+   "paper_value": "Six-month momentum (winners minus losers) is 5.94% (t = 4.63) in the continuous-information (low ID) quintile versus –2.07% in the discrete (high ID) quintile; the 8.01% difference has a t-statistic of 8.54 (post-1927).",
+   "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+   "status": "adapted",
+   "reason": "policy: our snapshot sample"
+  },
+  {
+   "field": "inner_sort",
+   "paper_value": "quintiles within the past-return quintile (paper)",
+   "our_value": "terciles",
+   "status": "adapted",
+   "reason": "415-name universe: quintile-within-quintile leaves ~17 names, under the 20-name floor; terciles with a 15-name floor"
+  },
+  {
+   "field": "min_history_days",
+   "paper_value": null,
+   "our_value": "252",
+   "status": "assumed",
+   "reason": "one year of history to be eligible (or the signal window if longer)"
+  },
+  {
+   "field": "min_formation_days",
+   "paper_value": null,
+   "our_value": "15",
+   "status": "assumed",
+   "reason": "15 trading days minimum in a formation month"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Portfolio weighting (equal vs value) of stocks within the PRET/ID subportfolios is not stated; weighting recorded as 'other' (not stated).",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Whether the negative-book-value elimination stated in the data section applies to the 1927-2007 Table 2 sample is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Exact month indexing of the formation window is ambiguous: PRET is 'the past twelve months after skipping the most recent month', Table 1 says ID is computed over months t to t-11, and a separate one-month interval precedes the holding period.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Whether the six-month holding-period returns use overlapping (Jegadeesh-Titman style) portfolios or non-overlapping formation, and how they are compounded/averaged, is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Breakpoint universe for PRET and ID quintiles (NYSE vs all stocks) is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Share-code and exchange filters are not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Treatment of PRET exactly equal to zero (sgn undefined) is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Minimum number of daily return observations required to compute ID is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Return convention for delistings is described only as returns 'after adjusting for delistings'.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Portfolio weighting (equal vs value) within the double-sorted portfolios is not stated; weighting recorded as 'other' (not stated).",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Breakpoint universe for PRET and ID quintiles (all stocks vs NYSE) is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Whether six-month holding periods overlap (Jegadeesh-Titman style overlapping portfolios) or how monthly cohorts are combined is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Exact formation window endpoints ('past twelve months after skipping the most recent month': whether 12 or 11 months of returns, e.g. t-12 to t-2) are not spelled out.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Return convention for the six-month holding-period return (compounded vs summed monthly returns) is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Treatment of PRET exactly equal to zero (sgn defined only for PRET > 0 and PRET < 0) is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Share-code, exchange, or other universe filters beyond the $5 price filter are not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Section 1 says negative book values are eliminated from the sample (Compustat data); whether this filter applies to the 1927-2007 Table 2 sorts is not stated.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Which price is used for the $5 filter (price at beginning of month, i.e. end of prior month) is only loosely specified.",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  }
+ ],
+ "n_assumed": 1,
+ "n_adapted": 6
+}

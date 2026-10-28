@@ -1,0 +1,108 @@
+{
+ "quantiles": {
+  "end_wealth_strategy": {
+   "p05": 1.032539770141889,
+   "p25": 1.2977622465674892,
+   "p50": 1.4972088800159447,
+   "p75": 1.7199704383061594,
+   "p95": 2.1405325389902314
+  },
+  "end_wealth_ew": {
+   "p05": 1.0525585321551143,
+   "p25": 1.3167313818534638,
+   "p50": 1.535973604760263,
+   "p75": 1.7907960578000677,
+   "p95": 2.276130766697632
+  },
+  "end_wealth_spy": {
+   "p05": 1.1982163511496164,
+   "p25": 1.5831674431815528,
+   "p50": 1.893754200441965,
+   "p75": 2.2520994062256703,
+   "p95": 2.904181819389399
+  },
+  "maxdd_strategy": {
+   "p05": -0.4152084822430869,
+   "p25": -0.3795290152842491,
+   "p50": -0.21470955257607244,
+   "p75": -0.17362823782542142,
+   "p95": -0.13516408656395332
+  },
+  "fees_strategy": {
+   "p05": 11937174.279079998,
+   "p25": 16519009.956332132,
+   "p50": 20814592.173057795,
+   "p75": 25886548.222277362,
+   "p95": 36151683.90593648
+  },
+  "fees_ew": {
+   "p05": 11836569.335610256,
+   "p25": 17033865.193142273,
+   "p50": 21807236.04510633,
+   "p75": 27525710.65941658,
+   "p95": 39758632.80639486
+  },
+  "incremental_fees_pv": {
+   "p05": -4824381.624510359,
+   "p25": -2371421.2254383015,
+   "p50": -599525.5107805117,
+   "p75": 524901.1940943839,
+   "p95": 2436403.206528559
+  },
+  "npv": {
+   "p05": -4843881.923196359,
+   "p25": -2390921.524124301,
+   "p50": -619025.8094665117,
+   "p75": 505400.89540838386,
+   "p95": 2416902.907842559
+  },
+  "npv_demeaned": {
+   "p05": -3898494.8522146004,
+   "p25": -1425488.6112630365,
+   "p50": 104335.19616814476,
+   "p75": 1331406.5310167389,
+   "p95": 3527020.837986055
+  },
+  "incremental_fees_pv_demeaned": {
+   "p05": -3878994.5535286004,
+   "p25": -1405988.3125770364,
+   "p50": 123835.49485414475,
+   "p75": 1350906.829702739,
+   "p95": 3546521.136672055
+  }
+ },
+ "frac_beats_spy": 0.041,
+ "frac_beats_ew": 0.373,
+ "frac_npv_positive": 0.345,
+ "frac_npv_positive_demeaned": 0.522,
+ "expected_incremental_fees_pv": -950091.4028857893,
+ "expected_incremental_fees_pv_se": 73813.46365000453,
+ "expected_npv": -969591.7015717892,
+ "breakeven_aum": null,
+ "research_cost_total": 19500.298686,
+ "llm_cost_usd": 0.298686,
+ "block_sensitivity": {
+  "63": 0.32,
+  "126": 0.2966666666666667,
+  "252": 0.30666666666666664
+ },
+ "historical_mean_daily_excess_vs_ew": -3.2579730796186e-05,
+ "n_paths": 1000,
+ "n_obs": 2766,
+ "horizon_days": 1260,
+ "mean_block_days": 126.0,
+ "seed": 20261028,
+ "bootstrap_index_hash": "6f00c33ae2b3dc9d",
+ "benchmark": "ew_universe",
+ "assumptions": [
+  "2/20 with a 5% hard hurdle on a long-only equity strategy is an assumption, not an observed fee schedule",
+  "no subscriptions or redemptions; AUM is fixed at starting_aum plus returns net of fees",
+  "incremental fees are measured versus an equal-weight universe fund charged the same fee schedule, never versus SPY",
+  "end_wealth_strategy and end_wealth_ew are net of fees; end_wealth_spy is gross (no fee)",
+  "fees are discounted at year-end of each crystallization year; management fees accrue daily and are aggregated per year",
+  "break-even AUM scales expected incremental fees linearly with AUM and is reported, not headlined; None when expected incremental fees are not positive",
+  "the bootstrap resamples historical days jointly (stationary, geometric blocks); it cannot create regimes absent from the sample",
+  "the demeaned run subtracts the historical mean daily excess return over the EW fund from the strategy, testing NPV with no alpha beyond noise structure",
+  "synthetic 252-day trading calendar; hurdle accrues on calendar days/365"
+ ]
+}

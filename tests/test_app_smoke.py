@@ -6,7 +6,8 @@ import pytest
 from research_engine.app import helpers as H
 
 APP = str(Path(__file__).resolve().parents[1] / "research_engine" / "app" / "streamlit_app.py")
-MOCK = Path(__file__).resolve().parents[1] / "runs" / "mock_app"
+RUNS = Path(__file__).resolve().parents[1] / "runs"
+MOCK = RUNS / "mock_app"
 
 AppTest = pytest.importorskip("streamlit.testing.v1").AppTest
 needs_mock = pytest.mark.skipif(not (MOCK / "progress.json").exists(), reason="runs/mock_app missing")
@@ -35,6 +36,51 @@ def test_mock_run_shows_nine_steps_and_summary():
     assert any(s.value == "Summary" for s in at.subheader)
     assert any(m.value == "**investigate further**" for m in at.markdown)
     assert len(at.tabs) == 4
+
+
+def _open_run(name: str):
+    at = _app()
+    at.session_state["selected_run"] = name
+    at.run()
+    assert not at.exception
+    return at
+
+
+@pytest.mark.skipif(not (RUNS / "demo_max" / "progress.json").exists(), reason="runs/demo_max missing")
+def test_real_run_demo_max_renders_all_panels():
+    at = _open_run("demo_max")
+    steps = [m.value for m in at.markdown if 'class="steps"' in m.value]
+    assert len(steps) == 1 and steps[0].count('class="step ') == 9
+    assert any(s.value == "Summary" for s in at.subheader)
+    rec = H.read_progress(RUNS / "demo_max")["recommendation"]
+    assert any(m.value == f"**{rec}**" for m in at.markdown)
+    assert len(at.tabs) == 4
+    assert len(at.table[0].value) >= 10                      # extraction table: one row per material field
+    heads = [m.value for m in at.markdown if m.value.startswith("**")]
+    for h in ("**Performance**", "**Trading cost grid**", "**Sub-periods**", "**Ranked groups**", "**Share of paths**"):
+        assert h in heads
+    assert any("Spearman rho" in c.value for c in at.caption)
+
+
+@pytest.mark.skipif(not (RUNS / "demo_decoy_tsmom" / "progress.json").exists(), reason="runs/demo_decoy_tsmom missing")
+def test_blocked_decoy_says_unable_to_evaluate():
+    at = _open_run("demo_decoy_tsmom")
+    assert any("Unable to evaluate" in m.value for m in at.markdown)
+    assert len(at.tabs) == 4                                   # tabs tolerate the missing evaluation/economics files
+
+
+def test_paper_label_prefers_registry():
+    known = {"sha": {"abc": "Bali, Cakici & Whitelaw 2011 — MAX"}, "file": {"x.pdf": "Novy-Marx 2013 — profitability (decoy)"}}
+    assert H.paper_label({"sha256": "abc", "title_guess": "T"}, known) == "Bali 2011 — MAX"
+    assert H.paper_label({"sha256": "zzz", "file_name": "x.pdf"}, known) == "Novy-Marx 2013 — profitability"
+    assert H.paper_label({"title_guess": "SOME TITLE:"}, known) == "SOME TITLE"
+
+
+def test_list_runs_includes_demo_and_dev(tmp_path):
+    for n in ("demo_a", "dev_b", "mock_c", "_d"):
+        (tmp_path / n).mkdir()
+        (tmp_path / n / "progress.json").write_text('{"stages": [], "recommendation": "deprioritize", "paper_title": "T"}')
+    assert sorted(r["id"] for r in H.list_runs(tmp_path)) == ["demo_a", "dev_b"]
 
 
 def test_paper_preview_and_queue():

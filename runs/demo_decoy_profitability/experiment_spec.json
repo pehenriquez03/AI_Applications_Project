@@ -1,0 +1,224 @@
+{
+ "run_id": "demo_decoy_profitability",
+ "paper_sha256": "8621e93f2f3e6f3efc6ea867a1923be35aa9c3b10e55a5df837acec794257021",
+ "strategy_slug": "unmapped",
+ "status": "blocked",
+ "blocked_reasons": [
+  "paper cannot be implemented with our data: Requires accounting/fundamental data: gross profits (revenues minus cost of goods sold) and total assets, from Compustat annual statements",
+  "required input not in snapshot: 'revenues (REVT)': fundamental data",
+  "required input not in snapshot: 'cost of goods sold (COGS)': fundamental data",
+  "required input not in snapshot: 'total assets (AT)': fundamental data",
+  "signal maps to no registry operation: Gross profits (revenues minus cost of goods sold) divided by total assets"
+ ],
+ "signal_ops": [],
+ "selection": {
+  "sort": "quintiles",
+  "n_groups": 5,
+  "percent": null,
+  "favored": "highest",
+  "double_sort": null
+ },
+ "weighting": "equal",
+ "holding_months": 12,
+ "skip_months": 0,
+ "min_names": 20,
+ "price_floor": null,
+ "min_history_days": 252,
+ "min_formation_days": 15,
+ "expected_sign": "favored_group_higher",
+ "universe": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+ "snapshot": "snapshot_2026-10-28",
+ "warmup_start": "2012-01-01",
+ "eval_start": "2015-01-01",
+ "eval_end": "2025-12-31",
+ "execution": "signal through prior month's last close; execute at next month's first trading-day close; new weights earn only after execution",
+ "cost_bps": 10,
+ "benchmarks": [
+  "spy",
+  "ew_universe"
+ ],
+ "fund": {
+  "starting_aum": 100000000.0,
+  "management_fee_rate": 0.02,
+  "performance_fee_rate": 0.2,
+  "hurdle_rate": 0.05,
+  "hurdle_type": "hard",
+  "high_water_mark": true,
+  "crystallization_frequency": "annual",
+  "horizon_years": 5,
+  "discount_rate": 0.1
+ },
+ "research_cost": {
+  "dev_review_hours": 80,
+  "maintenance_hours_per_year": 10,
+  "hourly_rate": 150.0
+ },
+ "monte_carlo": {
+  "n_paths": 1000,
+  "mean_block_days": 126,
+  "block_sensitivity_days": [
+   63,
+   126,
+   252
+  ],
+  "seed": 20261028
+ },
+ "adaptations": [
+  {
+   "field": "selected_experiment",
+   "paper_value": "Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets",
+   "our_value": "Table 4, Panel A: univariate quintile portfolios sorted on gross profits-to-assets",
+   "status": "stated",
+   "reason": "identified by the extraction"
+  },
+  {
+   "field": "required_inputs",
+   "paper_value": "market capitalization (value weights)",
+   "our_value": "not used",
+   "status": "adapted",
+   "reason": "market capitalization used only for weighting, breakpoints or filters"
+  },
+  {
+   "field": "sort_rule",
+   "paper_value": "quintiles",
+   "our_value": "quintiles",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "favored_group",
+   "paper_value": "highest gross profits-to-assets quintile (most profitable firms)",
+   "our_value": "highest group",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "breakpoints",
+   "paper_value": "NYSE breakpoints, quintile sort",
+   "our_value": "equal-count over eligible names",
+   "status": "adapted",
+   "reason": "no exchange or size breakpoints in our universe; equal-count sorts of eligible names"
+  },
+  {
+   "field": "weighting",
+   "paper_value": "value",
+   "our_value": "equal",
+   "status": "adapted",
+   "reason": "policy: equal weight everywhere"
+  },
+  {
+   "field": "disfavored_group",
+   "paper_value": "long highest gross profits-to-assets quintile (most profitable firms) / short lowest gross profits-to-assets quintile (least profitable firms)",
+   "our_value": "long-only favored group; every group computed for the monotonicity table",
+   "status": "adapted",
+   "reason": "policy: long-only, no short leg"
+  },
+  {
+   "field": "expected_sign",
+   "paper_value": "favored_group_higher",
+   "our_value": "favored_group_higher",
+   "status": "stated",
+   "reason": "as stated"
+  },
+  {
+   "field": "holding_period",
+   "paper_value": "until the next end-of-June rebalance (annual)",
+   "our_value": "12 months",
+   "status": "stated",
+   "reason": "as stated; overlapping monthly cohorts"
+  },
+  {
+   "field": "skip_window",
+   "paper_value": "not stated",
+   "our_value": "0 months",
+   "status": "assumed",
+   "reason": "no skip"
+  },
+  {
+   "field": "rebalance_frequency",
+   "paper_value": "annually, at the end of each June",
+   "our_value": "monthly",
+   "status": "stated",
+   "reason": "as stated (cohorts rebalance monthly)"
+  },
+  {
+   "field": "universe_and_filters",
+   "paper_value": "Non-financial firms (one-digit SIC code 6 excluded), July 1963 to December 2009; exchange coverage for Table 4 not stated beyond NYSE breakpoints",
+   "our_value": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+   "status": "adapted",
+   "reason": "policy: our 415-name S&P 500 survivor universe"
+  },
+  {
+   "field": "price_floor",
+   "paper_value": null,
+   "our_value": "none",
+   "status": "assumed",
+   "reason": "no price filter unless stated"
+  },
+  {
+   "field": "sample_period",
+   "paper_value": "Most profitable minus least profitable quintile earns 0.33 percent per month in value-weighted excess returns (test-statistic 2.63); Fama-French three-factor alpha 0.55 percent per month (test-statistic 4.75)",
+   "our_value": "2015-01-01..2025-12-31 (warm-up from 2012-01-01)",
+   "status": "adapted",
+   "reason": "policy: our snapshot sample"
+  },
+  {
+   "field": "min_history_days",
+   "paper_value": null,
+   "our_value": "252",
+   "status": "assumed",
+   "reason": "one year of history to be eligible (or the signal window if longer)"
+  },
+  {
+   "field": "min_formation_days",
+   "paper_value": null,
+   "our_value": "15",
+   "status": "assumed",
+   "reason": "15 trading days minimum in a formation month"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Skip/gap between accounting data date and portfolio formation not explicitly stated beyond lagging accounting data to end of June of the following year",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Exact fiscal-year-end alignment of the annual accounting data is ambiguous",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Exchange coverage (NYSE/AMEX/NASDAQ) of the Table 4 universe not stated explicitly",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Minimum price, size or data-availability filters other than the financial-firm exclusion not stated",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Treatment of delisting returns not stated",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  },
+  {
+   "field": "unresolved_detail",
+   "paper_value": "Return convention for excess returns (risk-free rate used) not stated for this table",
+   "our_value": "engine default or convention",
+   "status": "unresolved",
+   "reason": "left open by the paper; see defaults"
+  }
+ ],
+ "n_assumed": 1,
+ "n_adapted": 6
+}
