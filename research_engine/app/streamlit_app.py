@@ -1,4 +1,4 @@
-"""WARREN — your research screening agent. Terminal-style Streamlit front end.
+"""WARREN — research paper screening agent. Terminal-style Streamlit front end.
 
 Launch:  .venv/bin/streamlit run research_engine/app/streamlit_app.py
 Layout:  top bar (name, tagline, last run, parameter chips) · left: the run (steps, performance,
@@ -35,7 +35,7 @@ from research_engine.contracts import (
 )
 
 APP_NAME = "WARREN"
-TAGLINE = "YOUR RESEARCH SCREENING AGENT"
+TAGLINE = "RESEARCH PAPER SCREENING AGENT"
 # Logo: a black W on an orange square (option 2 on the WARREN logo canvas). The heavy sans is the
 # Bloomberg-like wordmark face; Archivo Black loads from Google Fonts, Arial Black is the offline fallback.
 HEAVY = "'Archivo Black', 'Arial Black', Arial, Helvetica, sans-serif"
