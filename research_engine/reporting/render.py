@@ -308,7 +308,15 @@ def _footer(run_dir: Path, results: dict) -> dict:
             "snapshot": dig(results, "data.snapshot") or C.SNAPSHOT_DIR.name,
             "code_version": code_version(),
             "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-            "model": C.MODEL}
+            "model": _run_model(run_dir)}
+
+
+def _run_model(run_dir: Path) -> str:
+    """Model recorded in run_config.json (written by the pipeline); contracts.MODEL otherwise."""
+    try:
+        return json.loads((Path(run_dir) / "run_config.json").read_text()).get("model") or C.MODEL
+    except Exception:  # noqa: BLE001
+        return C.MODEL
 
 
 # ----------------------------------------------------------------------------

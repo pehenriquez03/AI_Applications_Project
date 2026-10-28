@@ -20,9 +20,14 @@ def _app():
 def test_app_loads_with_title():
     at = _app().run()
     assert not at.exception
-    assert at.title[0].value == "Research Screening Agent"
-    assert any(s.value == "Summary" for s in at.subheader)
+    top = [m.value for m in at.markdown if 'class="topbar"' in m.value]
+    assert len(top) == 1 and "SHARPE OBJECTS" in top[0] and "Research Screening Agent" in top[0]
+    assert any('class="chips"' in m.value and "2015-01-01 → 2025-12-31" in m.value for m in at.markdown)
+    assert any("Summary" in m.value and 'class="ph"' in m.value for m in at.markdown)
     assert any("Select a paper or drop a PDF." in m.value for m in at.markdown)
+    assert len([b for b in at.button if b.key.startswith("paper_")]) == 9      # one tile per registry paper
+    assert at.selectbox(key="model").value == "claude-sonnet-5-5"
+    assert tuple(at.select_slider(key="window").value) == ("2015-01", "2025-12")
 
 
 @needs_mock
@@ -33,7 +38,7 @@ def test_mock_run_shows_nine_steps_and_summary():
     assert not at.exception
     steps = [m.value for m in at.markdown if 'class="steps"' in m.value]
     assert len(steps) == 1 and steps[0].count('class="step ') == 9
-    assert any(s.value == "Summary" for s in at.subheader)
+    assert any("Summary" in m.value and 'class="ph"' in m.value for m in at.markdown)
     assert any(m.value == "**investigate further**" for m in at.markdown)
     assert len(at.tabs) == 4
 
@@ -51,7 +56,7 @@ def test_real_run_demo_max_renders_all_panels():
     at = _open_run("demo_max")
     steps = [m.value for m in at.markdown if 'class="steps"' in m.value]
     assert len(steps) == 1 and steps[0].count('class="step ') == 9
-    assert any(s.value == "Summary" for s in at.subheader)
+    assert any("Summary" in m.value and 'class="ph"' in m.value for m in at.markdown)
     rec = H.read_progress(RUNS / "demo_max")["recommendation"]
     assert any(m.value == f"**{rec}**" for m in at.markdown)
     assert len(at.tabs) == 4
@@ -83,12 +88,24 @@ def test_list_runs_includes_demo_and_dev(tmp_path):
     assert sorted(r["id"] for r in H.list_runs(tmp_path)) == ["demo_a", "dev_b"]
 
 
-def test_paper_preview_and_queue():
+def test_paper_tile_toggles_queue_and_previews():
     at = _app().run()
     at.button(key="paper_max").click().run()
     assert not at.exception
-    at.button(key="use_max").click().run()
     assert at.session_state["queue"] == ["max"]
+    assert at.session_state["preview"] == "max"
+    assert "Bali" in at.button(key="paper_max").help                     # hover preview is the button tooltip
+    at.button(key="paper_max").click().run()                             # second click deselects
+    assert at.session_state["queue"] == []
+
+
+def test_run_header_shows_window_chip():
+    at = _open_run("demo_momentum") if (RUNS / "demo_momentum" / "progress.json").exists() else None
+    if at is None:
+        pytest.skip("runs/demo_momentum missing")
+    heads = [m.value for m in at.markdown if 'class="runh"' in m.value]
+    assert len(heads) == 1 and "BACKTEST 2015-01-01 → 2025-12-31" in heads[0]
+    assert any('class="quote"' in m.value and "Net CAGR" in m.value for m in at.markdown)
 
 
 def test_helpers_tolerate_missing_files(tmp_path):

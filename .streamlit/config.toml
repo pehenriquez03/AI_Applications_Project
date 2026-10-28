@@ -1,0 +1,15 @@
+# Terminal look for the Research Screening Agent app (dark, orange accent, Arial).
+[theme]
+base = "dark"
+primaryColor = "#f58220"
+backgroundColor = "#111111"
+secondaryBackgroundColor = "#1b1b1b"
+textColor = "#d9d9d9"
+font = "sans serif"
+
+[server]
+headless = true
+fileWatcherType = "none"
+
+[browser]
+gatherUsageStats = false

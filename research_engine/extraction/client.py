@@ -37,8 +37,8 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def cache_key(system: str, user: str, schema: type[BaseModel]) -> str:
-    raw = "|".join([MODEL, PROMPT_VERSION, SCHEMA_VERSION, system, user, schema.__name__])
+def cache_key(system: str, user: str, schema: type[BaseModel], model: Optional[str] = None) -> str:
+    raw = "|".join([model or MODEL, PROMPT_VERSION, SCHEMA_VERSION, system, user, schema.__name__])
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
@@ -47,18 +47,19 @@ def cache_path(key: str, cache_dir: Optional[Path] = None) -> Path:
 
 
 def read_cache(system: str, user: str, schema: type[BaseModel],
-               cache_dir: Optional[Path] = None) -> Optional[dict]:
-    p = cache_path(cache_key(system, user, schema), cache_dir)
+               cache_dir: Optional[Path] = None, model: Optional[str] = None) -> Optional[dict]:
+    p = cache_path(cache_key(system, user, schema, model), cache_dir)
     if not p.exists():
         return None
     return json.loads(p.read_text())
 
 
 def write_cache(system: str, user: str, schema: type[BaseModel], obj: BaseModel, *,
-                source: str, tag: str, usage: dict, cache_dir: Optional[Path] = None) -> Path:
-    p = cache_path(cache_key(system, user, schema), cache_dir)
+                source: str, tag: str, usage: dict, cache_dir: Optional[Path] = None,
+                model: Optional[str] = None) -> Path:
+    p = cache_path(cache_key(system, user, schema, model), cache_dir)
     p.parent.mkdir(parents=True, exist_ok=True)
-    entry = {"source": source, "model": MODEL, "tag": tag, "created": _now(),
+    entry = {"source": source, "model": model or MODEL, "tag": tag, "created": _now(),
              "usage": usage, "data": json.loads(obj.model_dump_json())}
     p.write_text(json.dumps(entry, indent=1, ensure_ascii=False))
     return p
@@ -92,13 +93,15 @@ def _client():
 
 def call_structured(system: str, user: str, schema: type[BaseModel], tag: str,
                     run_dir: Optional[Path] = None, *, cache_dir: Optional[Path] = None,
-                    max_tokens: int = 16000) -> tuple[BaseModel, dict]:
-    """One structured model call, cached. Returns (validated object, usage dict)."""
-    hit = read_cache(system, user, schema, cache_dir)
+                    max_tokens: int = 16000, model: Optional[str] = None) -> tuple[BaseModel, dict]:
+    """One structured model call, cached. Returns (validated object, usage dict).
+    model: Claude model id; defaults to contracts.MODEL. The cache is keyed by model."""
+    model = model or MODEL
+    hit = read_cache(system, user, schema, cache_dir, model)
     if hit is not None:
         obj = schema.model_validate(hit["data"])
         u = hit.get("usage") or {}
-        usage = {"call": tag, "model": hit.get("model", MODEL),
+        usage = {"call": tag, "model": hit.get("model", model),
                  "input_tokens": u.get("input_tokens", 0), "output_tokens": u.get("output_tokens", 0),
                  "cached": True, "source": hit.get("source", "api")}
         append_usage(run_dir, usage)
@@ -108,7 +111,7 @@ def call_structured(system: str, user: str, schema: type[BaseModel], tag: str,
     client = _client()
     try:
         resp = client.messages.parse(
-            model=MODEL, max_tokens=max_tokens, system=system,
+            model=model, max_tokens=max_tokens, system=system,
             messages=[{"role": "user", "content": user}], output_format=schema,
         )
     except anthropic.AuthenticationError as e:
@@ -128,11 +131,11 @@ def call_structured(system: str, user: str, schema: type[BaseModel], tag: str,
     if obj is None:
         raise RuntimeError(f"{tag}: response did not parse into {schema.__name__}")
 
-    usage = {"call": tag, "model": MODEL,
+    usage = {"call": tag, "model": model,
              "input_tokens": resp.usage.input_tokens, "output_tokens": resp.usage.output_tokens,
              "cached": False, "source": "api"}
     write_cache(system, user, schema, obj, source="api", tag=tag,
                 usage={"input_tokens": usage["input_tokens"], "output_tokens": usage["output_tokens"]},
-                cache_dir=cache_dir)
+                cache_dir=cache_dir, model=model)
     append_usage(run_dir, usage)
     return obj, usage

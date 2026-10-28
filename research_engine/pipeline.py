@@ -90,7 +90,18 @@ def _load_specs(run_dir: Path) -> list[StrategySpec]:
     return specs
 
 
-def stage_extract(run_dir: Path, n_runs: int, llm: str) -> tuple[list[StrategySpec], dict]:
+RUN_CONFIG = "run_config.json"   # {model, eval_start, eval_end}: per-run choices made in the app or CLI
+
+
+def load_run_config(run_dir: Path) -> dict:
+    f = Path(run_dir) / RUN_CONFIG
+    try:
+        return json.loads(f.read_text()) if f.exists() else {}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def stage_extract(run_dir: Path, n_runs: int, llm: str, model: Optional[str] = None) -> tuple[list[StrategySpec], dict]:
     """Return (specs, agreement). Uses existing spec_raw_k files first, then API/cache."""
     from .extraction.prompts import SYSTEM_EXTRACT, build_extract_user
     from .extraction.evidence_check import consensus
@@ -105,7 +116,7 @@ def stage_extract(run_dir: Path, n_runs: int, llm: str) -> tuple[list[StrategySp
             try:
                 # distinct cache entries per k: append a run marker the model ignores
                 obj, usage = call_structured(SYSTEM_EXTRACT, user + f"\n<!-- extraction run {k} -->",
-                                             StrategySpec, tag=f"extract_{k}", run_dir=run_dir)
+                                             StrategySpec, tag=f"extract_{k}", run_dir=run_dir, model=model)
             except LLMUnavailable as e:
                 if specs:
                     break
@@ -120,7 +131,8 @@ def stage_extract(run_dir: Path, n_runs: int, llm: str) -> tuple[list[StrategySp
     return specs, agreement
 
 
-def stage_validate(run_dir: Path, specs: list[StrategySpec], llm: str) -> ExperimentSpec:
+def stage_validate(run_dir: Path, specs: list[StrategySpec], llm: str, model: Optional[str] = None,
+                   eval_start: Optional[str] = None, eval_end: Optional[str] = None) -> ExperimentSpec:
     from .extraction.evidence_check import check_evidence
     from .validation.consistency import check_consistency
     from .validation.adapt import adapt
@@ -140,7 +152,7 @@ def stage_validate(run_dir: Path, specs: list[StrategySpec], llm: str) -> Experi
                 from .extraction.prompts import SYSTEM_CHECK, build_check_user
                 from .documents.ingest import page_tagged_text
                 obj, _ = call_structured(SYSTEM_CHECK, build_check_user(specs[k - 1], page_tagged_text(text)),
-                                         CheckPassResult, tag=f"check_{k}", run_dir=run_dir)
+                                         CheckPassResult, tag=f"check_{k}", run_dir=run_dir, model=model)
                 f.write_text(obj.model_dump_json(indent=1))
                 checks.append(obj)
             except Exception as e:  # LLMUnavailable or other: check pass is advisory
@@ -149,6 +161,8 @@ def stage_validate(run_dir: Path, specs: list[StrategySpec], llm: str) -> Experi
     exp = adapt(spec, run_id=run_dir.name, paper_sha256=meta["sha256"],
                 selected_experiment=meta.get("selected_experiment"),
                 consistency_issues=issues, check_results=checks, evidence=evidence)
+    if eval_start or eval_end:                      # window chosen for this run (app / CLI) overrides the policy
+        exp = apply_window(exp, eval_start, eval_end)
     (run_dir / RunFiles.experiment_spec).write_text(exp.model_dump_json(indent=1))
     _write_json(run_dir / RunFiles.adaptation_log, [a.model_dump() for a in exp.adaptations])
     _write_json(run_dir / RunFiles.validation, {
@@ -157,6 +171,22 @@ def stage_validate(run_dir: Path, specs: list[StrategySpec], llm: str) -> Experi
         "n_check_disagreements": sum(len(c.items) for c in checks)})
     if exp.status == "blocked":
         raise Blocked("; ".join(exp.blocked_reasons) or "blocked by validation")
+    return exp
+
+
+def apply_window(exp: ExperimentSpec, eval_start: Optional[str], eval_end: Optional[str]) -> ExperimentSpec:
+    """Replace the evaluation window and rewrite the sample_period adaptation entry to say so."""
+    start = str(eval_start or exp.eval_start)[:10]
+    end = str(eval_end or exp.eval_end)[:10]
+    if start < exp.warmup_start:
+        raise Blocked(f"backtest start {start} is before the data warm-up {exp.warmup_start}")
+    if end <= start:
+        raise Blocked(f"backtest window is empty: {start} to {end}")
+    exp = exp.model_copy(update={"eval_start": start, "eval_end": end})
+    for a in exp.adaptations:
+        if a.field == "sample_period":
+            a.our_value = f"{start}..{end} (warm-up from {exp.warmup_start})"
+            a.reason = "window chosen for this run; warm-up uses all earlier snapshot data"
     return exp
 
 
@@ -213,7 +243,7 @@ def stage_economics(run_dir: Path, exp: ExperimentSpec):
     return summary
 
 
-def stage_dossier(run_dir: Path, llm: str) -> dict:
+def stage_dossier(run_dir: Path, llm: str, model: Optional[str] = None) -> dict:
     from .reporting.results import assemble_results
     from .reporting.rubric import recommend
     from .reporting.narrative import write_narrative
@@ -223,7 +253,7 @@ def stage_dossier(run_dir: Path, llm: str) -> dict:
     results["rubric"] = rec["rubric"]; results["recommendation"] = rec["recommendation"]
     results["recommendation_reasons"] = rec["reasons"]
     _write_json(run_dir / RunFiles.results, results)
-    narrative = write_narrative(run_dir, results, llm=llm)   # handles API / files / fallback
+    narrative = write_narrative(run_dir, results, llm=llm, model=model)   # handles API / files / fallback
     render_dossier(run_dir, results, narrative)
     render_index(C.RUNS_DIR)
     return {"recommendation": results["recommendation"], "summary": narrative.get("summary", "")}
@@ -234,8 +264,11 @@ def stage_dossier(run_dir: Path, llm: str) -> dict:
 # ----------------------------------------------------------------------------
 def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experiment: Optional[str] = None,
                  llm: str = "api", n_extractions: int = 3, reference_spec: Optional[Path] = None,
-                 start_stage: int = 1) -> Path:
-    """llm: 'api' (call Claude, cache first) | 'files_only' (never call; use spec_raw/check/narrative files)."""
+                 start_stage: int = 1, model: Optional[str] = None,
+                 eval_start: Optional[str] = None, eval_end: Optional[str] = None) -> Path:
+    """llm: 'api' (call Claude, cache first) | 'files_only' (never call; use spec_raw/check/narrative files).
+    model / eval_start / eval_end: per-run choices; None = contracts defaults. They are written to
+    run_config.json and reused on resume when not given again."""
     pdf_path = Path(pdf_path)
     if run_dir is None:
         import hashlib
@@ -243,6 +276,13 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
         run_dir = C.RUNS_DIR / _now_id(sha)
     run_dir.mkdir(parents=True, exist_ok=True)
     prog = ProgressWriter(run_dir, run_dir.name)
+    cfg = load_run_config(run_dir)
+    model = model or cfg.get("model") or None
+    eval_start = eval_start or cfg.get("eval_start") or None
+    eval_end = eval_end or cfg.get("eval_end") or None
+    _write_json(run_dir / RUN_CONFIG, {"model": model or C.MODEL, "eval_start": eval_start or C.EVAL_START,
+                                       "eval_end": eval_end or C.EVAL_END, "warmup_start": C.WARMUP_START,
+                                       "custom_window": bool(eval_start or eval_end)})
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s",
                         handlers=[logging.FileHandler(run_dir / RunFiles.run_log), logging.StreamHandler()])
     exp = None; ctx = None; res = None; specs = []
@@ -260,7 +300,7 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
         if start_stage <= 2:
             def s2():
                 nonlocal specs
-                specs, agreement = stage_extract(run_dir, n_extractions, llm)
+                specs, agreement = stage_extract(run_dir, n_extractions, llm, model)
                 mean_agr = sum(agreement.values()) / max(len(agreement), 1)
                 return f"{len(specs)} run(s) · fields agree {mean_agr:.0%}"
             _stage(prog, 2, s2)
@@ -269,7 +309,7 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
         if start_stage <= 3:
             def s3():
                 nonlocal exp
-                exp = stage_validate(run_dir, specs, llm)
+                exp = stage_validate(run_dir, specs, llm, model, eval_start, eval_end)
                 prog.set(strategy_slug=exp.strategy_slug)
                 return f"ready · {exp.n_assumed} assumed · {exp.n_adapted} adapted"
             _stage(prog, 3, s3)
@@ -313,7 +353,7 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
                 return f"{exp.monte_carlo['n_paths']} paths · P(NPV>0) {summ.get('frac_npv_positive', float('nan')):.0%}"
             _stage(prog, 8, s8)
         def s9():
-            out = stage_dossier(run_dir, llm)
+            out = stage_dossier(run_dir, llm, model)
             prog.set(recommendation=out["recommendation"], summary=out["summary"])
             return out["recommendation"]
         _stage(prog, 9, s9)

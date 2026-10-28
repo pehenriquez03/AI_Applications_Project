@@ -272,7 +272,7 @@ def export_narrative_prompt(run_dir, results: dict) -> Path:
     return p
 
 
-def write_narrative(run_dir, results: dict, llm: str = "files_only") -> dict:
+def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Optional[str] = None) -> dict:
     run_dir = Path(run_dir)
     path = run_dir / RunFiles.narrative
     nar: Optional[dict] = None
@@ -299,7 +299,7 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only") -> dict:
         try:
             from research_engine.extraction.client import call_structured
             system, user = _user_message(run_dir, results)
-            obj, _usage = call_structured(system, user, NarrativeOut, tag="narrative", run_dir=run_dir)
+            obj, _usage = call_structured(system, user, NarrativeOut, tag="narrative", run_dir=run_dir, model=model)
             nar = obj.to_contract_dict() if hasattr(obj, "to_contract_dict") else obj.model_dump()
             source = "api"
         except Exception as e:  # noqa: BLE001  LLMUnavailable, refusal, parse errors -> template

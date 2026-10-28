@@ -92,7 +92,8 @@ def _read_wide(path: Path) -> pd.DataFrame:
     return df.sort_index()
 
 
-def _window(df, start=EVAL_START, end=EVAL_END):
+def _window(df, start=None, end=None):
+    start, end = start or EVAL_START, end or EVAL_END
     return df.loc[(df.index >= pd.Timestamp(start)) & (df.index <= pd.Timestamp(end))]
 
 
@@ -246,7 +247,7 @@ def _group_table(rets: pd.DataFrame, selection: dict, expected_sign: str, lags: 
     return out
 
 
-def _cost_grid(run_dir: Path, base: pd.DataFrame, factors, lags_alpha: int) -> dict:
+def _cost_grid(run_dir: Path, base: pd.DataFrame, factors, lags_alpha: int, start=None, end=None) -> dict:
     out = {}
     for bps in COST_BPS_GRID:
         if bps == COST_BPS_BASE:
@@ -256,7 +257,7 @@ def _cost_grid(run_dir: Path, base: pd.DataFrame, factors, lags_alpha: int) -> d
             if not p.exists():
                 out[str(bps)] = None
                 continue
-            df = _window(_read_wide(p))
+            df = _window(_read_wide(p), start, end)
             s = df["strategy_net"] if "strategy_net" in df else df.iloc[:, 0]
         rf = factors["rf"] if factors is not None else None
         a = annualize(s, rf)
@@ -268,6 +269,8 @@ def _cost_grid(run_dir: Path, base: pd.DataFrame, factors, lags_alpha: int) -> d
 
 def _subperiods(r: pd.DataFrame, rf, lags: int) -> dict:
     split = pd.Timestamp(SUBPERIOD_SPLIT)
+    if len(r) and not (r.index[0] < split < r.index[-1]):      # custom window: split it at its midpoint
+        split = r.index[len(r) // 2]
     out = {}
     for name, part in (("first", r[r.index < split]), ("second", r[r.index >= split])):
         if len(part) < 2:
@@ -290,8 +293,10 @@ def score_strategy(run_dir, snapshot_dir: Path | None = None, fund_aum: float | 
     snapshot_dir = Path(snapshot_dir) if snapshot_dir else SNAPSHOT_DIR
     fund_aum = float(fund_aum if fund_aum is not None else FUND_AUM)
 
-    rets = _window(_read_wide(run_dir / RunFiles.returns))
     exp = _load_json(run_dir / RunFiles.experiment_spec, {}) or {}
+    start = str(exp.get("eval_start") or EVAL_START)[:10]
+    end = str(exp.get("eval_end") or EVAL_END)[:10]
+    rets = _window(_read_wide(run_dir / RunFiles.returns), start, end)
     holding_months = int(exp.get("holding_months", 1) or 1)
     selection = exp.get("selection") or {}
     expected_sign = exp.get("expected_sign", "unclear")
@@ -299,20 +304,20 @@ def score_strategy(run_dir, snapshot_dir: Path | None = None, fund_aum: float | 
 
     factors = load_factors(snapshot_dir)
     if factors is not None:
-        factors = _window(factors)
+        factors = _window(factors, start, end)
     rf = factors["rf"] if factors is not None else None
 
     pv = trades = holdings = None
     if (run_dir / RunFiles.portfolio_value).exists():
-        pv = _window(_read_wide(run_dir / RunFiles.portfolio_value))
+        pv = _window(_read_wide(run_dir / RunFiles.portfolio_value), start, end)
     if (run_dir / RunFiles.trades).exists():
         trades = pd.read_parquet(run_dir / RunFiles.trades)
         trades["date"] = pd.to_datetime(trades["date"])
-        trades = trades[(trades["date"] >= EVAL_START) & (trades["date"] <= EVAL_END)]
+        trades = trades[(trades["date"] >= start) & (trades["date"] <= end)]
     if (run_dir / RunFiles.holdings).exists():
         holdings = pd.read_parquet(run_dir / RunFiles.holdings)
         holdings["date"] = pd.to_datetime(holdings["date"])
-        holdings = holdings[(holdings["date"] >= EVAL_START) & (holdings["date"] <= EVAL_END)]
+        holdings = holdings[(holdings["date"] >= start) & (holdings["date"] <= end)]
 
     net = rets["strategy_net"]
     performance = {c: _perf(rets[c], rf) for c in ("strategy_gross", "strategy_net", "spy", "ew_universe") if c in rets}
@@ -335,7 +340,7 @@ def score_strategy(run_dir, snapshot_dir: Path | None = None, fund_aum: float | 
             spanning = _alpha_block(net - rets["ew_universe"], factors, lags_alpha)
 
     sc = dict(
-        meta=dict(run_dir=run_dir.name, eval_start=EVAL_START, eval_end=EVAL_END, n_days=len(rets),
+        meta=dict(run_dir=run_dir.name, eval_start=start, eval_end=end, n_days=len(rets),
                   first_date=rets.index[0], last_date=rets.index[-1], holding_months=holding_months,
                   expected_sign=expected_sign, selection=selection, factors_available=factors is not None,
                   fund_aum=fund_aum, cost_bps_base=COST_BPS_BASE),
@@ -349,7 +354,7 @@ def score_strategy(run_dir, snapshot_dir: Path | None = None, fund_aum: float | 
         holdings=_holdings(holdings, pv),
         capacity=_capacity(trades, snapshot_dir, fund_aum),
         robustness=dict(
-            cost_grid=_cost_grid(run_dir, rets, factors, lags_alpha),
+            cost_grid=_cost_grid(run_dir, rets, factors, lags_alpha, start, end),
             subperiods=_subperiods(rets, rf, lags_rel),
             groups=_group_table(rets, selection, expected_sign, lags_rel),
             universe_sensitivity=None,
