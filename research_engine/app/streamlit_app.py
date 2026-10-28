@@ -34,10 +34,12 @@ from research_engine.contracts import (
 
 APP_NAME = "WARREN"
 TAGLINE = "YOUR RESEARCH SCREENING AGENT"
-# Logo: a W drawn as a price line with a last-print dot (option 1 on the WARREN logo canvas).
+# Logo: a black W on an orange square (option 2 on the WARREN logo canvas). The heavy sans is the
+# Bloomberg-like wordmark face; Archivo Black loads from Google Fonts, Arial Black is the offline fallback.
+HEAVY = "'Archivo Black', 'Arial Black', Arial, Helvetica, sans-serif"
 LOGO_SVG = ('<svg class="logo" viewBox="0 0 40 40" role="img" aria-label="WARREN">'
-            '<polyline points="4,9 12,31 20,17 28,31 36,9" fill="none" stroke="#f58220" stroke-width="5" '
-            'stroke-linecap="round" stroke-linejoin="round"></polyline><circle cx="36" cy="9" r="3.6" fill="#f2f2f2"></circle></svg>')
+            '<rect x="2" y="2" width="36" height="36" rx="4" fill="#f58220"></rect>'
+            f'<text x="20" y="30" text-anchor="middle" font-family="{HEAVY}" font-size="28" fill="#111111">W</text></svg>')
 ORANGE, GREEN, RED, PURPLE, GREY = "#f58220", "#3cc46a", "#e05252", "#c04bd6", "#8c8c8c"
 MODELS = ["claude-sonnet-5-5", "claude-opus-5-5", "claude-haiku-5-5"]
 MONTHS = [f"{y}-{m:02d}" for y in range(2013, 2026) for m in range(1, 13)]
@@ -54,6 +56,7 @@ LABEL_COLOR = {"pursue": "green", "investigate further": "orange", "deprioritize
 st.set_page_config(page_title=f"{APP_NAME} · {TAGLINE}", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown(f"""<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
 .stApp, .stApp *:not([data-testid="stIconMaterial"]) {{ font-family: Arial, Helvetica, sans-serif; }}
 .stApp code, .stApp pre, .stApp pre * {{ font-family: Menlo, Consolas, monospace; }}
 .stApp {{ background: #111; color: #d9d9d9; font-size: 12.5px; }}
@@ -68,7 +71,7 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .topbar .brand {{ display: flex; align-items: center; gap: 10px; }}
 .topbar .brand .logo {{ width: 34px; height: 34px; flex: none; }}
 .topbar .words {{ display: flex; flex-direction: column; line-height: 1.05; }}
-.topbar .name {{ font-size: 26px; font-weight: bold; color: {ORANGE}; letter-spacing: .06em; }}
+.topbar .name {{ font-size: 26px; font-weight: 900; font-family: {HEAVY}; color: {ORANGE}; letter-spacing: .04em; }}
 .topbar .tag {{ font-size: 10.5px; color: #bdbdbd; letter-spacing: .14em; text-transform: uppercase; margin-top: 3px; }}
 .topbar .last {{ margin-left: auto; font-size: 12px; color: #bdbdbd; white-space: nowrap; }}
 .topbar .last b {{ color: #f2f2f2; }}
@@ -111,9 +114,14 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .stTabs [data-baseweb="tab"] p {{ font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }}
 .stTabs [data-baseweb="tab-highlight"] {{ background-color: {ORANGE}; }}
 .stTabs [aria-selected="true"] p {{ color: {ORANGE}; }}
-.stApp button[kind="primary"] {{ background: {ORANGE}; border-color: {ORANGE}; color: #111; font-weight: bold; border-radius: 2px; }}
+.stApp button[kind="primary"] {{ background: {ORANGE}; border: 1px solid {ORANGE}; color: #111; border-radius: 4px; }}
+.stApp button[kind="primary"] p {{ font-weight: bold; color: #111; }}
+.st-key-runbar button[kind="primary"] p {{ font-family: {HEAVY}; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }}
 .stApp button[kind="primary"]:hover {{ background: #ff9a3c; border-color: #ff9a3c; color: #111; }}
-.stApp button[kind="secondary"], .stApp button[kind="tertiary"] {{ border-radius: 2px; }}
+.stApp button[kind="primary"]:disabled {{ background: #3a2a18; border-color: #3a2a18; }} .stApp button[kind="primary"]:disabled p {{ color: #8a6a48; }}
+.stApp button[kind="secondary"] {{ background: #1c1c1c; border: 1px solid #3a3a3a; color: #d9d9d9; border-radius: 4px; }}
+.stApp button[kind="secondary"]:hover {{ border-color: {ORANGE}; color: #fff; }}
+.stApp button[kind="tertiary"] {{ border-radius: 2px; }}
 [data-testid="stFileUploaderDropzone"] {{ background: #161616; border: 1px dashed {ORANGE}; border-radius: 2px; }}
 [data-testid="stFileUploaderDropzone"] small, [data-testid="stFileUploaderDropzone"] span {{ color: #bdbdbd; }}
 .stApp [data-testid="stExpander"] details {{ border: 1px solid #2c2c2c; border-radius: 2px; background: #161616; }}
@@ -123,11 +131,13 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .st-key-tiles [data-testid="column"] {{ padding: 0; min-width: 0; }}
 .st-key-tiles .stButton {{ margin-bottom: 5px; }}
 .st-key-tiles button {{ width: 100%; min-height: 50px; height: auto; padding: 5px 4px; border: 1px solid #353535;
-                        background: #181818; color: #d9d9d9; border-radius: 2px; }}
+                        background: #181818; color: #d9d9d9; border-radius: 4px; }}
 .st-key-tiles button:hover {{ border-color: {ORANGE}; color: #fff; background: #1f1f1f; }}
-.st-key-tiles button[kind="primary"] {{ background: #2b1c0d; color: {ORANGE}; border-color: {ORANGE}; }}
+.st-key-tiles button[kind="primary"] {{ background: {ORANGE}; color: #111; border-color: {ORANGE}; }}
+.st-key-tiles button[kind="primary"] p, .st-key-tiles button[kind="primary"] p em {{ color: #111; }}
+.st-key-tiles button[kind="primary"]:hover {{ background: #ff9a3c; }}
 .st-key-tiles button p {{ font-size: 10.5px; line-height: 1.25; white-space: normal; overflow: hidden; text-overflow: ellipsis; }}
-.st-key-tiles button p strong {{ font-size: 12.5px; letter-spacing: .04em; }}
+.st-key-tiles button p strong {{ font-size: 12.5px; letter-spacing: .04em; font-family: {HEAVY}; font-weight: 900; }}
 .st-key-tiles button[kind="secondary"]:has(p em) {{ border-style: dashed; color: #9a9a9a; }}
 /* previous runs: one line each */
 .st-key-lines .stButton {{ margin: 0; }}
@@ -348,7 +358,8 @@ with right:
     _uploads_pending = bool(ss.get(f"uploader_{ss.upload_n}"))
     _sel_label = next((l for l, _, sl in REGISTRY if sl == ss.queue[0]), "") if ss.queue else ""
     can_run = (ss.queue or _uploads_pending) and _n_months >= MIN_WINDOW_MONTHS and not active
-    rc1, rc2 = st.columns([1, 1.6])
+    runbar = st.container(key="runbar")
+    rc1, rc2 = runbar.columns([1, 1.6])
     run_clicked = rc1.button("Run", type="primary", disabled=not can_run, key="run_btn", width="stretch")
     if active:
         rc2.markdown('<div class="runstate amber">running… the button unlocks when the run finishes</div>', unsafe_allow_html=True)
