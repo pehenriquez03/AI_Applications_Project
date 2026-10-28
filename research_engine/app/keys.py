@@ -106,7 +106,9 @@ def save_key(root: Path, key: str, label: str, environ: Optional[dict] = None) -
                 continue
             kept.append(line)
     lines = [ln for ln in kept if ln.strip()] + [f"{ENV_NAME}={key}", f"{LABEL_NAME}={label}"]
-    f.write_text("\n".join(lines) + "\n")
+    fd = os.open(f, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, stat.S_IRUSR | stat.S_IWUSR)   # 600 from the first byte
+    with os.fdopen(fd, "w") as fh:
+        fh.write("\n".join(lines) + "\n")
     os.chmod(f, stat.S_IRUSR | stat.S_IWUSR)
     environ[ENV_NAME] = key
     environ[LABEL_NAME] = label

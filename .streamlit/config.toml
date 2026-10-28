@@ -8,6 +8,7 @@ textColor = "#d9d9d9"
 font = "sans serif"
 
 [server]
+address = "localhost"   # the key setup and Run controls must not be reachable from the network
 headless = true
 fileWatcherType = "none"
 

@@ -68,11 +68,14 @@ def _write_json(path: Path, obj) -> None:
 def _stage(prog: ProgressWriter, n: int, fn: Callable[[], str]) -> None:
     """Run one stage; fn returns the one-line 'done' detail."""
     prog.update(n, "running")
+    name = prog.p.stages[n - 1].name
     try:
         detail = fn()
         prog.update(n, "done", detail)
+        log.info("stage %d %s: %s", n, name, detail)
     except Blocked as b:
         prog.update(n, "blocked", str(b))
+        log.info("stage %d %s: blocked: %s", n, name, b)
         raise
     except Exception as e:  # noqa: BLE001
         prog.update(n, "failed", f"{type(e).__name__}: {e}")
@@ -288,6 +291,10 @@ def run_extract_only(run_dir: Path, prog: ProgressWriter, specs: list[StrategySp
         except Blocked as b:
             verdict["text"] = f"The engine cannot run this strategy: {b}"
             return f"not implementable by the engine: {b}"
+        except Exception as e:  # noqa: BLE001  an odd spec must not kill an extraction-only run
+            log.warning("validation failed on extraction-only run: %s", e)
+            verdict["text"] = f"The engine could not map this strategy ({type(e).__name__}: {e})."
+            return f"could not be mapped by the engine: {type(e).__name__}: {e}"
     _stage(prog, 3, s3)
     for n in range(4, 9):
         prog.update(n, "skipped", "not run: dropped PDF, extraction only")
@@ -323,14 +330,23 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
     prog = ProgressWriter(run_dir, run_dir.name)
     cfg = load_run_config(run_dir)
     model = model or cfg.get("model") or None
-    eval_start = eval_start or cfg.get("eval_start") or None
-    eval_end = eval_end or cfg.get("eval_end") or None
+    if cfg.get("custom_window"):                 # resume: reuse a window only if it was chosen for this run
+        eval_start = eval_start or cfg.get("eval_start") or None
+        eval_end = eval_end or cfg.get("eval_end") or None
+    extract_only = bool(extract_only or cfg.get("extract_only"))
     _write_json(run_dir / RUN_CONFIG, {"model": model or C.MODEL, "eval_start": eval_start or C.EVAL_START,
                                        "eval_end": eval_end or C.EVAL_END, "warmup_start": C.WARMUP_START,
-                                       "custom_window": bool(eval_start or eval_end), "extract_only": bool(extract_only),
+                                       "custom_window": bool(eval_start or eval_end), "extract_only": extract_only,
                                        "key_label": os.environ.get("ANTHROPIC_KEY_LABEL", "")})
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s",
-                        handlers=[logging.FileHandler(run_dir / RunFiles.run_log), logging.StreamHandler()])
+    root_log = logging.getLogger()
+    if not root_log.handlers:
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s", handlers=[logging.StreamHandler()])
+    fh = logging.FileHandler(run_dir / RunFiles.run_log)        # one file handler per run, removed at the end
+    fh.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
+    fh.setLevel(logging.INFO)
+    root_log.addHandler(fh)
+    for name in ("engine", "research_engine"):                    # INFO must pass the loggers whatever root is set to
+        logging.getLogger(name).setLevel(logging.INFO)
     exp = None; ctx = None; res = None; specs = []
     try:
         if start_stage <= 1:
@@ -418,4 +434,7 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
     except Exception as e:  # noqa: BLE001
         prog.set(error=f"{type(e).__name__}: {e}")
         raise
+    finally:
+        root_log.removeHandler(fh)
+        fh.close()
     return run_dir

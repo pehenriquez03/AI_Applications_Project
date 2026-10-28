@@ -204,19 +204,16 @@ def _work(job: Job) -> None:
         return
     for i, t in enumerate(job.tasks):
         job.i, job.started = i, time.time()
-        bak = None
         opts = dict(llm="api", model=t.get("model"), eval_start=t.get("eval_start"), eval_end=t.get("eval_end"),
                     extract_only=bool(t.get("extract_only")))
         try:
-            if t.get("run_dir") and t.get("start_stage") == 9:       # regenerate narrative: keep the old one as a fallback
-                nf = Path(t["run_dir"]) / "narrative.json"
-                if nf.exists():
-                    bak = nf.read_bytes()
-                    nf.unlink()
+            if t.get("run_dir") and t.get("start_stage") == 9:
+                # regenerate narrative: api-refresh ignores the cached answer; on failure the old narrative is kept
+                opts["llm"] = "api-refresh"
                 d = run_pipeline(Path(t["pdf"]), Path(t["run_dir"]), t.get("experiment") or None, start_stage=9, **opts)
-                if bak is not None and (H.read_json(nf) or {}).get("source", "template") == "template":
-                    nf.write_bytes(bak)                              # model unavailable: do not replace it with the template
-                    job.errors.append(f"{t['label']}: narrative not regenerated (model unavailable); kept the previous one")
+                nar = H.read_json(Path(t["run_dir"]) / "narrative.json") or {}
+                if nar.get("error"):
+                    job.errors.append(f"{t['label']}: narrative not regenerated ({nar['error']}); kept the previous one")
             else:
                 d = run_pipeline(Path(t["pdf"]), run_dir=t.get("run_dir"),
                                  selected_experiment=t.get("experiment") or None,
@@ -225,9 +222,6 @@ def _work(job: Job) -> None:
         except BaseException as e:  # noqa: BLE001 - recorded, next paper still runs
             job.errors.append(f"{t['label']}: {type(e).__name__}: {e}")
             job.last_dir = job.current_dir() or job.last_dir
-            nf = Path(t["run_dir"]) / "narrative.json" if t.get("run_dir") else None
-            if bak is not None and nf is not None and not nf.exists():
-                nf.write_bytes(bak)
     job.active = False
 
 
@@ -270,7 +264,9 @@ def verdict_text(rec: str) -> str:
 
 
 def md_safe(s: str) -> str:
-    return str(s).replace("$", "\\$")
+    """Model or paper text shown through st.markdown: no LaTeX, no links or images, no raw HTML."""
+    return (str(s).replace("\\", "\\\\").replace("$", "\\$").replace("[", "\\[").replace("]", "\\]")
+            .replace("<", "&lt;").replace(">", "&gt;"))
 
 
 def toggle_paper(slug: str) -> None:
@@ -501,7 +497,8 @@ with right:
         if _ks["found"] and kc2.button("Remove key", key="remove_key", type="tertiary",
                                        help="Deletes the key from .env on this machine and from this process."):
             K.remove_key(ROOT, os.environ)
-            ss.key_msg = ("ok", "Key removed from this machine.")
+            ss.key_msg = ("ok", "Key removed from .env and from this process. A key set in the shell environment "
+                                "comes back when the app restarts.")
             st.rerun()
         if (RUNS_DIR / "index.html").exists():
             st.button("Compare runs", key="compare_btn", type="tertiary", on_click=go, kwargs=dict(compare=True))
@@ -630,7 +627,7 @@ def tab_extraction(run_dir: Path) -> None:
         for r in spec.get("cannot_implement_reasons", []):
             st.markdown(f"- {md_safe(r)}")
     st.caption(f"{d.get('n_runs', '?')} extraction run(s); selected experiment: "
-               f"{spec.get('selected_experiment', 'not stated')}")
+               f"{md_safe(spec.get('selected_experiment', 'not stated'))}")
     rows, quotes = [], []
     for f in MATERIAL_FIELDS:
         if f not in spec:
@@ -646,7 +643,7 @@ def tab_extraction(run_dir: Path) -> None:
         st.markdown("**Evidence quotes**")
         for f, page, quote in quotes:
             with st.expander(f"{H.pretty(f)}" + (f" · p. {page}" if page is not None else "")):
-                st.write(quote or "no quote recorded")
+                st.write(md_safe(quote) if quote else "no quote recorded")
     un = spec.get("unresolved_details") or []
     st.markdown("**Unresolved details**")
     if un:
@@ -818,14 +815,14 @@ without a key and open those runs.</p></div>""", unsafe_allow_html=True)
     label = "class" if which.startswith("Class") else "personal"
     key = c2.text_input("Paste the key", type="password", key="key_input", placeholder="sk-ant-…",
                         help="Anthropic keys start with sk-ant-. Paste the whole key.")
-    session_only = st.checkbox("Keep for this session only (do not write .env)", key="key_session_only")
+    session_only = st.checkbox("Keep only until the app restarts (do not write .env)", key="key_session_only")
     b1, b2, _ = st.columns([1.2, 2.2, 3])
     if b1.button("Test and save", type="primary", key="key_save", disabled=not key):
         ok, msg = K.test_key(key, ss.get("model", MODEL))
         if ok:
             if session_only:
                 K.use_for_session(key, label, os.environ)
-                msg += " Kept for this session only."
+                msg += " Kept in memory until the app restarts."
             else:
                 f = K.save_key(ROOT, key, label, os.environ)
                 msg += f" Saved to {f}."

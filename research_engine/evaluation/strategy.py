@@ -26,7 +26,7 @@ FACTOR_COLS = ["mkt_rf", "smb", "hml", "mom"]
 Z95 = 1.96
 
 DEFINITIONS = {
-    "window": "All statistics use daily returns from EVAL_START to EVAL_END (inclusive).",
+    "window": "All statistics use daily returns over the run's evaluation window (experiment_spec eval_start to eval_end, inclusive).",
     "cagr": "end_wealth ** (252 / n_days) - 1, compounding daily returns.",
     "vol": "standard deviation of daily returns (ddof=1) times sqrt(252).",
     "sharpe": "mean daily return in excess of the daily risk-free rate (Fama-French RF; zero if unavailable) times 252, divided by vol.",
@@ -49,7 +49,7 @@ DEFINITIONS = {
                 "per_trade gives mean, median, 95th/99th percentile and max over trades (max_trade names the worst one); per_day_sum sums participations across the trades of one execution day. "
                 "Trades without 20 days of volume history are counted in n_missing_adv and excluded.",
     "cost_grid": "strategy_net re-run at each cost in bps (0, 10, 25); alpha_t is the four-factor alpha t-statistic.",
-    "subperiods": "first = EVAL_START to the day before SUBPERIOD_SPLIT; second = SUBPERIOD_SPLIT to EVAL_END; "
+    "subperiods": "first = window start to the day before 2020-01-01; second = 2020-01-01 to the window end; when that split leaves a side under 12 months the window is split at its midpoint; "
                   "rel_ew_t is the Newey-West t of strategy_net minus ew_universe (monthly, lags = holding_months).",
     "groups": "group_k = k-th ranked group (1 = lowest signal), net of costs; mean_monthly = mean of monthly compounded returns; "
               "cagr_daily from daily compounding; rho = Spearman correlation of group index with mean monthly return; "
@@ -269,8 +269,8 @@ def _cost_grid(run_dir: Path, base: pd.DataFrame, factors, lags_alpha: int, star
 
 def _subperiods(r: pd.DataFrame, rf, lags: int) -> dict:
     split = pd.Timestamp(SUBPERIOD_SPLIT)
-    if len(r) and not (r.index[0] < split < r.index[-1]):      # custom window: split it at its midpoint
-        split = r.index[len(r) // 2]
+    if len(r) and not (r.index[0] <= split - pd.DateOffset(months=12) and split + pd.DateOffset(months=12) <= r.index[-1]):
+        split = r.index[len(r) // 2]       # the fixed split leaves a side under a year: split the window at its midpoint
     out = {}
     for name, part in (("first", r[r.index < split]), ("second", r[r.index >= split])):
         if len(part) < 2:

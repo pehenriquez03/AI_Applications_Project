@@ -279,7 +279,16 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Opti
     source = None
     error = None
     raw = run_dir / "narrative_raw.json"   # written by the session runner (model stand-in) or an import
-    if raw.exists() and (not path.exists() or raw.stat().st_mtime >= path.stat().st_mtime):
+    previous: Optional[dict] = None          # api-refresh: the old narrative is kept if the model call fails
+    if llm == "api-refresh":
+        if path.exists():
+            try:
+                old = json.loads(path.read_text())
+                if old.get("source") != "template":
+                    previous = _validate(old)
+            except Exception as e:  # noqa: BLE001
+                log.warning("could not read narrative.json: %s", e)
+    elif raw.exists() and (not path.exists() or raw.stat().st_mtime >= path.stat().st_mtime):
         pass  # a newer import wins over an existing narrative.json
     elif path.exists():
         try:
@@ -289,7 +298,7 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Opti
                 source = old.get("source") or "session"
         except Exception as e:  # noqa: BLE001
             log.warning("could not read narrative.json: %s", e)
-    if nar is None and raw.exists():
+    if nar is None and raw.exists() and llm != "api-refresh":
         try:
             nar = _validate(json.loads(raw.read_text()))
             source = "session" if nar else None
@@ -306,6 +315,8 @@ def write_narrative(run_dir, results: dict, llm: str = "files_only", model: Opti
         except Exception as e:  # noqa: BLE001  LLMUnavailable, refusal, parse errors -> template
             error = f"{type(e).__name__}: {e}"
             log.warning("narrative model call unavailable: %s", error)
+    if nar is None and previous is not None:
+        nar, source = previous, "api"       # regeneration failed: keep the model-written narrative we had
     if nar is None:
         nar = template_narrative(results)
         source = "template"

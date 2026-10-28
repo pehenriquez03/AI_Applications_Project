@@ -62,7 +62,8 @@ def _guess_title(first_page: str, pdf_title: Optional[str]) -> str:
             continue
         if sum(ch.isalpha() for ch in s) < 0.6 * len(s):
             continue
-        if len(s) > 10 and s.count(" ") < len(s) / 15:       # text layer lost its spaces ("Illiquidityandstockreturns")
+        toks = s.split()
+        if max(len(t) for t in toks) > 25 or (len(toks) == 1 and len(s) > 10):   # text layer lost its spaces
             continue
         return s
     return ""
