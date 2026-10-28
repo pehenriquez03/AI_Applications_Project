@@ -6,7 +6,7 @@ Repository: https://github.com/pehenriquez03/AI_Applications_Project, branch `ma
 
 ## What you are reviewing
 
-WARREN, "your research screening agent": a paper goes in, a research dossier
+WARREN, "research paper screening agent": a paper goes in, a research dossier
 comes out with one of four verdicts (Pursue, Investigate Further, Deprioritize,
 Unable to Evaluate). Claude Sonnet 5.5 reads the paper (page-cited extraction,
 a check pass against the paper, the dossier prose); Python does every number

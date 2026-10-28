@@ -38,7 +38,7 @@ def test_app_loads_with_title():
     at = _app().run()
     assert not at.exception
     top = [m.value for m in at.markdown if 'class="topbar"' in m.value]
-    assert len(top) == 1 and "WARREN" in top[0] and "YOUR RESEARCH SCREENING AGENT" in top[0]
+    assert len(top) == 1 and "WARREN" in top[0] and "RESEARCH PAPER SCREENING AGENT" in top[0]
     assert any('class="chips"' in m.value and "2015-01-01 → 2025-12-31" in m.value for m in at.markdown)
     assert any("Summary" in m.value and 'class="ph"' in m.value for m in at.markdown)
     assert any("Select a paper or drop a PDF." in m.value for m in at.markdown)

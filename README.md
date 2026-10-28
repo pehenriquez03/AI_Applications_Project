@@ -1,4 +1,4 @@
-# WARREN — your research screening agent
+# WARREN — research paper screening agent
 
 IEOR 4723, AI-Augmented Investment Management, Columbia University. Group 6.
 
