@@ -521,13 +521,43 @@ def render_preview(slug: str) -> None:
     try:
         n, title, text = pdf_preview(str(p), p.stat().st_mtime)
         st.caption(f"{title + ' · ' if title else ''}{n} pages")
-        st.text(text or "(no extractable text on page 1)")
     except Exception as e:  # noqa: BLE001
         st.caption(f"Preview unavailable: {type(e).__name__}")
     if slug in ss.queue:
         st.caption("Selected. Press Run in the right column.")
     else:
         st.button("Use this paper", key=f"use_{slug}", on_click=toggle_paper, args=(slug,))
+    panel("Paper")
+    render_pdf(p, f"preview_{slug}")
+
+
+def run_pdf_path(run_dir: Path) -> Path | None:
+    """The PDF a run was made from: its recorded source path, else the registry file with the same hash."""
+    meta = H.read_json(run_dir / "paper_meta.json") or {}
+    p = Path(meta.get("source_path") or "")
+    if p.is_file():
+        return p
+    sha = meta.get("sha256")
+    for label, rel, _ in REGISTRY:
+        f = abs_path(rel)
+        if f.is_file() and sha and hashlib.sha256(f.read_bytes()).hexdigest() == sha:
+            return f
+    return None
+
+
+def render_pdf(path: Path | None, key: str, height: int = 920) -> None:
+    """The paper itself, in the browser's PDF viewer."""
+    if path is None or not Path(path).is_file():
+        st.caption("The PDF is not on this machine (papers/pdf is not distributed with the repository).")
+        return
+    st.caption(f"{Path(path).name} · {Path(path).stat().st_size / 1e6:.1f} MB")
+    try:
+        st.pdf(str(path), height=height, key=f"pdf_{key}")
+    except Exception:  # noqa: BLE001  streamlit-pdf not installed: the browser's own viewer in a frame
+        import base64
+        b64 = base64.b64encode(Path(path).read_bytes()).decode()
+        st.components.v1.html(f'<embed src="data:application/pdf;base64,{b64}" type="application/pdf" '
+                              f'width="100%" height="{height}px" style="border:1px solid #2c2c2c">', height=height + 8)
 
 
 def render_steps(p: dict | None) -> None:
@@ -916,13 +946,17 @@ def main_view() -> None:
         if run_dir is None:
             return
         if xo:
-            (t1,) = st.tabs(["Extraction"])
+            t1, t_pdf = st.tabs(["Extraction", "Paper"])
             with t1:
                 tab_extraction(run_dir)
+            with t_pdf:
+                render_pdf(run_pdf_path(run_dir), run_dir.name)
             return
-        t_doss, t_ext, t_eval, t_econ = st.tabs(["Dossier", "Extraction", "Evaluation", "Economics"])
+        t_doss, t_pdf, t_ext, t_eval, t_econ = st.tabs(["Dossier", "Paper", "Extraction", "Evaluation", "Economics"])
         with t_doss:
             tab_dossier(run_dir, is_active)
+        with t_pdf:
+            render_pdf(run_pdf_path(run_dir), run_dir.name)
         with t_ext:
             tab_extraction(run_dir)
         with t_eval:

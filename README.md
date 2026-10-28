@@ -196,7 +196,7 @@ selected at a time; clicking the tile again clears it. The nine steps fill in
 live. When the run finishes the page reorders: the Summary with the verdict and
 the model-written paragraph comes first, then the headline numbers (net CAGR
 against both benchmarks, Sharpe, drawdown, alpha t), the cumulative-return
-chart, the tabs with the Dossier open first, and the pipeline steps last.
+chart, the tabs (Dossier first, then the Paper itself in a PDF viewer, Extraction, Evaluation, Economics), and the pipeline steps last.
 
 **Previous runs** are one line each, newest first, with the verdict in color.
 Click one to open it. A run that was still in progress when the page was
@@ -225,7 +225,7 @@ only does long-only monthly sorts on daily US equity prices, so a strategy that
 needs fundamentals, futures, options, intraday or volume data, or another
 construction, would be reported as not implementable anyway, and a backtest of
 a mis-mapped strategy would be worse than none. The run shows an "Extraction
-only" chip, a single Extraction tab, and the summary.
+only" chip, the Extraction and Paper tabs, and the summary.
 
 The extraction and the summary go through the API, so a dropped PDF needs a
 key. The uploaded file is kept under `runs/_uploads/` with its original name.

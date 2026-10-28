@@ -57,7 +57,7 @@ def test_mock_run_shows_nine_steps_and_summary():
     assert len(steps) == 1 and steps[0].count('class="step ') == 9
     assert any("Summary" in m.value and 'class="ph"' in m.value for m in at.markdown)
     assert any('class="verdict' in m.value and "Investigate Further" in m.value for m in at.markdown)
-    assert len(at.tabs) == 4
+    assert len(at.tabs) == 5
 
 
 def _open_run(name: str):
@@ -78,7 +78,7 @@ def test_real_run_demo_max_renders_all_panels():
     assert any('class="verdict' in m.value and rec.title() in m.value for m in at.markdown)
     order = [m.value for m in at.markdown if 'class="ph"' in m.value]
     assert "Summary" in order[0] and any("Pipeline" in v for v in order[1:])   # summary first, steps later
-    assert len(at.tabs) == 4
+    assert len(at.tabs) == 5
     assert len(at.table[0].value) >= 10                      # extraction table: one row per material field
     heads = [m.value for m in at.markdown if m.value.startswith("**")]
     for h in ("**Performance**", "**Trading cost grid**", "**Sub-periods**", "**Ranked groups**", "**Share of paths**"):
@@ -90,7 +90,7 @@ def test_real_run_demo_max_renders_all_panels():
 def test_blocked_decoy_says_unable_to_evaluate():
     at = _open_run("demo_decoy_tsmom")
     assert any('class="verdict' in m.value and "Unable to Evaluate" in m.value for m in at.markdown)
-    assert len(at.tabs) == 4                                   # tabs tolerate the missing evaluation/economics files
+    assert len(at.tabs) == 5                                   # tabs tolerate the missing evaluation/economics files
 
 
 def test_paper_label_prefers_registry():
