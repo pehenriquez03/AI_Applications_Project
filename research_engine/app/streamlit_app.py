@@ -938,9 +938,9 @@ def main_view() -> None:
         render_summary(p, state, "Summary")
         if isinstance(sc, dict):
             safely(render_quote, run_dir, sc)
-        tabs_block()
         if not xo:
-            render_chart(run_dir, ws, we)
+            render_chart(run_dir, ws, we)      # the chart sits between the summary and the tabs
+        tabs_block()
         steps_block()
     else:
         if isinstance(sc, dict):
