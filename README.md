@@ -362,8 +362,9 @@ cohorts, the operations, the fee engine against the original project's totals,
 the app through Streamlit's test harness, and an independent reimplementation
 of the MAX strategy in thirty lines of pandas that matches the engine's returns
 to 1.5e-15. The two decoys come back "Unable to Evaluate" with the right
-missing inputs. Everything decided during the build is in `BUILD_LOG.md`; the
-plan the group agreed is `BUILD_PLAN_FINAL.md`.
+missing inputs. Each run records defaults and adaptations in `adaptation_log.json`;
+the implemented policies are in `research_engine/validation/defaults.py` and
+`research_engine/validation/adapt.py`.
 
 ---
 
@@ -402,5 +403,5 @@ papers/             PDFs (gitignored), answer key (grading only), reference spec
 runs/               one folder per run; demo_* committed; index.html compares runs
 cache/llm/          every model answer, keyed by model, prompt and schema
 legacy/             the original project (the optimizer, notebook and data) unchanged
-BUILD_PLAN_FINAL.md the agreed plan      BUILD_LOG.md  what happened and every decision taken
+CONTRACTS.md        technical interfaces and run artifact formats
 ```

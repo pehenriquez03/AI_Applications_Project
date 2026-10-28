@@ -42,7 +42,7 @@ TOP_PERCENT_DEFAULT = 0.30
 
 BENCHMARKS = ("spy", "ew_universe")
 ECON_BENCHMARK = "ew_universe"
-# Data-quality exclusions applied on top of the snapshot (reason in BUILD_LOG.md / data_notes.md)
+# Data-quality exclusion: Yahoo's PARA series did not represent Paramount's trading history.
 EXCLUDE_TICKERS = ("PARA",)
 # Single-day adjusted-close corrections: on these dates Yahoo mis-applied a corporate action; the
 # adjusted return is replaced by the split-adjusted close return (data_notes.md has the evidence).

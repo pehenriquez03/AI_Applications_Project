@@ -1,6 +1,6 @@
 """Overlapping holding cohorts (Jegadeesh-Titman K-month holding periods).
 
-Rule (BUILD_PLAN_FINAL.md, Conventions item 8, as implemented here)
+Implemented cohort convention:
 - Every formation month m yields one cohort: the selected names, equal-weighted inside the
   cohort. A cohort lives for K execution days: those of months m, m+1, ..., m+K-1.
 - Cohorts occupy K slots (slot = formation-month index mod K). The cohort formed in month m

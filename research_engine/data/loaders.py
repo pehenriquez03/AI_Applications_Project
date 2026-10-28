@@ -1,13 +1,13 @@
 """Load the frozen snapshot into one in-memory DataContext.
 
-Conventions (see CONTRACTS.md and BUILD_PLAN_FINAL.md):
+Conventions (see CONTRACTS.md):
 - Every panel is wide: index = trading dates (datetime64[ns]), columns = tickers.
 - SPY is removed from the universe panels and kept as `spy_adj_close`, `spy_close`,
   `spy_returns`.
 - `returns` are simple daily returns from Yahoo adjusted close (no fill across gaps).
 - `calendar` is the snapshot's own trading-day index (NYSE days: SPY trades on every row).
 
-Data finding (2026-10-28, Agent A): Yahoo's `close`/`high`/`low` in this snapshot are
+Data finding (2026-10-28): Yahoo's `close`/`high`/`low` in this snapshot are
 already split-adjusted (yfinance auto_adjust=False still back-adjusts splits; only
 dividends are left out). `raw_split_adjusted` therefore applies a split factor only
 where the split is visible in the close series itself (the close drops by about the

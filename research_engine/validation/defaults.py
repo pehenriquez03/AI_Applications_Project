@@ -1,4 +1,4 @@
-"""Defaults for details a paper leaves open (BUILD_PLAN_FINAL.md, Step 3).
+"""Defaults for details a paper leaves open.
 
 Each default is applied with status "assumed" in the adaptation log and the
 run continues. The implementation-reliability flag turns amber when more than
@@ -38,8 +38,7 @@ DEFAULTS: dict[str, dict] = {
     "cash_yield":          {"value": 0.0, "text": "cash earns zero"},
 }
 
-# Per-strategy fallbacks when the paper's favored side or windows cannot be parsed
-# ("Strategies as implemented", BUILD_PLAN_FINAL.md).
+# Per-strategy fallbacks when the paper's favored side or windows cannot be parsed.
 STRATEGY_FALLBACKS: dict[str, dict] = {
     "max":         {"favored": "lowest",  "formation_months": 1,  "holding_months": 1},
     "momentum":    {"favored": "highest", "formation_months": 6,  "holding_months": 6},

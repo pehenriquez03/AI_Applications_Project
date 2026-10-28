@@ -1,6 +1,6 @@
 """Turn an ExperimentSpec into dated signals, group memberships and target weights.
 
-Conventions (BUILD_PLAN_FINAL.md, "Conventions fixed for every paper"):
+Portfolio construction conventions:
 - Formation at each month-end m using data through m's close; execution at the first
   trading day after m (ctx.execution_day(m), a member of ctx.first_days).
 - Groups are equal-count sorts of the eligible names with a non-missing signal at m;
