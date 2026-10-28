@@ -23,7 +23,7 @@ checked against the computed results before the dossier is written.
 ```bash
 cd "AI_Applications_Project_philip"
 python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"      # once
-.venv/bin/pytest -q                                              # 204 tests, no network
+.venv/bin/pytest -q                                              # 210 tests, no network
 .venv/bin/streamlit run research_engine/app/streamlit_app.py     # the app at http://localhost:8501
 ```
 
@@ -246,7 +246,7 @@ On a machine with no key the app opens on a key setup step:
 4. on success the key is written to `.env` in the repository root (gitignored,
    readable by the owner only) with a label, and the header shows
    "class key …" or "personal key …" with the last four characters only.
-   "Keep for this session only" writes nothing to disk.
+   "Keep only until the app restarts" writes nothing to disk.
 
 "Continue without a key" skips the step; the cached runs still open. The
 Session panel replaces or removes the key later. `.env.example` shows the two
@@ -313,7 +313,7 @@ through the API with identical backtest results.
 
 ## How it was verified
 
-204 tests run without network access: schema and contract tests, engine
+210 tests run without network access: schema and contract tests, engine
 invariants (cash accounting, cost arithmetic, drift, forced sales), the
 cohorts, the operations, the fee engine against the original project's totals,
 the app through Streamlit's test harness, and an independent reimplementation
@@ -353,7 +353,7 @@ research_engine/
   economics/        fee engine (from the original project), bootstrap, fund economics
   reporting/        results assembly, rubric, narrative with number check, HTML dossier and index
   app/              the Streamlit app, key intake, helpers, paper registry
-tests/              204 tests
+tests/              210 tests
 data/snapshot_*/    frozen Yahoo + Ken French snapshot (gitignored; manifest and quality report inside)
 papers/             PDFs (gitignored), answer key (grading only), reference specifications
 runs/               one folder per run; demo_* committed; index.html compares runs
