@@ -18,18 +18,39 @@ checked against the computed results before the dossier is written.
 
 ---
 
-## Quick start
+## Open the app on localhost
+
+Five commands, from a terminal. Python 3.11 or newer.
 
 ```bash
-cd "AI_Applications_Project_philip"
-python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"      # once
-.venv/bin/pytest -q                                              # 210 tests, no network
-.venv/bin/streamlit run research_engine/app/streamlit_app.py     # the app at http://localhost:8501
+git clone https://github.com/pehenriquez03/AI_Applications_Project.git
+cd AI_Applications_Project
+python3 -m venv .venv                       # 1. a virtual environment (once)
+.venv/bin/pip install -e ".[dev]"           # 2. install WARREN and its dependencies (once)
+.venv/bin/streamlit run research_engine/app/streamlit_app.py   # 3. start the app
 ```
 
-The first time the app opens on a machine with no key it asks for one (see
-[API key](#api-key)). The nine papers in the app already have cached model
-answers, so they run even without a key.
+Then open **http://localhost:8501** in a browser. Streamlit prints that
+address in the terminal and usually opens the browser tab itself. The app
+keeps running until you press `Ctrl+C` in that terminal.
+
+On Windows the two `.venv/bin/...` commands are `.venv\Scripts\pip` and
+`.venv\Scripts\streamlit`.
+
+What you will see:
+
+- The first time, on a machine with no key, a **Key setup** step. Paste the
+  key shared in class and press "Test and save", or press "Continue without a
+  key" to browse the finished runs (see [API key](#api-key)).
+- Then the WARREN page: the nine paper tiles on the right, the Run button
+  above them, and the list of previous runs below the parameters. The nine
+  papers already have cached model answers, so they run even without a key.
+  Click a tile and press Run, or click a previous run to open its dossier.
+
+If port 8501 is busy, add `--server.port 8502` to the start command and open
+http://localhost:8502. The app listens on localhost only; it is not reachable
+from other machines. To check the installation first, run the tests:
+`.venv/bin/pytest -q` (210 tests, no network, about half a minute).
 
 Command line, one paper end to end:
 
