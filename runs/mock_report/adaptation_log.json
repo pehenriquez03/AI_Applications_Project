@@ -1,0 +1,51 @@
+[
+ {
+  "field": "weighting",
+  "paper_value": "value",
+  "our_value": "equal",
+  "status": "adapted",
+  "reason": "engine supports equal weighting only"
+ },
+ {
+  "field": "strategy_portfolio",
+  "paper_value": "high-minus-low spread",
+  "our_value": "long lowest MAX decile",
+  "status": "adapted",
+  "reason": "long-only adaptation; no short leg"
+ },
+ {
+  "field": "universe_and_filters",
+  "paper_value": "all NYSE/AMEX/NASDAQ common stocks",
+  "our_value": "415-name survivor universe",
+  "status": "adapted",
+  "reason": "snapshot universe"
+ },
+ {
+  "field": "price_floor",
+  "paper_value": null,
+  "our_value": "none",
+  "status": "assumed",
+  "reason": "paper silent; default no price filter"
+ },
+ {
+  "field": "min_formation_days",
+  "paper_value": null,
+  "our_value": "15",
+  "status": "assumed",
+  "reason": "paper silent; default 15 trading days"
+ },
+ {
+  "field": "signal_formula_words",
+  "paper_value": "maximum daily return within the previous month",
+  "our_value": "rolling_max_daily_return(window_months=1)",
+  "status": "stated",
+  "reason": "maps to registry op"
+ },
+ {
+  "field": "holding_period",
+  "paper_value": "1 month",
+  "our_value": "1",
+  "status": "stated",
+  "reason": "as stated"
+ }
+]

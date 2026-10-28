@@ -1,0 +1,141 @@
+{
+ "performance": {
+  "strategy_net": {
+   "cagr": 0.081,
+   "vol": 0.152,
+   "sharpe": 0.53,
+   "max_drawdown": -0.31
+  },
+  "strategy_gross": {
+   "cagr": 0.089,
+   "vol": 0.152,
+   "sharpe": 0.59,
+   "max_drawdown": -0.3
+  },
+  "spy": {
+   "cagr": 0.123,
+   "vol": 0.169,
+   "sharpe": 0.73,
+   "max_drawdown": -0.34
+  },
+  "ew_universe": {
+   "cagr": 0.104,
+   "vol": 0.171,
+   "sharpe": 0.61,
+   "max_drawdown": -0.36
+  }
+ },
+ "relative": {
+  "vs_spy": {
+   "excess_cagr": -0.042,
+   "tracking_error": 0.082,
+   "information_ratio": -0.51,
+   "beta": 0.84
+  },
+  "vs_ew_universe": {
+   "excess_cagr": -0.023,
+   "tracking_error": 0.061,
+   "information_ratio": -0.38,
+   "beta": 0.88
+  }
+ },
+ "alpha_spanning": {
+  "capm": {
+   "alpha_annual": -0.011,
+   "t": -0.21,
+   "r2": 0.78
+  },
+  "ff3": {
+   "alpha_annual": 0.006,
+   "t": 0.62,
+   "r2": 0.84
+  },
+  "ff3_mom": {
+   "alpha_annual": 0.004,
+   "t": 0.41,
+   "r2": 0.86
+  }
+ },
+ "robustness": {
+  "cost_grid_cagr": {
+   "0 bps": 0.089,
+   "10 bps": 0.081,
+   "25 bps": 0.069
+  },
+  "cost_grid_sharpe": {
+   "0 bps": 0.59,
+   "10 bps": 0.53,
+   "25 bps": 0.45
+  }
+ },
+ "subperiods": {
+  "2015-2019": {
+   "cagr": 0.071,
+   "vol": 0.141,
+   "sharpe": 0.51,
+   "max_drawdown": -0.19
+  },
+  "2020-2025": {
+   "cagr": 0.09,
+   "vol": 0.161,
+   "sharpe": 0.56,
+   "max_drawdown": -0.31
+  }
+ },
+ "groups": {
+  "group_1": {
+   "cagr": 0.0915,
+   "vol": 0.15,
+   "mean_names": 40
+  },
+  "group_2": {
+   "cagr": 0.078,
+   "vol": 0.16,
+   "mean_names": 40
+  },
+  "group_3": {
+   "cagr": 0.0745,
+   "vol": 0.17,
+   "mean_names": 40
+  },
+  "group_4": {
+   "cagr": 0.071,
+   "vol": 0.18,
+   "mean_names": 40
+  },
+  "group_5": {
+   "cagr": 0.0675,
+   "vol": 0.19,
+   "mean_names": 40
+  },
+  "group_6": {
+   "cagr": 0.064,
+   "vol": 0.2,
+   "mean_names": 40
+  },
+  "group_7": {
+   "cagr": 0.0605,
+   "vol": 0.21,
+   "mean_names": 40
+  },
+  "group_8": {
+   "cagr": 0.057,
+   "vol": 0.22,
+   "mean_names": 40
+  },
+  "group_9": {
+   "cagr": 0.0535,
+   "vol": 0.23,
+   "mean_names": 40
+  },
+  "group_10": {
+   "cagr": 0.05,
+   "vol": 0.24,
+   "mean_names": 40
+  }
+ },
+ "turnover": {
+  "annual_one_way": 3.4,
+  "mean_holdings": 40
+ }
+}

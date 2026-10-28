@@ -11,8 +11,8 @@ A research-screening engine. One paper per run. An LLM extracts the trading
 strategy with page-cited evidence. Python validates it, a second LLM pass
 checks it against the paper, and explicit policies adapt it to our supported
 long-only experiment, producing a ready or blocked status. No mandatory human
-approval: material ambiguity or missing data blocks the run rather than
-inventing an assumption. Reviewed Python builds portfolios, backtests,
+approval: unresolved details take labeled defaults that are counted and
+reported; only missing inputs or an unmappable signal block the run. Reviewed Python builds portfolios, backtests,
 evaluates, and simulates; the LLM never writes executable code at runtime.
 Each run ends in an evidence-backed dossier with one recommendation: pursue,
 investigate further, deprioritize, or unable to evaluate. Both the strategy
@@ -22,7 +22,7 @@ and the accuracy of the LLM's interpretation are evaluated.
 
 | Area | Decision |
 |---|---|
-| Universe | The existing 434 names, prices refreshed through 2025 from Yahoo; each eligible from its index add date and only with sufficient history; survivor bias labeled everywhere; sensitivity with and without post-2010 additions. The 69 current members without history stay out. |
+| Universe | 415 names: the 434 in the repo minus 19 with no Yahoo data (several are post-2024 acquisitions, which sharpens the survivor bias); each eligible from its index add date and only with sufficient history; survivor bias labeled everywhere; sensitivity with and without post-2010 additions. |
 | Weighting | Equal weight everywhere, labeled adapted where the paper is value-weighted |
 | Strategy portfolio | Long-only: hold the paper's favored ranked group. Every group is computed for the monotonicity table. No short leg. |
 | Holding | Per paper (table below). Six-month strategies use overlapping monthly cohorts with capital split across six active cohorts; overlapping names are netted before trades. Fallback if time runs out: one-month hold, labeled adapted. |
@@ -46,9 +46,9 @@ and the accuracy of the LLM's interpretation are evaluated.
 | MAX | largest daily return in the previous month | lowest decile | 1 month |
 | Momentum | cumulative return over the previous six months | highest decile | 6 months, overlapping cohorts |
 | Seasonality | return in the same calendar month one year earlier | highest decile | 1 month |
-| Low volatility | volatility of ~3 years of weekly returns | lowest decile | 1 month |
+| Low volatility (Ang, Hodrick, Xing, Zhang 2006) | standard deviation of daily FF3 residuals over the prior month | lowest decile | 1 month |
 | 52-week high | price / preceding 52-week high (raw prices) | highest 30% | 6 months, overlapping cohorts |
-| Frog in the pan | past 12-2 return, then information discreteness within winners | sequential quintiles: top past-return quintile, then lowest-ID quintile | 6 months, overlapping cohorts |
+| Frog in the pan | past 12-2 return, then information discreteness within winners | top past-return quintile, then lowest-ID tercile (floor 15 names for double sorts) | 6 months, overlapping cohorts |
 
 Pending verification before each is frozen: frog-in-the-pan formation-window
 endpoints; low-volatility return convention (simple vs excess); 52-week-high
@@ -66,13 +66,14 @@ price convention (raw close vs raw high, adjusted for splits only).
 6. A name that becomes ineligible mid-holding is sold at its last price and
    logged.
 7. Fully invested; cash earns zero.
-8. Cohort convention: each month a new cohort receives 1/6 of portfolio
-   value; cohorts are netted to one target weight vector before trading.
+8. Cohort convention: the expiring cohort's value funds the new cohort (no
+   cross-cohort rebalancing); cohorts are netted to one target weight
+   vector before trading.
 9. Corporate actions: returns from Yahoo adjusted close (dividends and
    splits folded in); price-level signals from raw prices adjusted for
    splits only, rebuilt from the split series; ticker changes as Yahoo
    resolves them today; spin-offs appear only through the adjusted close;
-   no stock in the 434 stopped trading. The data-quality report lists every
+   19 names excluded for missing Yahoo data (see manifest). The data-quality report lists every
    ticker where raw and adjusted series disagree on a split date.
 
 ## Pipeline and build tasks
@@ -211,6 +212,31 @@ Decided by Philip on 2026-10-28:
 - The Streamlit app is in scope as checkpoint 7b, after the MAX dossier.
 - Two decoy papers are run to test the blocked path and score refusal.
 - Experiment selection is optional; extraction names the main experiment.
+
+## Amendments from the independent review (2026-10-28)
+
+- Registry gains `residual_vol(window, factors)`; Ang et al. 2006 replaces
+  Blitz-van Vliet as the low-volatility paper (Blitz was never downloaded).
+- Double sorts use terciles for the inner sort and a 15-name floor.
+- Specification-error cost: when a reference spec exists, run the paper as
+  extracted and as the reference says; report the performance and NPV delta.
+  Done for MAX at minimum (against the preliminary key, labeled).
+- Newey-West lag = holding months. Rubric decides on sign, economic size,
+  and robustness; the t-statistic is reported, not a hard gate, since ~132
+  months cannot reach t > 3 for realistic spreads.
+- Spanning regression: favored group minus EW universe, daily, on FF3+MOM.
+- Bootstrap reports fraction positive under raw and demeaned excess returns.
+- Economics headline: distribution of incremental fees versus the EW
+  universe fund (never SPY), with 2/20 on long-only labeled an assumption;
+  break-even AUM reported but not headlined.
+- Capacity: trades as % of 20-day average dollar volume, per month, in the
+  scorecard. Extraction gains an `economic_rationale` field with evidence.
+- Demo runs committed: `.gitignore` excepts `runs/demo_*/`; `cache/llm/`
+  committed.
+- Hour 0: smoke-test the Anthropic structured-output call; extractions run
+  in the background from wave 1.
+- Data verifier inspects the 71 tickers with raw/adjusted mismatches before
+  the 52-week-high paper trusts the split series.
 
 ## Not built
 

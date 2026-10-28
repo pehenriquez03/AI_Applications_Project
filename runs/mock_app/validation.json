@@ -1,0 +1,23 @@
+{
+ "evidence": {
+  "economic_rationale": true,
+  "universe_and_filters": true,
+  "required_inputs": false,
+  "signal_formula_words": true,
+  "signal_formula_symbols": true,
+  "formation_window": true,
+  "skip_window": true,
+  "holding_period": true,
+  "rebalance_frequency": true,
+  "sort_rule": true,
+  "breakpoints": true,
+  "favored_group": true,
+  "disfavored_group": true,
+  "weighting": true,
+  "expected_sign": true,
+  "headline_result": true
+ },
+ "consistency_issues": [],
+ "check_pass": [],
+ "n_check_disagreements": 0
+}

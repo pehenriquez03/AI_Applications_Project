@@ -1,0 +1,30 @@
+{
+ "fractions": {
+  "frac_npv_positive": 0.31,
+  "frac_beats_spy": 0.22,
+  "frac_beats_ew": 0.36,
+  "frac_incremental_fee_positive": 0.41
+ },
+ "quantiles": {
+  "npv_usd": {
+   "p05": -12400000.0,
+   "p25": -6100000.0,
+   "p50": -1800000.0,
+   "p75": 3900000.0,
+   "p95": 14200000.0
+  },
+  "end_wealth_usd": {
+   "p05": 98000000.0,
+   "p25": 128000000.0,
+   "p50": 151000000.0,
+   "p75": 176000000.0,
+   "p95": 221000000.0
+  }
+ },
+ "costs": {
+  "research_cost_usd": 12000,
+  "llm_cost_usd": 3.4,
+  "horizon_years": 5,
+  "discount_rate": 0.1
+ }
+}

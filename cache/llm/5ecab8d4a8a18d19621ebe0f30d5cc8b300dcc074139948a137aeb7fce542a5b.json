@@ -1,0 +1,143 @@
+{
+ "source": "session",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_1",
+ "created": "2026-10-28T08:47:56+00:00",
+ "usage": {
+  "input_tokens": 26666,
+  "output_tokens": 1363,
+  "estimated": true
+ },
+ "data": {
+  "paper_title": "Time series momentum",
+  "authors": [
+   "Tobias J. Moskowitz",
+   "Yao Hua Ooi",
+   "Lasse Heje Pedersen"
+  ],
+  "year": 2012,
+  "selected_experiment": "Section 4 / Table 3, the diversified 12-month time series momentum (TSMOM) strategy with a 1-month holding period across 58 futures contracts, January 1985 to December 2009",
+  "can_implement": false,
+  "cannot_implement_reasons": [
+   "Requires futures and forward contracts (commodity, equity index, government bond futures and currency forwards), which are non-equity instruments",
+   "Requires several asset classes at once (commodities, currencies, equity indexes and government bonds are pooled in one diversified portfolio)"
+  ],
+  "economic_rationale": {
+   "value": "Consistent with sentiment theories of initial under-reaction and delayed over-reaction",
+   "evidence": {
+    "page": 1,
+    "quote": "consistent with sentiment theories of initial under-reaction and delayed over-reaction."
+   }
+  },
+  "universe_and_filters": {
+   "value": "58 liquid futures and forward contracts: 24 commodities, 12 cross-currency pairs (nine underlying currencies), nine developed equity indexes and 13 developed government bond futures; data January 1965 to December 2009, strategy evaluated from January 1985; no further filters stated",
+   "evidence": {
+    "page": 3,
+    "quote": "Our data consist of futures prices for 24 commodities,"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily futures prices of the most liquid contract for each instrument (to compute daily excess returns)",
+    "daily excess returns of each instrument (past 12-month signal)",
+    "ex ante volatility estimate from exponentially weighted lagged squared daily returns (position sizing)"
+   ],
+   "evidence": {
+    "page": 4,
+    "quote": "Each day, we compute the daily excess return of the most liquid futures contract"
+   }
+  },
+  "signal_formula_words": {
+   "value": "Sign of the instrument's own excess return over the past 12 months: long the contract if positive, short if negative, with position size inversely proportional to its ex ante volatility (target 40% annualized)",
+   "evidence": {
+    "page": 6,
+    "quote": "whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths."
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "r^{TSMOM,s}_{t,t+1} = sign(r^s_{t-12,t}) * (40% / sigma^s_{t-1}) * r^s_{t,t+1} (Eq. 5); diversified factor = (1/S_t) * sum over s of the same term",
+   "evidence": {
+    "page": 9,
+    "quote": "rTSMOM,st,tþ1 ¼signðrst/C012,tÞ40%sstrst,tþ1: ð5Þ"
+   }
+  },
+  "formation_window": {
+   "value": "12 months (look-back k = 12)",
+   "evidence": {
+    "page": 9,
+    "quote": "egy with a 1-month holding period (e.g.,k¼12 andh¼1),"
+   }
+  },
+  "skip_window": {
+   "value": "not stated",
+   "evidence": {
+    "page": 7,
+    "quote": "timet/C0k/C01 to t/C01. We then compute the time- t"
+   }
+  },
+  "holding_period": {
+   "value": "1 month (h = 1)",
+   "evidence": {
+    "page": 9,
+    "quote": "egy with a 1-month holding period (e.g.,k¼12 andh¼1),"
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 6,
+    "quote": "the instrument’s ex ante volatility, 1 =sst/C01, each month."
+   }
+  },
+  "sort_rule": "other",
+  "sort_rule_evidence": {
+   "page": 6,
+   "quote": "whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths."
+  },
+  "breakpoints": {
+   "value": "No breakpoints or ranking: each instrument is classified by the sign of its own past 12-month excess return (zero cutoff), long if positive and short if negative",
+   "evidence": {
+    "page": 6,
+    "quote": "whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths."
+   }
+  },
+  "favored_group": {
+   "value": "Instruments with a positive past 12-month excess return (held long)",
+   "evidence": {
+    "page": 1,
+    "quote": "We ﬁnd that the past 12-month excess return of each instrument is a positive predictor of its future return."
+   }
+  },
+  "disfavored_group": {
+   "value": "Instruments with a negative past 12-month excess return (held short)",
+   "evidence": {
+    "page": 6,
+    "quote": "whether the excess return over the past kmonths is positive or negative and go long the contract if positive and short if negative, holding the position for hmonths."
+   }
+  },
+  "weighting": "other",
+  "weighting_evidence": {
+   "page": 6,
+   "quote": "We set the position size to be inversely proportional to the instrument’s ex ante volatility, 1 =sst/C01, each month."
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 1,
+   "quote": "We ﬁnd that the past 12-month excess return of each instrument is a positive predictor of its future return."
+  },
+  "headline_result": {
+   "value": "The diversified TSMOM strategy earns an alpha of about 1.58% per month (4.75% per quarter) relative to MSCI World, SMB, HML and UMD",
+   "evidence": {
+    "page": 9,
+    "quote": "TSMOM delivers a large and signiﬁcant alpha or intercept with respect to these factors of about 1.58% per month or 4.75% per quarter."
+   }
+  },
+  "unresolved_details": [
+   "Whether the 12-month signal skips the most recent month is not stated for TSMOM (Eq. 5 shows return from t-12 to t; Section 3.2 describes t-k-1 to t-1)",
+   "Exact roll rule for the most liquid contract is only given as typically the nearest or next nearest-to-delivery contract",
+   "Treatment of instruments with short or missing history, minimum data requirements and any exclusion filters are not stated",
+   "Transaction costs and margin or financing assumptions are not included in the headline results",
+   "Exact return convention (arithmetic vs compounded monthly returns) for the 12-month signal is not fully specified"
+  ]
+ }
+}

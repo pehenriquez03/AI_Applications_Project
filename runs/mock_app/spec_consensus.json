@@ -1,0 +1,146 @@
+{
+ "spec": {
+  "paper_title": "[MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+  "authors": [
+   "Bali",
+   "Cakici",
+   "Whitelaw"
+  ],
+  "year": 2011,
+  "selected_experiment": "Table II: decile portfolios sorted on MAX",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Investors overpay for lottery-like stocks with extreme positive returns.",
+   "evidence": {
+    "page": 2,
+    "quote": "investors have a preference for lottery-like assets"
+   }
+  },
+  "universe_and_filters": {
+   "value": "All CRSP common stocks on NYSE, AMEX and NASDAQ.",
+   "evidence": {
+    "page": 8,
+    "quote": "all stocks listed on the NYSE, AMEX, and NASDAQ"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily returns",
+    "market capitalisation"
+   ],
+   "evidence": {
+    "page": 8,
+    "quote": "daily return data from CRSP"
+   }
+  },
+  "signal_formula_words": {
+   "value": "Maximum daily return over the previous month.",
+   "evidence": {
+    "page": 9,
+    "quote": "the maximum daily return within the month"
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "MAX_t = max(r_d), d in month t",
+   "evidence": {
+    "page": 9,
+    "quote": "MAX = max(R_d)"
+   }
+  },
+  "formation_window": {
+   "value": "1 month of daily data",
+   "evidence": {
+    "page": 9,
+    "quote": "using daily returns in month t"
+   }
+  },
+  "skip_window": {
+   "value": "none",
+   "evidence": {
+    "page": 9,
+    "quote": "portfolios are formed at the end of month t"
+   }
+  },
+  "holding_period": {
+   "value": "1 month",
+   "evidence": {
+    "page": 9,
+    "quote": "returns in month t+1"
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 9,
+    "quote": "each month we sort"
+   }
+  },
+  "sort_rule": "deciles",
+  "sort_rule_evidence": {
+   "page": 10,
+   "quote": "decile portfolios"
+  },
+  "breakpoints": {
+   "value": "equal-count deciles",
+   "evidence": {
+    "page": 10,
+    "quote": "ten portfolios"
+   }
+  },
+  "favored_group": {
+   "value": "lowest MAX decile",
+   "evidence": {
+    "page": 11,
+    "quote": "low MAX stocks earn higher returns"
+   }
+  },
+  "disfavored_group": {
+   "value": "highest MAX decile",
+   "evidence": {
+    "page": 11,
+    "quote": "high MAX stocks earn lower returns"
+   }
+  },
+  "weighting": "equal",
+  "weighting_evidence": {
+   "page": 11,
+   "quote": "equal-weighted"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 11,
+   "quote": "the difference is negative and significant"
+  },
+  "headline_result": {
+   "value": "High-minus-low MAX decile spread of -1.03% per month.",
+   "evidence": {
+    "page": 12,
+    "quote": "-1.03% per month"
+   }
+  },
+  "unresolved_details": [
+   "Treatment of stocks with fewer than 15 return days is not stated.",
+   "Price filter not stated."
+  ]
+ },
+ "agreement": {
+  "economic_rationale": 1.0,
+  "universe_and_filters": 1.0,
+  "required_inputs": 0.67,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 0.67,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 1.0,
+  "expected_sign": 1.0,
+  "headline_result": 1.0
+ },
+ "n_runs": 3
+}

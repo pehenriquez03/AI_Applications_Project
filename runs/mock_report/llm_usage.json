@@ -1,0 +1,44 @@
+[
+ {
+  "call": "extract_1",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 61000,
+  "output_tokens": 3200,
+  "cached": false
+ },
+ {
+  "call": "extract_2",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 61000,
+  "output_tokens": 3200,
+  "cached": true
+ },
+ {
+  "call": "extract_3",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 61000,
+  "output_tokens": 3200,
+  "cached": true
+ },
+ {
+  "call": "check_1",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 64000,
+  "output_tokens": 900,
+  "cached": false
+ },
+ {
+  "call": "check_2",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 64000,
+  "output_tokens": 900,
+  "cached": false
+ },
+ {
+  "call": "check_3",
+  "model": "claude-sonnet-5-5",
+  "input_tokens": 64000,
+  "output_tokens": 900,
+  "cached": false
+ }
+]

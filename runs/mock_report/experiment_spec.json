@@ -1,0 +1,121 @@
+{
+ "run_id": "mock_report",
+ "paper_sha256": "ab12cd34ef560000000000000000000000000000000000000000000000000000",
+ "strategy_slug": "max",
+ "status": "ready",
+ "blocked_reasons": [],
+ "signal_ops": [
+  {
+   "op": "rolling_max_daily_return",
+   "params": {
+    "window_months": 1,
+    "min_days": 15
+   }
+  }
+ ],
+ "selection": {
+  "sort": "deciles",
+  "n_groups": 10,
+  "percent": null,
+  "favored": "lowest",
+  "double_sort": null
+ },
+ "weighting": "equal",
+ "holding_months": 1,
+ "skip_months": 0,
+ "min_names": 20,
+ "price_floor": null,
+ "min_history_days": 252,
+ "min_formation_days": 15,
+ "expected_sign": "favored_group_higher",
+ "universe": "415 names from snapshot; eligible from S&P 500 add date; survivor universe",
+ "snapshot": "snapshot_2026-10-28",
+ "warmup_start": "2012-01-01",
+ "eval_start": "2015-01-01",
+ "eval_end": "2025-12-31",
+ "execution": "signal through prior month's last close; execute at next month's first trading-day close; new weights earn only after execution",
+ "cost_bps": 10,
+ "benchmarks": [
+  "spy",
+  "ew_universe"
+ ],
+ "fund": {
+  "starting_aum": 100000000.0,
+  "management_fee_rate": 0.02,
+  "performance_fee_rate": 0.2,
+  "hurdle_rate": 0.05,
+  "hurdle_type": "hard",
+  "high_water_mark": true,
+  "crystallization_frequency": "annual",
+  "horizon_years": 5,
+  "discount_rate": 0.1
+ },
+ "research_cost": {
+  "dev_review_hours": 80,
+  "maintenance_hours_per_year": 10,
+  "hourly_rate": 150.0
+ },
+ "monte_carlo": {
+  "n_paths": 1000,
+  "mean_block_days": 126,
+  "block_sensitivity_days": [
+   63,
+   126,
+   252
+  ],
+  "seed": 20261028
+ },
+ "adaptations": [
+  {
+   "field": "weighting",
+   "paper_value": "value",
+   "our_value": "equal",
+   "status": "adapted",
+   "reason": "engine supports equal weighting only"
+  },
+  {
+   "field": "strategy_portfolio",
+   "paper_value": "high-minus-low spread",
+   "our_value": "long lowest MAX decile",
+   "status": "adapted",
+   "reason": "long-only adaptation; no short leg"
+  },
+  {
+   "field": "universe_and_filters",
+   "paper_value": "all NYSE/AMEX/NASDAQ common stocks",
+   "our_value": "415-name survivor universe",
+   "status": "adapted",
+   "reason": "snapshot universe"
+  },
+  {
+   "field": "price_floor",
+   "paper_value": null,
+   "our_value": "none",
+   "status": "assumed",
+   "reason": "paper silent; default no price filter"
+  },
+  {
+   "field": "min_formation_days",
+   "paper_value": null,
+   "our_value": "15",
+   "status": "assumed",
+   "reason": "paper silent; default 15 trading days"
+  },
+  {
+   "field": "signal_formula_words",
+   "paper_value": "maximum daily return within the previous month",
+   "our_value": "rolling_max_daily_return(window_months=1)",
+   "status": "stated",
+   "reason": "maps to registry op"
+  },
+  {
+   "field": "holding_period",
+   "paper_value": "1 month",
+   "our_value": "1",
+   "status": "stated",
+   "reason": "as stated"
+  }
+ ],
+ "n_assumed": 2,
+ "n_adapted": 3
+}

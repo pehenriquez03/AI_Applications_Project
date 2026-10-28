@@ -1,0 +1,10 @@
+pyproject.toml
+research_engine/__init__.py
+research_engine.egg-info/PKG-INFO
+research_engine.egg-info/SOURCES.txt
+research_engine.egg-info/dependency_links.txt
+research_engine.egg-info/entry_points.txt
+research_engine.egg-info/requires.txt
+research_engine.egg-info/top_level.txt
+research_engine/data/__init__.py
+research_engine/data/snapshot.py

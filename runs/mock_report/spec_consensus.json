@@ -1,0 +1,145 @@
+{
+ "spec": {
+  "paper_title": "[MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+  "authors": [
+   "Mock Author A",
+   "Mock Author B",
+   "Mock Author C"
+  ],
+  "year": 2011,
+  "selected_experiment": "Table 1, univariate decile portfolios sorted on MAX",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "investors overpay for lottery-like stocks with extreme positive daily returns",
+   "evidence": {
+    "page": 2,
+    "quote": "(mock) investors may pay a premium for lottery-like payoffs"
+   }
+  },
+  "universe_and_filters": {
+   "value": "all NYSE/AMEX/NASDAQ common stocks",
+   "evidence": {
+    "page": 6,
+    "quote": "(mock) the sample covers common stocks on the three exchanges"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily returns"
+   ],
+   "evidence": {
+    "page": 6,
+    "quote": "(mock) daily stock returns from CRSP"
+   }
+  },
+  "signal_formula_words": {
+   "value": "maximum daily return within the previous month",
+   "evidence": {
+    "page": 7,
+    "quote": "(mock) MAX is the maximum daily return over the past month"
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "MAX_{i,t} = max(R_{i,d}), d = 1..D_t",
+   "evidence": {
+    "page": 7,
+    "quote": "(mock) MAX_{i,t} = max(R_{i,d})"
+   }
+  },
+  "formation_window": {
+   "value": "1 month of daily data",
+   "evidence": {
+    "page": 7,
+    "quote": "(mock) over the previous month"
+   }
+  },
+  "skip_window": {
+   "value": "none",
+   "evidence": {
+    "page": 8,
+    "quote": "(mock) portfolios are formed at month end"
+   }
+  },
+  "holding_period": {
+   "value": "1 month",
+   "evidence": {
+    "page": 8,
+    "quote": "(mock) held for the next month"
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 8,
+    "quote": "(mock) rebalanced every month"
+   }
+  },
+  "sort_rule": "deciles",
+  "sort_rule_evidence": {
+   "page": 8,
+   "quote": "(mock) stocks are sorted into deciles"
+  },
+  "breakpoints": {
+   "value": "equal-count deciles",
+   "evidence": {
+    "page": 8,
+    "quote": "(mock) decile breakpoints"
+   }
+  },
+  "favored_group": {
+   "value": "lowest MAX decile",
+   "evidence": {
+    "page": 9,
+    "quote": "(mock) low-MAX stocks earn higher returns"
+   }
+  },
+  "disfavored_group": {
+   "value": "highest MAX decile",
+   "evidence": {
+    "page": 9,
+    "quote": "(mock) high-MAX stocks underperform"
+   }
+  },
+  "weighting": "value",
+  "weighting_evidence": {
+   "page": 9,
+   "quote": "(mock) value-weighted decile returns"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 9,
+   "quote": "(mock) the return spread between high and low MAX is negative"
+  },
+  "headline_result": {
+   "value": "high-minus-low MAX spread of about -1% per month",
+   "evidence": {
+    "page": 10,
+    "quote": "(mock) the difference is about -1 percent per month"
+   }
+  },
+  "unresolved_details": [
+   "minimum price filter",
+   "minimum days of data in the formation month"
+  ]
+ },
+ "agreement": {
+  "economic_rationale": 1.0,
+  "universe_and_filters": 1.0,
+  "required_inputs": 1.0,
+  "signal_formula_words": 1.0,
+  "signal_formula_symbols": 1.0,
+  "formation_window": 1.0,
+  "skip_window": 1.0,
+  "holding_period": 1.0,
+  "rebalance_frequency": 1.0,
+  "sort_rule": 1.0,
+  "breakpoints": 0.6666666666666666,
+  "favored_group": 1.0,
+  "disfavored_group": 1.0,
+  "weighting": 0.6666666666666666,
+  "expected_sign": 1.0,
+  "headline_result": 1.0
+ },
+ "n_runs": 3
+}

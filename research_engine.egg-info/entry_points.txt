@@ -1,0 +1,2 @@
+[console_scripts]
+engine = research_engine.cli:main

@@ -1,0 +1,82 @@
+{
+ "run_id": "mock_report",
+ "paper_title": "[MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+ "strategy_slug": "max",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "",
+   "started": null,
+   "finished": null
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "pending",
+   "detail": "",
+   "started": null,
+   "finished": null
+  }
+ ],
+ "recommendation": null,
+ "summary": "",
+ "error": null
+}

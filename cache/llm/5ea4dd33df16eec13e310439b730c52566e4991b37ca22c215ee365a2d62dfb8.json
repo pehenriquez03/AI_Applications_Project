@@ -1,0 +1,146 @@
+{
+ "source": "session",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_1",
+ "created": "2026-10-28T08:48:11+00:00",
+ "usage": {
+  "input_tokens": 37403,
+  "output_tokens": 1624,
+  "estimated": true
+ },
+ "data": {
+  "paper_title": "Frog in the Pan: Continuous Information and Momentum",
+  "authors": [
+   "Zhi Da",
+   "Umit G. Gurun",
+   "Mitch Warachka"
+  ],
+  "year": 2014,
+  "selected_experiment": "Table 2, Panel A: sequential double-sorts on PRET quintiles, then ID quintiles; six-month post-formation momentum returns (winners minus losers) per ID quintile, post-1927 sample",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "Frog-in-the-pan (limited attention): investors are inattentive to information arriving continuously in small amounts and process it with a delay, so momentum is stronger and more persistent after continuous information than after discrete information with similar cumulative formation-period returns.",
+   "evidence": {
+    "page": 2,
+    "quote": "Speciﬁcally, the FIP hypothesis predicts that investors process continuous information with a delay."
+   }
+  },
+  "universe_and_filters": {
+   "value": "CRSP stocks (returns adjusted for delistings), 1927 to 2007 sample; $5 price filter imposed at the beginning of each month. Share-code, exchange, and breakpoint-universe filters not stated; the data section also says negative book values are eliminated from the sample.",
+   "evidence": {
+    "page": 12,
+    "quote": "after imposing a $5 price ﬁlter at the beginning of each month, we sort stocks"
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily stock returns",
+    "monthly stock returns (formation-period and holding-period returns)",
+    "stock prices ($5 price filter)",
+    "delisting returns",
+    "Fama-French three-factor returns (risk adjustment only)"
+   ],
+   "evidence": {
+    "page": 7,
+    "quote": "We obtain return data from the Center for Research in Security Prices"
+   }
+  },
+  "signal_formula_words": {
+   "value": "Information discreteness (ID): the sign of the formation-period cumulative return (PRET) times the percentage of formation-period days with negative daily returns minus the percentage with positive daily returns. Daily return signs are equally weighted, ignoring magnitude. Small (low) ID = continuous information; large (high) ID = discrete information. Stocks are first sorted on PRET, then on ID.",
+   "evidence": {
+    "page": 7,
+    "quote": "Our benchmark ID proxy is determined by the sign of daily returns and ignores their magnitude by equally weighting each observed return."
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "ID = sgn(PRET) × [%neg − %pos]; sgn(PRET) = +1 when PRET > 0 and −1 when PRET < 0",
+   "evidence": {
+    "page": 7,
+    "quote": "ID = sgn(PRET)× [%neg −%pos ], (1)"
+   }
+  },
+  "formation_window": {
+   "value": "12 months: PRET is the cumulative return over the past twelve months after skipping the most recent month; ID uses the daily returns of the same formation period",
+   "evidence": {
+    "page": 7,
+    "quote": "PRET is deﬁned as a ﬁrm’s cumulative return over the past twelve months after skipping the most recent month."
+   }
+  },
+  "skip_window": {
+   "value": "1 month (one intermediate month between formation and holding periods)",
+   "evidence": {
+    "page": 15,
+    "quote": "are reported for each ID quintile after skipping one intermediate month."
+   }
+  },
+  "holding_period": {
+   "value": "6 months",
+   "evidence": {
+    "page": 12,
+    "quote": "Post-formation returns over the next six months and three years are then computed."
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly (portfolios formed each month; handling of overlapping six-month holding periods not stated)",
+   "evidence": {
+    "page": 16,
+    "quote": "holding-period returns in a single month after portfolio formation, with the month of portfolio formation varying across the sample period."
+   }
+  },
+  "sort_rule": "quintiles",
+  "sort_rule_evidence": {
+   "page": 12,
+   "quote": "into quintiles according to their PRET and then subdivide these quintiles into ID"
+  },
+  "breakpoints": {
+   "value": "Sequential 5x5 double sort: PRET quintiles first, then ID quintiles within each PRET quintile; breakpoint universe (NYSE vs all stocks) not stated",
+   "evidence": {
+    "page": 15,
+    "quote": "The results in Panel A pertain to sequential double-sorts involving PRET quintiles, then ID quintiles."
+   }
+  },
+  "favored_group": {
+   "value": "past winners (highest PRET quintile) in the lowest-ID (continuous information) subportfolio",
+   "evidence": {
+    "page": 4,
+    "quote": "returns from an enhanced momentum strategy that buys past winners and sells past losers following continuous information."
+   }
+  },
+  "disfavored_group": {
+   "value": "past losers (lowest PRET quintile) in the lowest-ID (continuous information) subportfolio",
+   "evidence": {
+    "page": 13,
+    "quote": "Panel A of Table2 reports that momentum, the six-month return from buying winners and selling losers, decreases monotonically from 5.94% in the low ID quintile containing stocks with continuous information to –2.07% in the high ID quintile containing stocks with discrete information."
+   }
+  },
+  "weighting": "other",
+  "weighting_evidence": {
+   "page": 12,
+   "quote": "Post-formation returns over the next six months and three years are then computed."
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 3,
+   "quote": "Consistent with the FIP hypothesis, continuous information induces stronger and more persistent return continuation than discrete information after conditioning on the magnitude of formation-period returns."
+  },
+  "headline_result": {
+   "value": "Six-month momentum (winners minus losers) is 5.94% (t = 4.63) in the continuous-information (low ID) quintile versus –2.07% in the discrete (high ID) quintile; the 8.01% difference has a t-statistic of 8.54 (post-1927).",
+   "evidence": {
+    "page": 13,
+    "quote": "This 8.01% difference in momentum has a t-statistic of 8.54 during the post-1927 sample period."
+   }
+  },
+  "unresolved_details": [
+   "Portfolio weighting (equal vs value) of stocks within the PRET/ID subportfolios is not stated; weighting recorded as 'other' (not stated).",
+   "Whether the negative-book-value elimination stated in the data section applies to the 1927-2007 Table 2 sample is not stated.",
+   "Exact month indexing of the formation window is ambiguous: PRET is 'the past twelve months after skipping the most recent month', Table 1 says ID is computed over months t to t-11, and a separate one-month interval precedes the holding period.",
+   "Whether the six-month holding-period returns use overlapping (Jegadeesh-Titman style) portfolios or non-overlapping formation, and how they are compounded/averaged, is not stated.",
+   "Breakpoint universe for PRET and ID quintiles (NYSE vs all stocks) is not stated.",
+   "Share-code and exchange filters are not stated.",
+   "Treatment of PRET exactly equal to zero (sgn undefined) is not stated.",
+   "Minimum number of daily return observations required to compute ID is not stated.",
+   "Return convention for delistings is described only as returns 'after adjusting for delistings'."
+  ]
+ }
+}

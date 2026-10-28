@@ -4,5 +4,8 @@ __pycache__/
 data/snapshot_*/
 runs/*/
 !runs/index.html
+!runs/demo_*/
+!runs/mock_*/
 .DS_Store
 papers/pdf/
+.venv/

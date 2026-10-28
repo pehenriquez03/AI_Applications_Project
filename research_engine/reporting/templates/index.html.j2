@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Research runs</title>
+<style>{{ css | safe }}</style>
+</head>
+<body>
+<main>
+<h1>Research runs</h1>
+<p class="sub">{{ rows | length }} run(s) · generated {{ generated }} · code {{ code_version[:12] }}</p>
+<div class="scroll"><table>
+<tr><th>Paper</th><th>Strategy</th><th>Recommendation</th><th class="n">Net CAGR</th><th class="n">Alpha t</th><th class="n">P(NPV&gt;0)</th><th class="n">Interpretation agreement</th><th>Dossier</th></tr>
+{% for x in rows %}
+<tr>
+  <td>{{ x.title }}<div class="muted" style="font-size:11.5px">{{ x.run_id }}</div></td>
+  <td>{{ x.slug or "–" }}</td>
+  <td><span class="badge {{ {'pursue': 'good', 'investigate further': 'amber', 'deprioritize': 'bad'}.get(x.recommendation, '') }}">{{ x.recommendation }}</span>
+    {% if x.recommendation == "in progress" %}<div class="muted" style="font-size:11.5px">{{ x.stages_done }}/{{ x.n_stages }} stages</div>{% endif %}</td>
+  <td class="n">{{ x.net_cagr | pct }}</td>
+  <td class="n">{{ x.alpha_t | num }}</td>
+  <td class="n">{{ x.p_npv | pct(0) }}</td>
+  <td class="n">{{ x.agreement | pct(0) }}{% if x.preliminary %} <span class="badge preliminary">prelim.</span>{% endif %}</td>
+  <td>{% if x.has_dossier %}<a href="{{ x.run_id }}/dossier.html">open</a>{% else %}–{% endif %}</td>
+</tr>
+{% endfor %}
+</table></div>
+</main>
+</body>
+</html>

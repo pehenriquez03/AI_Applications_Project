@@ -1,0 +1,7 @@
+{
+ "sha256": "ab12cd34ef560000000000000000000000000000000000000000000000000000",
+ "source_path": "papers/pdf/mock_max.pdf",
+ "n_pages": 42,
+ "title": "[MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+ "selected_experiment": "Table 1"
+}

@@ -1,0 +1,14 @@
+[
+ {
+  "page": 1,
+  "text": "SYNTHETIC TEST FIXTURE - NOT A REAL PAPER\nLottery Days and the Cross-Section: A Fake Study\nA. Placeholder and B. Example (2099)\n\nAbstract\nThis fabricated note exists only to test the extraction pipeline. We sort stocks\nby their maximum daily return in the previous month and find that stocks with ex-\ntreme positive daily returns earn lower future returns. Investors who like lottery-\nlike payoffs overpay for these stocks, so their subsequent returns are low.\nNo real data were used; every number below is invented for testing."
+ },
+ {
+  "page": 2,
+  "text": "1. Data and method\nOur sample contains all common stocks in the Imaginary Exchange with a price of at\nleast $5. We use daily stock returns only.\nAt the end of each month we compute MAX, the largest single-day return of each stock\nduring that month, and sort stocks into ten equal-count deciles on MAX.\nPortfolios are held for one month and rebalanced monthly, with no skip between the\nformation month and the holding month.\nWe form value-weighted decile portfolios, weighting each stock by its market capitalization.\nMAX_{i,t} = max(R_{i,d}), d = 1, ..., D_t"
+ },
+ {
+  "page": 3,
+  "text": "2. Results\nTable 1 reports the decile portfolios. The lowest MAX decile earns the highest\nreturn, and the highest MAX decile earns the lowest return.\nThe return difference between decile 10 and decile 1 is -0.99% per month (made up).\nWe therefore expect the low-MAX decile to outperform the high-MAX decile.\nWe do not state whether a minimum number of trading days is required in the month."
+ }
+]

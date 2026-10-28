@@ -1,0 +1,145 @@
+{
+ "source": "session",
+ "model": "claude-sonnet-5-5",
+ "tag": "extract_1",
+ "created": "2026-10-28T08:48:01+00:00",
+ "usage": {
+  "input_tokens": 32266,
+  "output_tokens": 1337,
+  "estimated": true
+ },
+ "data": {
+  "paper_title": "The Cross-Section of Volatility and Expected Returns",
+  "authors": [
+   "Andrew Ang",
+   "Robert J. Hodrick",
+   "Yuhang Xing",
+   "Xiaoyan Zhang"
+  ],
+  "year": 2004,
+  "selected_experiment": "Table VI, Panel B: value-weighted quintile portfolios sorted on idiosyncratic volatility relative to the Fama-French (1993) three-factor model (1/0/1 strategy)",
+  "can_implement": true,
+  "cannot_implement_reasons": [],
+  "economic_rationale": {
+   "value": "The paper tests whether stocks with high idiosyncratic volatility relative to FF-3 have high exposure to aggregate volatility risk, which carries a negative price of risk; it finds this explains very little of the low returns and calls the pattern a puzzle. The result runs opposite to theories (e.g. Merton 1987) predicting a positive idiosyncratic volatility premium.",
+   "evidence": {
+    "page": 31,
+    "quote": "that stocks with large idiosyncratic volatilities have large exposure to movements in aggregate"
+   }
+  },
+  "universe_and_filters": {
+   "value": "not stated for Table VI (implied: NYSE, AMEX and NASDAQ stocks, since the NYSE-only robustness check excludes NASDAQ and AMEX; sample July 1963 to December 2000)",
+   "evidence": {
+    "page": 26,
+    "quote": "NASDAQ and AMEX has little effect on our results."
+   }
+  },
+  "required_inputs": {
+   "value": [
+    "daily stock returns",
+    "daily Fama-French factor returns (MKT, SMB, HML)",
+    "monthly stock returns",
+    "market capitalization (value weights)"
+   ],
+   "evidence": {
+    "page": 24,
+    "quote": "based on their level of idiosyncratic volatility computed using daily returns over the past month,"
+   }
+  },
+  "signal_formula_words": {
+   "value": "Idiosyncratic volatility: the standard deviation of the residuals from a regression of each stock's daily returns on the Fama-French three factors (MKT, SMB, HML), estimated over the past one month of daily data.",
+   "evidence": {
+    "page": 24,
+    "quote": "compute idiosyncratic volatilities from the regression (8) on daily data over an L month period"
+   }
+  },
+  "signal_formula_symbols": {
+   "value": "r_it = alpha_i + beta_i^MKT MKT_t + beta_i^SMB SMB_t + beta_i^HML HML_t + epsilon_it (equation 8); idiosyncratic volatility = sqrt(var(epsilon_it))",
+   "evidence": {
+    "page": 24,
+    "quote": "var(εit) in equation (8)."
+   }
+  },
+  "formation_window": {
+   "value": "1 month of daily returns",
+   "evidence": {
+    "page": 24,
+    "quote": "based on their level of idiosyncratic volatility computed using daily returns over the past month,"
+   }
+  },
+  "skip_window": {
+   "value": "none (M = 0 in the 1/0/1 strategy)",
+   "evidence": {
+    "page": 24,
+    "quote": "of our analysis on the 1/0/1 strategy, in which we simply sort stocks into quintile portfolios"
+   }
+  },
+  "holding_period": {
+   "value": "1 month",
+   "evidence": {
+    "page": 24,
+    "quote": "and we hold these value-weighted portfolios for 1 month."
+   }
+  },
+  "rebalance_frequency": {
+   "value": "monthly",
+   "evidence": {
+    "page": 50,
+    "quote": "Portfolios are formed every month, based on"
+   }
+  },
+  "sort_rule": "quintiles",
+  "sort_rule_evidence": {
+   "page": 24,
+   "quote": "in which we simply sort stocks into quintile portfolios"
+  },
+  "breakpoints": {
+   "value": "equal-count quintiles across all sampled stocks (the paper notes quintile 5 contains 20% of the stocks); NYSE breakpoints are not mentioned",
+   "evidence": {
+    "page": 25,
+    "quote": "For example, although quintile 5 contains 20% of the stocks"
+   }
+  },
+  "favored_group": {
+   "value": "lowest idiosyncratic volatility quintile (quintile 1)",
+   "evidence": {
+    "page": 4,
+    "quote": "stocks with high idiosyncratic volatility have low average returns."
+   }
+  },
+  "disfavored_group": {
+   "value": "highest idiosyncratic volatility quintile (quintile 5)",
+   "evidence": {
+    "page": 34,
+    "quote": "of stocks with the highest idiosyncratic volatility earns total returns of just -0.02% per month"
+   }
+  },
+  "weighting": "value",
+  "weighting_evidence": {
+   "page": 50,
+   "quote": "We form value-weighted quintile portfolios every month by sorting stocks based on total volatility and id-"
+  },
+  "expected_sign": "favored_group_higher",
+  "expected_sign_evidence": {
+   "page": 25,
+   "quote": "The difference in raw average returns between quintile portfolios 5 and 1 is -1.06%"
+  },
+  "headline_result": {
+   "value": "5-1 (high minus low idiosyncratic volatility) difference in FF-3 alphas of -1.31% per month, t-statistic -7.00; raw 5-1 average return difference -1.06% per month",
+   "evidence": {
+    "page": 25,
+    "quote": "FF-3 alphas between portfolio 5 and portfolio 1 is -1.31% per month, with a t-statistic of -7.00."
+   }
+  },
+  "unresolved_details": [
+   "Stock universe and filters for the idiosyncratic volatility sorts are not stated (exchanges, share codes, price filters); the minimum of more than 17 daily observations is stated only for the beta-to-delta-VIX regressions.",
+   "Whether equation (8) uses excess or raw daily stock returns is not stated.",
+   "Breakpoint universe is not named explicitly; equal-count quintiles over all stocks is implied by quintile 5 containing 20% of the stocks.",
+   "Date of the market capitalization used for value weights is not stated.",
+   "Exact window end for 'the past month' (calendar month ending at formation date) and the timing of the 1/0/1 formation are not spelled out; the paper adds a 1/1/1 variant to ensure information is definitely available at time t.",
+   "Treatment of delisting returns and the return convention for holding-period returns beyond 'total, not excess, simple returns' are not stated.",
+   "Source of the daily Fama-French factors is not stated.",
+   "The paper has two central experiments (Table I, beta-to-delta-VIX sorts; Table VI, idiosyncratic volatility sorts); Table VI Panel B was selected as the headline low-volatility result."
+  ]
+ }
+}

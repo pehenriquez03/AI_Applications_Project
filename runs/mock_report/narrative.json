@@ -1,0 +1,15 @@
+{
+ "summary": "Investigate further. The engine tested the strategy from [MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns: maximum daily return within the previous month, holding the lowest MAX decile. Historical performance is positive: net CAGR 3.98% vs 3.97% for the EW universe; Sharpe 0.28 vs 0.23. Robustness is moderate: the edge over the EW universe holds at 10 bps but not 25 bps, holds in 1 of 2 sub-periods, group rho -0.92 in the expected direction; alpha t 0.32 (reported, not a gate). Economics are positive: P(NPV > 0) 71%, median incremental fee PV $716k vs the EW universe fund. This is a template narrative; the model narrative is pending.",
+ "sections": {
+  "What the paper proposes": "The paper ([MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns) proposes maximum daily return within the previous month as the signal, sorted by deciles, favoring the lowest MAX decile. Rationale: investors overpay for lottery-like stocks with extreme positive daily returns.",
+  "What we implemented and changed": "We adapted 3 fields and assumed 2. Adapted: weighting (engine supports equal weighting only); strategy_portfolio (long-only adaptation; no short leg); universe_and_filters (snapshot universe). Assumed: price_floor set to none; min_formation_days set to 15. Portfolios were formed in 131 months with 35.0 names on average.",
+  "What the backtest found": "Over the sample the strategy returned 3.98% a year net of costs, against 3.97% for the equal-weight universe and 3.62% for SPY. Its Sharpe ratio was 0.28 against 0.23 for the equal-weight universe, and its maximum drawdown was -39.1%. The alpha t-statistic was 0.32; it is reported, not used as a gate. Robustness across costs, sub-periods and ranked groups gave a rho of -0.92.",
+  "What the simulation and economics found": "Across the simulated paths, incremental fee income versus the equal-weight universe fund had a median present value of $716k, with a 5th to 95th percentile range of -$1.4M to $2.7M. The share of paths with positive NPV after research cost was 71.4%, and 49.8% once the historical excess return is removed. Break-even AUM is $2.8M; it is reported, not headlined.",
+  "How reliable the interpretation was": "Across 3 extraction runs the material fields agreed on average 95.8% of the time, and evidence was valid for 93.8% of material fields with 1 check-pass disagreements. Interpretation accuracy is scored against a preliminary reference.",
+  "What to do next": "Investigate the weak flags in the rubric before committing resources."
+ },
+ "verified": true,
+ "unverified_numbers": [],
+ "source": "template",
+ "label": "template narrative; model narrative pending"
+}

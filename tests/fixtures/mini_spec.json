@@ -1,0 +1,123 @@
+{
+ "paper_title": "Lottery Days and the Cross-Section: A Fake Study",
+ "authors": [
+  "A. Placeholder",
+  "B. Example"
+ ],
+ "year": 2099,
+ "selected_experiment": "Table 1, decile portfolios sorted on MAX",
+ "can_implement": true,
+ "cannot_implement_reasons": [],
+ "economic_rationale": {
+  "value": "investors overpay for lottery-like stocks",
+  "evidence": {
+   "page": 1,
+   "quote": "Investors who like lottery-\nlike payoffs overpay for these stocks"
+  }
+ },
+ "universe_and_filters": {
+  "value": "common stocks on the Imaginary Exchange with price of at least $5",
+  "evidence": {
+   "page": 2,
+   "quote": "all common stocks in the Imaginary Exchange with a price of at least $5"
+  }
+ },
+ "required_inputs": {
+  "value": [
+   "daily stock returns",
+   "market capitalization (value weights)"
+  ],
+  "evidence": {
+   "page": 2,
+   "quote": "We use daily stock returns only."
+  }
+ },
+ "signal_formula_words": {
+  "value": "maximum daily return in the previous month",
+  "evidence": {
+   "page": 1,
+   "quote": "maximum daily return in the previous month"
+  }
+ },
+ "signal_formula_symbols": {
+  "value": "MAX_{i,t} = max(R_{i,d}), d = 1, ..., D_t",
+  "evidence": {
+   "page": 2,
+   "quote": "MAX_{i,t} = max(R_{i,d}), d = 1, ..., D_t"
+  }
+ },
+ "formation_window": {
+  "value": "1 month of daily returns",
+  "evidence": {
+   "page": 2,
+   "quote": "the largest single-day return of each stock during that month"
+  }
+ },
+ "skip_window": {
+  "value": "none",
+  "evidence": {
+   "page": 2,
+   "quote": "with no skip between the formation month and the holding month"
+  }
+ },
+ "holding_period": {
+  "value": "one month",
+  "evidence": {
+   "page": 2,
+   "quote": "Portfolios are held for one month"
+  }
+ },
+ "rebalance_frequency": {
+  "value": "monthly",
+  "evidence": {
+   "page": 2,
+   "quote": "rebalanced monthly"
+  }
+ },
+ "sort_rule": "deciles",
+ "sort_rule_evidence": {
+  "page": 2,
+  "quote": "sort stocks into ten equal-count deciles on MAX"
+ },
+ "breakpoints": {
+  "value": "equal-count deciles",
+  "evidence": {
+   "page": 2,
+   "quote": "ten equal-count deciles"
+  }
+ },
+ "favored_group": {
+  "value": "lowest MAX decile",
+  "evidence": {
+   "page": 3,
+   "quote": "The lowest MAX decile earns the highest return"
+  }
+ },
+ "disfavored_group": {
+  "value": "highest MAX decile",
+  "evidence": {
+   "page": 3,
+   "quote": "the highest MAX decile earns the lowest return"
+  }
+ },
+ "weighting": "value",
+ "weighting_evidence": {
+  "page": 2,
+  "quote": "We form value-weighted decile portfolios"
+ },
+ "expected_sign": "favored_group_higher",
+ "expected_sign_evidence": {
+  "page": 3,
+  "quote": "We therefore expect the low-MAX decile to outperform the high-MAX decile."
+ },
+ "headline_result": {
+  "value": "-0.99% per month (decile 10 minus decile 1)",
+  "evidence": {
+   "page": 3,
+   "quote": "The return difference between decile 10 and decile 1 is -0.99% per month"
+  }
+ },
+ "unresolved_details": [
+  "minimum number of trading days in the formation month"
+ ]
+}

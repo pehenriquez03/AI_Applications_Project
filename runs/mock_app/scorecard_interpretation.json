@@ -1,0 +1,27 @@
+{
+ "summary": {
+  "fields_scored": 16,
+  "fields_match": 14,
+  "fields_partial": 1,
+  "fields_mismatch": 1,
+  "score": 0.91
+ },
+ "by_field": {
+  "signal": {
+   "score": 1.0,
+   "note": "matches reference"
+  },
+  "sort_rule": {
+   "score": 1.0,
+   "note": "deciles"
+  },
+  "weighting": {
+   "score": 1.0,
+   "note": "equal"
+  },
+  "required_inputs": {
+   "score": 0.5,
+   "note": "market cap omitted"
+  }
+ }
+}

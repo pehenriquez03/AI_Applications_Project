@@ -1,0 +1,91 @@
+{
+ "evidence": {
+  "economic_rationale": {
+   "valid": true,
+   "page": 2
+  },
+  "universe_and_filters": {
+   "valid": true,
+   "page": 6
+  },
+  "required_inputs": {
+   "valid": true,
+   "page": 6
+  },
+  "signal_formula_words": {
+   "valid": true,
+   "page": 7
+  },
+  "signal_formula_symbols": {
+   "valid": true,
+   "page": 7
+  },
+  "formation_window": {
+   "valid": true,
+   "page": 7
+  },
+  "skip_window": {
+   "valid": true,
+   "page": 8
+  },
+  "holding_period": {
+   "valid": true,
+   "page": 8
+  },
+  "rebalance_frequency": {
+   "valid": true,
+   "page": 8
+  },
+  "sort_rule": {
+   "valid": true,
+   "page": 8
+  },
+  "breakpoints": {
+   "valid": true,
+   "page": 8
+  },
+  "favored_group": {
+   "valid": true,
+   "page": 9
+  },
+  "disfavored_group": {
+   "valid": true,
+   "page": 9
+  },
+  "weighting": {
+   "valid": true,
+   "page": 9
+  },
+  "expected_sign": {
+   "valid": true,
+   "page": 9
+  },
+  "headline_result": {
+   "valid": false,
+   "page": 10
+  }
+ },
+ "consistency_issues": [],
+ "check_pass": [
+  {
+   "agrees": true,
+   "items": []
+  },
+  {
+   "agrees": false,
+   "items": [
+    {
+     "field": "breakpoints",
+     "issue": "paper uses NYSE breakpoints",
+     "contradicting_quote": "(mock) NYSE breakpoints",
+     "page": 8
+    }
+   ]
+  },
+  {
+   "agrees": true,
+   "items": []
+  }
+ ],
+ "n_check_disagreements": 1
+}

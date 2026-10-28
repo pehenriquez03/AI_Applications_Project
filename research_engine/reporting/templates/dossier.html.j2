@@ -1,0 +1,298 @@
+<!doctype html>
+{% set rec = r.recommendation or "unable to evaluate" %}
+{% set paper = r.paper or {} %}
+{% set ex = r.extraction or {} %}
+{% set ad = r.adaptation or {} %}
+{% set perf = r.performance or {} %}
+{% set h = perf.headline or {} %}
+{% set rob = r.robustness or {} %}
+{% set eco = r.economics or {} %}
+{% set interp = r.interpretation or {} %}
+{% set con = r.construction or {} %}
+{% set data = r.data or {} %}
+{% set flags = (r.rubric or {}).flags or {} %}
+{% macro kv(d, skip=(), hint="") -%}
+<table class="kv">
+{% for k, v in (d or {}).items() if k not in skip %}
+<tr><td>{{ k | replace("_", " ") }}</td><td class="n">{{ v | auto(hint ~ k) }}</td></tr>
+{% endfor %}
+</table>
+{%- endmacro %}
+{% macro grid_table(d, first="", cols=None) -%}
+{# d: {row: {col: value}} #}
+{% set rows = d or {} %}
+{% if rows %}
+{% set cs = cols or (rows.values() | list)[0].keys() | list %}
+<div class="scroll"><table>
+<tr><th>{{ first }}</th>{% for c in cs %}<th class="n">{{ c | replace("_", " ") }}</th>{% endfor %}</tr>
+{% for rk, rv in rows.items() %}
+<tr><td>{{ rk | replace("_", " ") }}</td>{% for c in cs %}<td class="n">{{ (rv or {}).get(c) | auto(c) }}</td>{% endfor %}</tr>
+{% endfor %}
+</table></div>
+{% endif %}
+{%- endmacro %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ paper.title or footer.run_id }} · dossier</title>
+<style>{{ css | safe }}</style>
+</head>
+<body>
+<main>
+<div class="sub">Research dossier · run <code>{{ footer.run_id }}</code>{% if r.strategy_slug %} · strategy <code>{{ r.strategy_slug }}</code>{% endif %}</div>
+<h1>{{ paper.title or "Untitled paper" }}</h1>
+<div class="sub">{{ (paper.authors or []) | join(", ") }}{% if paper.year %} ({{ paper.year }}){% endif %}{% if paper.selected_experiment %} · experiment: {{ paper.selected_experiment }}{% endif %}</div>
+
+<!-- 1. recommendation card -->
+<section class="card {{ rec | replace(' ', '-') }}" id="recommendation">
+  <div class="sub">Recommendation</div>
+  <div class="word">{{ rec }}</div>
+  {% if blocked %}<p><strong>Reason:</strong> {{ reason }}</p>{% endif %}
+  {% if flags %}
+  <div class="flags">
+    <span class="badge {{ flags.implementation_reliability }}">reliability: {{ flags.implementation_reliability }}</span>
+    <span class="badge {{ flags.historical_performance }}">performance: {{ flags.historical_performance }}</span>
+    <span class="badge {{ flags.robustness }}">robustness: {{ flags.robustness }}</span>
+    <span class="badge {{ flags.economics }}">economics: {{ flags.economics }}</span>
+    <span class="badge">{{ flags.limitations_count }} fields assumed or adapted</span>
+  </div>
+  {% endif %}
+  {% if r.recommendation_reasons %}
+  <ul>{% for x in r.recommendation_reasons %}<li>{{ x }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if r.limitations %}
+  <details><summary>Limitations ({{ r.limitations | length }})</summary>
+  <ul>{% for x in r.limitations %}<li>{{ x }}</li>{% endfor %}</ul>
+  </details>
+  {% endif %}
+  {% if r.rubric and r.rubric.rules %}
+  <details><summary>Declared rubric rules</summary><pre style="white-space:pre-wrap;font-size:12px">{{ r.rubric.rules }}</pre></details>
+  {% endif %}
+</section>
+
+<!-- 2. summary -->
+{% if n.summary %}
+<section id="summary">
+  <p>{{ n.summary }}</p>
+  <div class="sub">
+    {% if n.source == "template" %}<span class="badge amber">template narrative; model narrative pending</span>{% else %}<span class="badge adapted">model-written</span>{% endif %}
+    {% if n.verified %}<span class="badge good">all numbers found in results.json</span>{% else %}<span class="badge bad">unverified numbers: {{ (n.unverified_numbers or []) | join(", ") }}</span>{% endif %}
+  </div>
+</section>
+{% elif blocked %}
+<section id="summary"><p>The run stopped before evaluation. {{ reason }}</p></section>
+{% endif %}
+
+<!-- 3. what the paper proposes -->
+<h2 id="paper">What the paper proposes</h2>
+{% if ex.fields %}
+<p class="sub">Consensus of {{ ex.n_runs }} extraction run(s); mean field agreement {{ ex.mean_field_agreement | pct }};
+evidence valid for {{ ex.evidence_valid_count if ex.evidence_valid_count is not none else "–" }} of {{ ex.evidence_checked_count if ex.evidence_checked_count is not none else "–" }} material fields;
+{{ ex.n_check_disagreements if ex.n_check_disagreements is not none else "–" }} check-pass disagreement(s), {{ ex.n_critical_check_disagreements if ex.n_critical_check_disagreements is not none else "–" }} on critical fields.</p>
+{% if ex.can_implement == false %}<p><span class="badge bad">cannot implement</span> {{ ex.cannot_implement_reasons | join("; ") }}</p>{% endif %}
+<div class="scroll"><table>
+<tr><th>Field</th><th>Paper says</th><th class="n">Page</th><th class="n">Evidence</th><th class="n">Agreement</th></tr>
+{% for f, v in ex.fields.items() %}
+<tr>
+  <td>{{ f | replace("_", " ") }}</td>
+  <td>{{ v.value | val }}
+    {% if v.quote %}<details><summary>quote</summary><blockquote>{{ v.quote }}</blockquote></details>{% endif %}</td>
+  <td class="n">{{ v.page if v.page is not none else "–" }}</td>
+  <td class="n">{% if v.evidence_valid is sameas true %}<span class="tick" title="quote found on cited page">✓</span>{% elif v.evidence_valid is sameas false %}<span class="cross" title="quote not found on cited page">✗</span>{% else %}–{% endif %}</td>
+  <td class="n">{{ v.agreement | pct(0) }}</td>
+</tr>
+{% endfor %}
+</table></div>
+{% if ex.unresolved_details %}<h3>Details the paper leaves open</h3><ul>{% for d in ex.unresolved_details %}<li>{{ d }}</li>{% endfor %}</ul>{% endif %}
+{% if ex.check_pass_disagreements %}
+<h3>Check-pass disagreements</h3>
+<table><tr><th>Field</th><th>Issue</th><th class="n">Page</th></tr>
+{% for it in ex.check_pass_disagreements %}<tr><td>{{ it.field }}</td><td>{{ it.issue }}{% if it.contradicting_quote %}<details><summary>quote</summary><blockquote>{{ it.contradicting_quote }}</blockquote></details>{% endif %}</td><td class="n">{{ it.page }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+{% if ex.consistency_issues %}<h3>Consistency issues</h3><ul>{% for i in ex.consistency_issues %}<li>{{ i | val }}</li>{% endfor %}</ul>{% endif %}
+{% else %}
+<p class="muted">No extraction on file.</p>
+{% endif %}
+
+{% if not blocked %}
+<!-- 4. what we implemented -->
+<h2 id="implemented">What we implemented</h2>
+{% if ad %}
+<p class="sub">{{ ad.n_stated }} stated · {{ ad.n_adapted }} adapted · {{ ad.n_assumed }} assumed{% if ad.n_unresolved %} · {{ ad.n_unresolved }} unresolved{% endif %}</p>
+<div class="scroll"><table>
+<tr><th>Field</th><th>Paper</th><th>Our test</th><th>Status</th><th>Reason</th></tr>
+{% for e in ad.log %}
+<tr><td>{{ e.field | replace("_", " ") }}</td><td>{{ e.paper_value | val }}</td><td>{{ e.our_value | val }}</td>
+<td><span class="badge {{ e.status }}">{{ e.status }}</span></td><td>{{ e.reason }}</td></tr>
+{% endfor %}
+</table></div>
+<h3>Experiment settings</h3>
+<table class="kv">
+<tr><td>signal operations</td><td>{% for o in ad.signal_ops or [] %}<code>{{ o.op }}({{ o.params | val }})</code> {% endfor %}</td></tr>
+<tr><td>selection</td><td>{{ ad.selection | val }}</td></tr>
+<tr><td>weighting</td><td>{{ ad.weighting | val }}</td></tr>
+<tr><td>holding / skip (months)</td><td>{{ ad.holding_months | val }} / {{ ad.skip_months | val }}</td></tr>
+<tr><td>minimum names per group</td><td>{{ ad.min_names | val }}</td></tr>
+<tr><td>price floor</td><td>{{ ad.price_floor | val }}</td></tr>
+<tr><td>execution</td><td>{{ ad.execution | val }}</td></tr>
+<tr><td>cost (bps of traded notional)</td><td>{{ ad.cost_bps | val }}</td></tr>
+</table>
+{% else %}<p class="muted">No adaptation log on file.</p>{% endif %}
+
+<!-- 5. data and assumptions -->
+<h2 id="data">Data and assumptions</h2>
+{% if data %}
+<table class="kv">
+<tr><td>snapshot</td><td>{{ data.snapshot | val }}</td></tr>
+<tr><td>universe</td><td>{{ data.universe | val }}</td></tr>
+<tr><td>names in universe</td><td>{{ data.n_universe | val }}{% if data.survivor_universe %} <span class="badge amber">survivor universe</span>{% endif %}</td></tr>
+<tr><td>excluded (no Yahoo data)</td><td>{{ data.n_excluded | val }}{% if data.excluded %}<details><summary>list</summary>{{ data.excluded | val }}</details>{% endif %}</td></tr>
+<tr><td>evaluation window</td><td>{{ data.eval_start }} to {{ data.eval_end }} (warm-up from {{ data.warmup_start }})</td></tr>
+<tr><td>benchmarks</td><td>{{ data.benchmarks | val }}</td></tr>
+</table>
+{% if data.eligible_by_year %}
+<h3>Eligible names</h3>
+<div class="scroll"><table><tr>{% for d in data.eligible_by_year %}<th class="n">{{ d[:4] }}</th>{% endfor %}</tr>
+<tr>{% for d, v in data.eligible_by_year.items() %}<td class="n">{{ v }}</td>{% endfor %}</tr></table></div>
+{% endif %}
+{% else %}<p class="muted">No data check on file.</p>{% endif %}
+
+<!-- 6. construction -->
+<h2 id="construction">Construction</h2>
+{% if con %}
+<table class="kv">
+<tr><td>formation months</td><td>{{ con.n_months | val }}{% if con.first_month %} ({{ con.first_month }} to {{ con.last_month }}){% endif %}</td></tr>
+<tr><td>names held per month</td><td>{{ con.mean_names | num(1) }} mean (min {{ con.min_names | val }}, max {{ con.max_names | val }})</td></tr>
+<tr><td>eligible names per month</td><td>{{ con.mean_eligible | num(1) }} mean</td></tr>
+<tr><td>skipped months</td><td>{{ con.n_skipped_months }}{% if con.skipped_months %}: {{ con.skipped_months | map("truncate", 10, true, "") | join(", ") }}{% endif %}</td></tr>
+</table>
+{% if con.sample_top10 %}
+<h3>Sample month {{ con.sample_month }}: first 10 selected names, ranked toward the favored end</h3>
+<table><tr><th>#</th><th>Ticker</th><th class="n">Signal</th><th class="n">Group</th><th class="n">Weight</th></tr>
+{% for x in con.sample_top10 %}<tr><td>{{ loop.index }}</td><td>{{ x.ticker }}</td><td class="n">{{ x.signal | num(4) }}</td><td class="n">{{ x.group | val }}</td><td class="n">{{ x.weight | pct(2) }}</td></tr>{% endfor %}
+</table>
+{% endif %}
+{% else %}<p class="muted">No construction output on file.</p>{% endif %}
+
+<!-- 7. historical performance -->
+<h2 id="performance">Historical performance</h2>
+{% if perf %}
+<div class="headline">
+  <div class="stat"><div class="v">{{ h.strategy_net_cagr | pct }}</div><div class="l">strategy net CAGR</div></div>
+  <div class="stat"><div class="v">{{ h.ew_universe_cagr | pct }}</div><div class="l">EW universe CAGR</div></div>
+  <div class="stat"><div class="v">{{ h.strategy_net_sharpe | num }}</div><div class="l">strategy Sharpe (EW {{ h.ew_universe_sharpe | num }})</div></div>
+  <div class="stat"><div class="v">{{ h.alpha_t | num }}</div><div class="l">alpha t-stat (reported, not a gate)</div></div>
+</div>
+{% if charts.growth %}<img class="chart" alt="Growth of $1 for strategy, EW universe and SPY" src="{{ charts.growth }}">{% endif %}
+{% if charts.drawdown %}<img class="chart" alt="Drawdown chart" src="{{ charts.drawdown }}">{% endif %}
+<h3>Performance{% if perf.first_day %} ({{ perf.first_day }} to {{ perf.last_day }}){% endif %}</h3>
+{{ grid_table(perf.by_series, "series") }}
+{% if perf.source and perf.source != "scorecard_strategy" %}<p class="sub">Source: {{ perf.source }}</p>{% endif %}
+<div class="grid2">
+  <div>{% if perf.alpha %}<h3>Alpha</h3>{{ kv(perf.alpha, skip=("loadings",)) }}{% if perf.alpha.loadings %}<h3>Factor loadings</h3>{{ kv(perf.alpha.loadings) }}{% endif %}{% endif %}</div>
+  <div>{% if perf.spanning %}<h3>Spanning (favored group minus EW universe on FF3+MOM)</h3>{{ kv(perf.spanning) }}{% endif %}
+       {% if perf.relative %}<h3>Relative to benchmarks</h3>{{ grid_table(perf.relative, "vs") }}{% endif %}</div>
+</div>
+<div class="grid2">
+  <div>{% if perf.turnover %}<h3>Turnover</h3>{{ kv(perf.turnover, hint="turnover_") }}{% endif %}{% if perf.costs %}<h3>Costs</h3>{{ kv(perf.costs) }}{% endif %}</div>
+  <div>{% if perf.holdings %}<h3>Holdings</h3>{{ kv(perf.holdings) }}{% endif %}{% if perf.capacity %}<h3>Capacity (trades as % of 20-day ADV)</h3>{{ kv(perf.capacity) }}{% endif %}</div>
+</div>
+{% else %}<p class="muted">No performance results on file.</p>{% endif %}
+
+<!-- 8. robustness -->
+<h2 id="robustness">Robustness</h2>
+{% if rob %}
+<p class="sub">A test "holds" when {{ rob.holds_definition }}.</p>
+<div class="grid2">
+  <div><h3>Cost grid (bps)</h3>{{ grid_table(rob.cost_grid, "bps") }}
+    <p class="sub">{% for b, v in rob.holds_at_bps.items() %}{{ b }} bps: {% if v is sameas true %}<span class="tick">holds</span>{% elif v is sameas false %}<span class="cross">fails</span>{% else %}–{% endif %}{% if not loop.last %} · {% endif %}{% endfor %}</p></div>
+  <div><h3>Sub-periods</h3>{{ grid_table(rob.subperiods, "period") }}
+    <p class="sub">{% for b, v in rob.holds_in_subperiod.items() %}{{ b }}: {% if v is sameas true %}<span class="tick">holds</span>{% elif v is sameas false %}<span class="cross">fails</span>{% else %}–{% endif %}{% if not loop.last %} · {% endif %}{% endfor %}</p></div>
+</div>
+{% endif %}
+{% if charts.groups %}<img class="chart" alt="Net CAGR by ranked group" src="{{ charts.groups }}">{% endif %}
+{% if rob.groups and rob.groups.rho is not none %}<p class="sub">Spearman rho across groups {{ rob.groups.rho | num }}{% if rob.groups.rho_p is defined %} (p {{ rob.groups.rho_p | num(4) }}){% endif %}; {% if rob.groups.rho_in_expected_direction %}in{% else %}not in{% endif %} the expected direction.</p>{% endif %}
+{% if not rob and not charts.groups %}<p class="muted">No robustness results on file.</p>{% endif %}
+
+<!-- 9. Monte Carlo and economics -->
+<h2 id="economics">Monte Carlo and economics</h2>
+{% if eco %}
+{% set q = eco.quantiles or {} %}
+<p>Headline: incremental fee income versus the equal-weight universe fund (present value, {{ (eco.fund or {}).horizon_years | val }} years at {{ (eco.fund or {}).discount_rate | pct(0) }}):
+median <strong>{{ (q.incremental_fees_pv or {}).p50 | money }}</strong>, 5th–95th percentile {{ (q.incremental_fees_pv or {}).p05 | money }} to {{ (q.incremental_fees_pv or {}).p95 | money }}.
+P(NPV &gt; 0) after research cost: <strong>{{ eco.frac_npv_positive | pct(1) }}</strong> ({{ eco.frac_npv_positive_demeaned | pct(1) }} with the historical excess return removed).</p>
+<div class="grid3">
+  <div>{% if charts.inc_fees %}<img class="chart" alt="Histogram of incremental fee PV" src="{{ charts.inc_fees }}">{% endif %}</div>
+  <div>{% if charts.npv %}<img class="chart" alt="Histogram of NPV" src="{{ charts.npv }}">{% endif %}</div>
+  <div>{% if charts.wealth %}<img class="chart" alt="Histogram of investor ending wealth" src="{{ charts.wealth }}">{% endif %}</div>
+</div>
+<div class="grid2">
+<div>
+<h3>Fractions of paths</h3>
+<table class="kv">
+<tr><td>strategy fund beats SPY</td><td class="n">{{ eco.frac_beats_spy | pct(1) }}</td></tr>
+<tr><td>strategy fund beats EW universe fund</td><td class="n">{{ eco.frac_beats_ew | pct(1) }}</td></tr>
+<tr><td>NPV &gt; 0</td><td class="n">{{ eco.frac_npv_positive | pct(1) }}</td></tr>
+<tr><td>NPV &gt; 0, demeaned</td><td class="n">{{ eco.frac_npv_positive_demeaned | pct(1) }}</td></tr>
+<tr><td>expected incremental fee PV</td><td class="n">{{ eco.expected_incremental_fees_pv | money }}</td></tr>
+<tr><td>research cost (total)</td><td class="n">{{ eco.research_cost_total | money }}</td></tr>
+<tr><td>model usage cost</td><td class="n">{{ eco.llm_cost_usd | money }}</td></tr>
+<tr><td>break-even AUM (reported, not headlined)</td><td class="n">{% if eco.breakeven_aum is not none %}{{ eco.breakeven_aum | money }}{% else %}none (expected incremental fees not positive){% endif %}</td></tr>
+</table>
+{% if eco.block_sensitivity %}<h3>Block-length sensitivity: P(NPV &gt; 0)</h3>
+<table><tr>{% for b in eco.block_sensitivity %}<th class="n">{{ b }} days</th>{% endfor %}</tr><tr>{% for b, v in eco.block_sensitivity.items() %}<td class="n">{{ v | pct(1) }}</td>{% endfor %}</tr></table>{% endif %}
+</div>
+<div>
+<h3>Quantiles across paths</h3>
+<div class="scroll"><table>
+<tr><th>measure</th>{% for p in ["p05", "p25", "p50", "p75", "p95"] %}<th class="n">{{ p }}</th>{% endfor %}</tr>
+{% for k, v in q.items() %}
+<tr><td>{{ k | replace("_", " ") }}</td>{% for p in ["p05", "p25", "p50", "p75", "p95"] %}<td class="n">{% if "wealth" in k %}{{ v.get(p) | num(2) }}x{% else %}{{ v.get(p) | auto(k) }}{% endif %}</td>{% endfor %}</tr>
+{% endfor %}
+</table></div>
+</div>
+</div>
+<h3>Assumptions</h3>
+<ul>
+{% for a in eco.assumptions or [] %}<li>{{ a }}</li>{% endfor %}
+{% if eco.fund %}<li>Fund: {{ eco.fund | val }}</li>{% endif %}
+{% if eco.research_cost_inputs %}<li>Research cost inputs: {{ eco.research_cost_inputs | val }}</li>{% endif %}
+{% if eco.monte_carlo_inputs %}<li>Monte Carlo: {{ eco.monte_carlo_inputs | val }}</li>{% endif %}
+</ul>
+{% else %}<p class="muted">No economics on file.</p>{% endif %}
+{% endif %}{# not blocked #}
+
+<!-- 10. interpretation accuracy -->
+<h2 id="interpretation">Interpretation accuracy {% if interp.preliminary %}<span class="badge preliminary">preliminary</span>{% endif %}</h2>
+{% if interp %}
+{% if interp.reference_label %}<p class="sub">Reference: {{ interp.reference_label }}</p>{% endif %}
+{{ kv(interp, skip=("reference_label", "preliminary")) }}
+{% else %}<p class="muted">No interpretation scorecard on file.</p>{% endif %}
+
+<!-- 11. narrative -->
+{% if n.sections %}
+<h2 id="narrative">Narrative {% if n.source == "template" %}<span class="badge amber">template</span>{% else %}<span class="badge adapted">model-written</span>{% endif %}</h2>
+<div class="narr">
+{% for name, text in n.sections.items() %}<h3>{{ name }}</h3><p>{{ text }}</p>{% endfor %}
+</div>
+{% endif %}
+
+{% if r.llm_usage %}
+<h2 id="usage">Model usage</h2>
+<p class="sub">{{ r.llm_usage.n_calls }} calls ({{ r.llm_usage.n_cached }} from cache) · {{ r.llm_usage.input_tokens | num(0) }} input and {{ r.llm_usage.output_tokens | num(0) }} output tokens · {{ r.llm_usage.cost_usd | money }} at ${{ r.llm_usage.price_per_mtok.input | num(0) }}/${{ r.llm_usage.price_per_mtok.output | num(0) }} per million tokens</p>
+{% endif %}
+
+<!-- 12. downloads -->
+<h2 id="downloads">Downloads</h2>
+<div class="scroll"><table><tr><th>File</th><th class="n">Size</th></tr>
+{% for f in downloads %}<tr><td><a href="{{ f.name }}">{{ f.name }}</a></td><td class="n">{{ f.size | size if f.size is not none else "–" }}</td></tr>{% endfor %}
+</table></div>
+
+<footer>
+Run {{ footer.run_id }} · snapshot {{ footer.snapshot }} · code {{ footer.code_version[:12] }} · model {{ footer.model }} · generated {{ footer.generated }}
+</footer>
+</main>
+</body>
+</html>

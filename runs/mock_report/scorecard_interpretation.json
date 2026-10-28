@@ -1,0 +1,15 @@
+{
+ "n_runs": 3,
+ "mean_field_agreement": 0.9583333333333333,
+ "evidence_valid_rate": 0.9375,
+ "n_check_disagreements": 1,
+ "unresolved_count": 2,
+ "assumed_count": 2,
+ "adapted_count": 3,
+ "decoy_refused": null,
+ "agreement_rate": 0.875,
+ "critical_errors": 0,
+ "minor_errors": 2,
+ "reference_label": "preliminary answer key",
+ "preliminary": true
+}

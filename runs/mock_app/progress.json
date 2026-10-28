@@ -1,0 +1,82 @@
+{
+ "run_id": "mock_app",
+ "paper_title": "[MOCK] Maxing Out: Stocks as Lotteries and the Cross-Section of Expected Returns",
+ "strategy_slug": "max",
+ "stages": [
+  {
+   "n": 1,
+   "name": "Read paper",
+   "status": "done",
+   "detail": "28 pages \u00b7 3f9a1c2e",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 2,
+   "name": "Extract strategy",
+   "status": "done",
+   "detail": "3 run(s) \u00b7 fields agree 94%",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 3,
+   "name": "Validate and adapt",
+   "status": "done",
+   "detail": "ready \u00b7 2 assumed \u00b7 1 adapted",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 4,
+   "name": "Check data",
+   "status": "done",
+   "detail": "398 eligible names \u00b7 2766 trading days",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 5,
+   "name": "Construct portfolios",
+   "status": "done",
+   "detail": "132 months \u00b7 40 names/month",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 6,
+   "name": "Backtest",
+   "status": "done",
+   "detail": "net CAGR and drawdown computed",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 7,
+   "name": "Evaluate",
+   "status": "done",
+   "detail": "net CAGR 8.1% \u00b7 alpha t 0.62",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 8,
+   "name": "Monte Carlo",
+   "status": "done",
+   "detail": "1000 paths \u00b7 P(NPV>0) 31%",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  },
+  {
+   "n": 9,
+   "name": "Dossier",
+   "status": "done",
+   "detail": "investigate further",
+   "started": "2026-10-28T12:00:00+00:00",
+   "finished": "2026-10-28T12:00:05+00:00"
+  }
+ ],
+ "recommendation": "investigate further",
+ "summary": "The MAX strategy, long the lowest-MAX decile, earned a net annualised return of 8.1% against 12.3% for the S&P 500 over 2015-2025, with a Fama-French alpha that is not statistically distinguishable from zero (t = 0.62). After a 2% management and 20% performance fee, the fund NPV is positive in 31% of bootstrap paths. The effect is directionally consistent with the paper but too weak in this survivor universe to pursue; worth a follow-up on the subperiod split. This is a mock summary for UI testing.",
+ "error": null
+}
