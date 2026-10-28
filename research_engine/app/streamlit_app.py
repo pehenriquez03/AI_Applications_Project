@@ -1,4 +1,4 @@
-"""SHARPE OBJECTS — Research Screening Agent. Terminal-style Streamlit front end.
+"""WARREN — your research screening agent. Terminal-style Streamlit front end.
 
 Launch:  .venv/bin/streamlit run research_engine/app/streamlit_app.py
 Layout:  top bar (name, tagline, last run, parameter chips) · left: the run (steps, performance,
@@ -32,8 +32,8 @@ from research_engine.contracts import (
     WARMUP_START,
 )
 
-APP_NAME = "SHARPE OBJECTS"
-TAGLINE = "Research Screening Agent"
+APP_NAME = "WARREN"
+TAGLINE = "YOUR RESEARCH SCREENING AGENT"
 ORANGE, GREEN, RED, PURPLE, GREY = "#f58220", "#3cc46a", "#e05252", "#c04bd6", "#8c8c8c"
 MODELS = ["claude-sonnet-5-5", "claude-opus-5-5", "claude-haiku-5-5"]
 MONTHS = [f"{y}-{m:02d}" for y in range(2013, 2026) for m in range(1, 13)]
@@ -60,10 +60,11 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .stApp h3 {{ font-size: 15px; font-weight: bold; margin: .2rem 0 .1rem; }}
 .stApp h4 {{ font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: .06em; color: #cfcfcf; }}
 /* top bar */
-.topbar {{ display: flex; align-items: baseline; gap: 14px; border-bottom: 1px solid #2c2c2c; padding: 2px 0 6px; }}
-.topbar .name {{ font-size: 22px; font-weight: bold; color: #f2f2f2; letter-spacing: .02em; }}
-.topbar .name .caret {{ color: {ORANGE}; font-size: 14px; margin-left: 2px; }}
-.topbar .tag {{ font-size: 13px; color: #bdbdbd; }}
+.topbar {{ display: flex; align-items: flex-end; gap: 14px; border-bottom: 1px solid #2c2c2c; padding: 2px 0 6px; }}
+.topbar .brand {{ display: flex; flex-direction: column; line-height: 1.05; }}
+.topbar .name {{ font-size: 26px; font-weight: bold; color: {ORANGE}; letter-spacing: .06em; }}
+.topbar .name .caret {{ color: #bdbdbd; font-size: 14px; margin-left: 2px; }}
+.topbar .tag {{ font-size: 10.5px; color: #bdbdbd; letter-spacing: .14em; text-transform: uppercase; margin-top: 3px; }}
 .topbar .last {{ margin-left: auto; font-size: 12px; color: #bdbdbd; white-space: nowrap; }}
 .topbar .last b {{ color: #f2f2f2; }}
 .up {{ color: {GREEN}; }} .dn {{ color: {RED}; }} .amber {{ color: {ORANGE}; }} .mute {{ color: {GREY}; }}
@@ -315,8 +316,8 @@ if _last:
     when = datetime.fromtimestamp(_last["mtime"]).strftime("%d-%b-%Y %H:%M")
     last_html = (f'<div class="last">Last <b>{esc(_last["title"])}</b> '
                  f'<span class="{col}">▲ {esc(_last["label"])}</span> <span class="mute">{when}</span></div>')
-st.markdown(f"""<div class="topbar"><div class="name">{APP_NAME}<span class="caret">▾</span></div>
-<div class="tag">{TAGLINE}</div>{last_html}</div>
+st.markdown(f"""<div class="topbar"><div class="brand"><div class="name">{APP_NAME}<span class="caret">▾</span></div>
+<div class="tag">{TAGLINE}</div></div>{last_html}</div>
 <div class="chips">
 <div class="c"><span class="k">Model</span>{esc(_sel_model)}</div>
 <div class="c"><span class="k">Universe</span>{_manifest.get("n_universe", "?")} S&amp;P 500 names, equal weight</div>
