@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import html
 import os
+import re
 import sys
 import threading
 import time
@@ -458,7 +459,8 @@ with right:
         for f in uploads or []:
             data = f.getvalue()
             sha = hashlib.sha256(data).hexdigest()
-            dest = RUNS_DIR / "_uploads" / f"{sha}.pdf"
+            safe = re.sub(r"[^A-Za-z0-9._-]+", "_", Path(f.name).stem)[:60] or "paper"
+            dest = RUNS_DIR / "_uploads" / f"{sha[:12]}_{safe}.pdf"
             dest.parent.mkdir(parents=True, exist_ok=True)
             if not dest.exists():
                 dest.write_bytes(data)
@@ -604,7 +606,14 @@ def tab_extraction(run_dir: Path) -> None:
         return
     spec = d.get("spec", d)
     val = H.read_json(run_dir / "validation.json")
-    if spec.get("can_implement", True):
+    prog = H.read_progress(run_dir) or {}
+    if is_extract_only(run_dir, prog):
+        verdict = next((s["detail"] for s in prog.get("stages", []) if s["n"] == 3), "")
+        says = "implementable in principle" if spec.get("can_implement", True) else "not implementable"
+        st.markdown(f"**Engine verdict.** {md_safe(verdict) or 'pending'}")
+        st.caption(f"The extraction itself calls the strategy {says}" +
+                   ("" if spec.get("can_implement", True) else ": " + "; ".join(spec.get("cannot_implement_reasons", []))) + ".")
+    elif spec.get("can_implement", True):
         st.markdown("**Implementable** with the data in this snapshot.")
     else:
         st.markdown("**Not implementable**")

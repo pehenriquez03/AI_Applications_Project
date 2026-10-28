@@ -49,15 +49,30 @@ def _guess_title(first_page: str, pdf_title: Optional[str]) -> str:
     if len(t) > 8 and not bad_meta.search(t):
         return t
     skip = re.compile(r"(pii:|working paper|nber|http|www\.|journal|vol\.|volume|issn|doi|©|copyright|^\d+$|"
-                      r"national bureau|cambridge|massachusetts|draft|^page)", re.I)
+                      r"national bureau|cambridge|massachusetts|draft|^page|university|school of|department|\busa\b|e-?mail|@|abstract)", re.I)
+    seen = 0
     for ln in first_page.split("\n"):
         s = ln.strip()
+        if not s:
+            continue
+        if re.match(r"abstract", s, re.I) or seen >= 14:      # titles sit at the top; never pick body text
+            break
+        seen += 1
         if len(s) < 12 or skip.search(s):
             continue
         if sum(ch.isalpha() for ch in s) < 0.6 * len(s):
             continue
+        if len(s) > 10 and s.count(" ") < len(s) / 15:       # text layer lost its spaces ("Illiquidityandstockreturns")
+            continue
         return s
     return ""
+
+
+def _pretty_stem(file_name: str) -> str:
+    """Fallback title from the file name: 'a1b2c3d4e5f6_amihud_2002_illiquidity.pdf' -> 'Amihud 2002 Illiquidity'."""
+    stem = re.sub(r"^[0-9a-f]{12,64}[_-]", "", Path(file_name).stem)
+    words = [w for w in re.split(r"[_\-\s]+", stem) if w]
+    return " ".join(w if w.isdigit() or w.isupper() else w.capitalize() for w in words)
 
 
 def ingest(pdf_path, run_dir, selected_experiment: str | None = None) -> dict:
@@ -101,7 +116,7 @@ def ingest(pdf_path, run_dir, selected_experiment: str | None = None) -> dict:
         "source_path": str(pdf_path),
         "file_name": pdf_path.name,
         "n_pages": n_pages,
-        "title_guess": _guess_title(pages[0]["text"], pdf_title),
+        "title_guess": _guess_title(pages[0]["text"], pdf_title) or _pretty_stem(pdf_path.name),
         "selected_experiment": selected_experiment,
         "median_chars_per_page": median_chars,
         "total_chars": sum(chars),
