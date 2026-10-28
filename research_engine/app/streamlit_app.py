@@ -50,7 +50,7 @@ NA = "not available yet"
 SHORT = {"oil": "Aidan mock", "decoy_profitability": "Novy-Marx", "decoy_tsmom": "Moskowitz"}
 CODES = {"max": "MAX", "momentum": "MOM", "seasonality": "SEAS", "lowvol": "IVOL", "high52": "52WH",
          "frog": "FROG", "oil": "OIL", "decoy_profitability": "GPROF", "decoy_tsmom": "TSMOM"}
-LABEL_COLOR = {"pursue": "green", "investigate further": "orange", "deprioritize": "gray",
+LABEL_COLOR = {"pursue": "green", "investigate further": "orange", "deprioritize": "gray", "extraction only": "blue",
                "unable to evaluate": "red", "blocked": "red", "failed": "red"}
 
 st.set_page_config(page_title=f"{APP_NAME} · {TAGLINE}", layout="wide", initial_sidebar_state="collapsed")
@@ -106,6 +106,9 @@ header[data-testid="stHeader"] {{ background: transparent; height: 0; }}
 .s-running .name, .s-running .detail {{ color: {ORANGE}; }}
 .s-pending {{ color: #5a5a5a; }} .s-pending .n {{ color: #444; }}
 .s-blocked .name, .s-blocked .detail, .s-failed .name, .s-failed .detail {{ color: {RED}; }}
+.s-skipped {{ color: #5a5a5a; }} .s-skipped .detail {{ color: #5a5a5a; font-style: italic; }}
+.note {{ font-size: 11px; color: {GREY}; margin: -4px 0 6px; line-height: 1.45; }}
+.runh .ex {{ background: #2a3a4a; color: #cfe3f5; font-weight: bold; font-size: 11px; padding: 1px 7px; border-radius: 2px; }}
 .err {{ color: {RED}; font-size: 12px; }}
 /* widgets */
 .stApp hr {{ border-color: #2c2c2c; margin: .8rem 0 .4rem; }}
@@ -194,7 +197,8 @@ def _work(job: Job) -> None:
     for i, t in enumerate(job.tasks):
         job.i, job.started = i, time.time()
         bak = None
-        opts = dict(llm="api", model=t.get("model"), eval_start=t.get("eval_start"), eval_end=t.get("eval_end"))
+        opts = dict(llm="api", model=t.get("model"), eval_start=t.get("eval_start"), eval_end=t.get("eval_end"),
+                    extract_only=bool(t.get("extract_only")))
         try:
             if t.get("run_dir") and t.get("start_stage") == 9:       # regenerate narrative: keep the old one as a fallback
                 nf = Path(t["run_dir"]) / "narrative.json"
@@ -314,6 +318,11 @@ def run_window(run_dir: Path) -> tuple[str, str, str, bool]:
     return start, end, cfg.get("model") or MODEL, bool(cfg.get("custom_window"))
 
 
+def is_extract_only(run_dir: Path, p: dict | None) -> bool:
+    cfg = H.read_json(run_dir / "run_config.json") or {}
+    return bool(cfg.get("extract_only")) or (p or {}).get("recommendation") == "extraction only"
+
+
 # ----------------------------------------------------------------------------
 # top bar
 # ----------------------------------------------------------------------------
@@ -378,9 +387,10 @@ with right:
                 authors, year, topic = paper_parts(label)
                 code = CODES.get(slug, slug.upper()[:5])
                 first = SHORT.get(slug) or authors.split(",")[0].split(" &")[0]
-                text = f"**{code}**  \n{first} {year}"
+                line2 = f"{first} {year}" if slug not in SHORT or "(decoy)" in label else first
+                text = f"**{code}**  \n{line2}"
                 if "(decoy)" in label:
-                    text = f"**{code}**  \n*{first} {year}*"
+                    text = f"**{code}**  \n*{line2}*"
                 c.button(text, key=f"paper_{slug}", help=tile_help(label, rel),
                          type="primary" if slug in ss.queue else "secondary", on_click=toggle_paper, args=(slug,))
     st.markdown('<div class="legend">Click one paper and press Run; no upload needed. One paper at a time. '
@@ -389,6 +399,10 @@ with right:
     panel("Drop a PDF")
     uploads = st.file_uploader("PDF files to screen", type=["pdf"], accept_multiple_files=True,
                                key=f"uploader_{ss.upload_n}", label_visibility="collapsed")
+    st.markdown('<div class="note">A dropped paper is read and its strategy extracted, then the model writes a summary '
+                'of the strategy. No backtest runs: the strategy may not be implementable by the engine, which only '
+                'does long-only monthly sorts on US equity prices. The verdict appears in step 3.</div>',
+                unsafe_allow_html=True)
 
     panel("Parameters")
     st.selectbox("Model", MODELS, index=MODELS.index(_sel_model) if _sel_model in MODELS else 0, key="model",
@@ -439,7 +453,7 @@ with right:
             dest.parent.mkdir(parents=True, exist_ok=True)
             if not dest.exists():
                 dest.write_bytes(data)
-            tasks.append(dict(label=f.name, pdf=str(dest), prefix=sha[:12], **common))
+            tasks.append(dict(label=f.name, pdf=str(dest), prefix=sha[:12], extract_only=True, **common))
         for pr in problems:
             st.markdown(f'<div class="err">{esc(pr)}</div>', unsafe_allow_html=True)
         if tasks:
@@ -728,6 +742,17 @@ def render_summary(p: dict | None, state: str) -> None:
         reasons = [s["detail"] for s in p["stages"] if s["status"] in ("blocked", "failed") and s["detail"]]
         text = "; ".join(reasons) or p.get("error") or (p.get("summary") or "").removeprefix("Unable to evaluate.").strip()
         st.write(md_safe(text))
+    elif state == "finished" and p.get("recommendation") == "extraction only":
+        st.markdown("**Extraction only** (dropped PDF; no backtest)")
+        st.write(md_safe(p.get("summary") or ""))
+        extra = p.get("_summary_extra") or {}
+        if extra.get("data_needs"):
+            st.markdown(f"**Data needs.** {md_safe(extra['data_needs'])}")
+        if extra.get("implementation_note"):
+            st.markdown(f"**Engine.** {md_safe(extra['implementation_note'])}")
+        if extra.get("source") == "template":
+            st.caption("Summary assembled from the extracted fields (model unavailable); a model-written summary "
+                       "replaces it when a key is set.")
     elif state == "finished":
         st.markdown(f"**{md_safe(p.get('recommendation') or 'no recommendation')}**")
         st.write(md_safe(p.get("summary") or ""))
@@ -782,10 +807,12 @@ def main_view() -> None:
     title = (p or {}).get("paper_title") or meta.get("title") or (run_dir.name if run_dir else "Starting…")
     slug = (p or {}).get("strategy_slug")
     ws, we, model, custom = run_window(run_dir) if run_dir else (_ws, _we, _sel_model, False)
+    xo = bool(run_dir) and is_extract_only(run_dir, p)
+    chip = ('<span class="ex">EXTRACTION ONLY · dropped PDF</span>' if xo else
+            f'<span class="win">BACKTEST {ws} → {we}{" · custom" if custom else ""}</span>')
     st.markdown(f'<div class="runh"><span class="t">{esc(title)}</span>'
                 f'<span class="mute">strategy: {esc(slug) if slug else "not yet determined"}</span>'
-                f'<span class="win">BACKTEST {ws} → {we}{" · custom" if custom else ""}</span>'
-                f'<span class="mute">{esc(model)}</span></div>', unsafe_allow_html=True)
+                f'{chip}<span class="mute">{esc(model)}</span></div>', unsafe_allow_html=True)
     sc = H.read_json(run_dir / "scorecard_strategy.json") if run_dir else None
     if isinstance(sc, dict):
         safely(render_quote, run_dir, sc)
@@ -795,7 +822,13 @@ def main_view() -> None:
         for e in job_now.errors:
             st.markdown(f'<div class="err">{esc(e)}</div>', unsafe_allow_html=True)
 
-    if run_dir is not None:
+    if run_dir is not None and xo:
+        (t1,) = st.tabs(["Extraction"])
+        with t1:
+            tab_extraction(run_dir)
+        if p is not None:
+            p["_summary_extra"] = H.read_json(run_dir / "strategy_summary.json") or {}
+    elif run_dir is not None:
         render_chart(run_dir, ws, we)
         t1, t2, t3, t4 = st.tabs(["Extraction", "Evaluation", "Economics", "Dossier"])
         with t1:
@@ -817,9 +850,10 @@ with left:
     main_view()
 
 st.markdown(f"""<div class="foot"><b>Papers:</b> click one tile, then press Run; the nine papers are already on disk, nothing
-needs uploading. <b>Dropped PDFs:</b> the paper is read and the strategy extracted for any PDF, but the engine only backtests
-long-only monthly sorts on daily US equity prices ({_manifest.get("n_universe", "?")} S&amp;P 500 names, {WARMUP_START[:4]}–{EVAL_END[:4]}).
-If the extracted strategy needs other data (fundamentals, futures, options, intraday) or another construction, the run stops
-after extraction and validation with the reason, and only the Extraction tab and the blocked dossier are produced.
-<b>Model steps</b> (extraction, check pass, narrative) need an Anthropic key in <code>.env</code> unless a cached answer exists.</div>""",
+needs uploading. <b>Dropped PDFs:</b> the paper is read, the strategy is extracted with page evidence, step 3 says whether the engine could
+run it, and the model writes a summary of the strategy. No backtest runs on a dropped PDF: the engine only does long-only
+monthly sorts on daily US equity prices ({_manifest.get("n_universe", "?")} S&amp;P 500 names, {WARMUP_START[:4]}–{EVAL_END[:4]}),
+so a strategy that needs fundamentals, futures, options or intraday data, or another construction, is reported as not
+implementable. <b>Model steps</b> (extraction, check pass, summary, narrative) need an Anthropic key in <code>.env</code>
+unless a cached answer exists.</div>""",
             unsafe_allow_html=True)

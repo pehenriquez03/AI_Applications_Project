@@ -260,15 +260,50 @@ def stage_dossier(run_dir: Path, llm: str, model: Optional[str] = None) -> dict:
 
 
 # ----------------------------------------------------------------------------
+# Extraction-only runs (dropped PDFs)
+# ----------------------------------------------------------------------------
+def run_extract_only(run_dir: Path, prog: ProgressWriter, specs: list[StrategySpec], llm: str,
+                     model: Optional[str]) -> None:
+    from .extraction.summary import write_summary
+    cons = json.loads((run_dir / RunFiles.spec_consensus).read_text())
+    spec = StrategySpec.model_validate(cons["spec"])
+    verdict = {"text": ""}
+
+    def s3():
+        try:
+            exp = stage_validate(run_dir, specs, llm, model)
+            prog.set(strategy_slug=exp.strategy_slug)
+            verdict["text"] = (f"The engine could run this as '{exp.strategy_slug}' with {exp.n_assumed} assumed and "
+                               f"{exp.n_adapted} adapted details.")
+            return f"engine could run it as '{exp.strategy_slug}' · {exp.n_assumed} assumed · {exp.n_adapted} adapted"
+        except Blocked as b:
+            verdict["text"] = f"The engine cannot run this strategy: {b}"
+            return f"not implementable by the engine: {b}"
+    _stage(prog, 3, s3)
+    for n in range(4, 9):
+        prog.update(n, "skipped", "not run: dropped PDF, extraction only")
+    prog.p.stages[8].name = "Strategy summary"
+
+    def s9():
+        out = write_summary(run_dir, spec, verdict["text"], llm=llm, model=model)
+        prog.set(recommendation="extraction only", summary=out["summary"])
+        return f"written ({out.get('source', '?')})"
+    _stage(prog, 9, s9)
+
+
+# ----------------------------------------------------------------------------
 # Driver
 # ----------------------------------------------------------------------------
 def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experiment: Optional[str] = None,
                  llm: str = "api", n_extractions: int = 3, reference_spec: Optional[Path] = None,
                  start_stage: int = 1, model: Optional[str] = None,
-                 eval_start: Optional[str] = None, eval_end: Optional[str] = None) -> Path:
+                 eval_start: Optional[str] = None, eval_end: Optional[str] = None,
+                 extract_only: bool = False) -> Path:
     """llm: 'api' (call Claude, cache first) | 'files_only' (never call; use spec_raw/check/narrative files).
     model / eval_start / eval_end: per-run choices; None = contracts defaults. They are written to
-    run_config.json and reused on resume when not given again."""
+    run_config.json and reused on resume when not given again.
+    extract_only: stop after extraction (dropped PDFs): stage 3 only reports whether the engine could run the
+    strategy, stages 4-8 are skipped, and stage 9 writes a model summary of the strategy instead of a dossier."""
     pdf_path = Path(pdf_path)
     if run_dir is None:
         import hashlib
@@ -282,7 +317,7 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
     eval_end = eval_end or cfg.get("eval_end") or None
     _write_json(run_dir / RUN_CONFIG, {"model": model or C.MODEL, "eval_start": eval_start or C.EVAL_START,
                                        "eval_end": eval_end or C.EVAL_END, "warmup_start": C.WARMUP_START,
-                                       "custom_window": bool(eval_start or eval_end)})
+                                       "custom_window": bool(eval_start or eval_end), "extract_only": bool(extract_only)})
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s",
                         handlers=[logging.FileHandler(run_dir / RunFiles.run_log), logging.StreamHandler()])
     exp = None; ctx = None; res = None; specs = []
@@ -306,6 +341,9 @@ def run_pipeline(pdf_path: Path, run_dir: Optional[Path] = None, selected_experi
             _stage(prog, 2, s2)
         else:
             specs = _load_specs(run_dir)
+        if extract_only:
+            run_extract_only(run_dir, prog, specs, llm, model)
+            return run_dir
         if start_stage <= 3:
             def s3():
                 nonlocal exp

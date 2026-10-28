@@ -85,6 +85,7 @@ class RunFiles:
     montecarlo = "montecarlo.parquet"       # one row per path: ending wealth, max dd, beats_spy, beats_ew, fees..., for strategy and benchmark
     economics = "economics.json"
     results = "results.json"                # everything the dossier needs; numbers the narrative may cite
+    strategy_summary = "strategy_summary.json"  # extraction-only runs: {summary, data_needs, implementation_note, source}
     narrative = "narrative.json"            # {"summary": str, "sections": {...}, "verified": bool, "unverified_numbers": [...]}
     dossier = "dossier.html"
     progress = "progress.json"              # Progress model, rewritten by the pipeline after every stage change
@@ -231,7 +232,7 @@ STAGES = [
     (4, "Check data"), (5, "Construct portfolios"), (6, "Backtest"),
     (7, "Evaluate"), (8, "Monte Carlo"), (9, "Dossier"),
 ]
-StageStatus = Literal["pending", "running", "done", "blocked", "failed"]
+StageStatus = Literal["pending", "running", "done", "blocked", "failed", "skipped"]   # skipped: extraction-only run
 
 
 class StageState(BaseModel):

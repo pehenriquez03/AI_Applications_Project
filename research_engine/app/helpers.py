@@ -43,6 +43,8 @@ def run_state(p: Optional[dict], job_active: bool = False) -> str:
     rec = (p.get("recommendation") or "").lower()
     if job_active and "running" in st:
         return "running"
+    if rec == "extraction only":
+        return "finished" if st[-1] == "done" else ("running" if job_active else "incomplete")
     if rec == "unable to evaluate" or "blocked" in st:
         return "blocked"
     if "failed" in st or p.get("error"):
